@@ -729,14 +729,7 @@ const togglePlay = () => {
 const updateTooltipPosition = () => {
   if (!isDragging.value && duration.value > 0) {
     const rawProgress = (currentTime.value / duration.value) * 100
-    const progressBar = document.querySelector('.player-progress')
-    const progressBarWidth = progressBar ? progressBar.offsetWidth : 500
-    const progressPixels = (rawProgress / 100) * progressBarWidth
-    
-    const maxOffset = 35
-    const currentOffset = Math.min(progressPixels * 0.4, maxOffset)
-    const tooltipPixels = progressPixels - currentOffset
-    tooltipPosition.value = (tooltipPixels / progressBarWidth) * 100
+    tooltipPosition.value = rawProgress
   }
 }
 
@@ -776,13 +769,8 @@ const updateDragPosition = (e) => {
   // 更新拖动时的时间显示
   dragCurrentTime.value = percentage * duration.value
   
-  // 更新 tooltip 位置
-  const progressBarWidth = rect.width
-  const progressPixels = percentage * progressBarWidth
-  const maxOffset = 35
-  const currentOffset = Math.min(progressPixels * 0.4, maxOffset)
-  const tooltipPixels = progressPixels - currentOffset
-  tooltipPosition.value = (tooltipPixels / progressBarWidth) * 100
+  // 更新 tooltip 位置 - 直接使用百分比
+  tooltipPosition.value = percentage * 100
 }
 
 // 停止拖动
@@ -952,7 +940,9 @@ const cancelCreatePlaylist = () => {
 }
 
 watch(currentTime, () => {
-  updateTooltipPosition()
+  if (!isDragging.value) {
+    updateTooltipPosition()
+  }
 })
 
 onMounted(() => {
