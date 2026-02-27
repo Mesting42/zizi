@@ -27,11 +27,6 @@ const routes = [
     component: () => import('../views/MusicPlayer.vue')
   },
   {
-    path: '/vinyl-player',
-    name: 'VinylPlayer',
-    component: () => import('../views/VinylPlayer.vue')
-  },
-  {
     path: '/article/:id',
     name: 'ArticleDetail',
     component: () => import('../views/ArticleDetail.vue')

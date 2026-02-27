@@ -27,7 +27,7 @@
     <div 
       v-if="isPlaying && !isMusicPage" 
       class="floating-music-btn"
-      @click="goToVinylPlayer"
+      @click="goToMusicPlayer"
     >
       <svg viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
@@ -56,18 +56,18 @@ const currentPage = computed(() => {
   if (path.startsWith('/article')) return 'article'
   if (path.startsWith('/category')) return 'articles'
   if (path.startsWith('/vivo-case')) return 'home'
-  if (path === '/music' || path === '/music-player' || path === '/vinyl-player') return 'music'
+  if (path === '/music' || path === '/music-player') return 'music'
   return 'home'
 })
 
 // 判断是否是音乐页面
 const isMusicPage = computed(() => {
-  return route.path === '/music' || route.path === '/music-player' || route.path === '/vinyl-player'
+  return route.path === '/music' || route.path === '/music-player'
 })
 
-// 跳转到黑胶唱片机页面
-const goToVinylPlayer = () => {
-  router.push('/vinyl-player')
+// 跳转到音乐播放器页面
+const goToMusicPlayer = () => {
+  router.push('/music-player')
 }
 
 // 监听页面变化，更新body的class
