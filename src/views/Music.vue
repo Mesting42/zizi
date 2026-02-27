@@ -709,9 +709,7 @@ const editorPlaylists = ref([
   }
 ])
 
-const progress = computed(() => {
-  return duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0
-})
+const progress = ref(0)
 const tooltipPosition = ref(0)
 const spinKey = ref(0)
 
@@ -744,7 +742,7 @@ const seek = (e) => {
 // 开始拖动
 const startDragging = (e) => {
   isDragging.value = true
-  dragCurrentTime.value = currentTime.value
+  // 先更新位置，让 dragCurrentTime 根据点击位置计算
   updateDragPosition(e)
 }
 
@@ -767,7 +765,9 @@ const updateDragPosition = (e) => {
   progress.value = percentage * 100
   
   // 更新拖动时的时间显示
-  dragCurrentTime.value = percentage * duration.value
+  if (duration.value > 0) {
+    dragCurrentTime.value = percentage * duration.value
+  }
   
   // 更新 tooltip 位置 - 直接使用百分比
   tooltipPosition.value = percentage * 100
@@ -941,13 +941,20 @@ const cancelCreatePlaylist = () => {
 
 watch(currentTime, () => {
   if (!isDragging.value) {
+    // 更新进度条
+    if (duration.value > 0) {
+      progress.value = (currentTime.value / duration.value) * 100
+    }
     updateTooltipPosition()
   }
 })
 
 onMounted(() => {
   initAudio()
-  // 初始化 tooltip 位置
+  // 初始化进度条和 tooltip 位置
+  if (duration.value > 0) {
+    progress.value = (currentTime.value / duration.value) * 100
+  }
   updateTooltipPosition()
 })
 </script>
