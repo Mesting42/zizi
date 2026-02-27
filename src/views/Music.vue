@@ -735,7 +735,14 @@ const seek = (e) => {
   const progressBar = e.currentTarget
   const rect = progressBar.getBoundingClientRect()
   const clickX = e.clientX - rect.left
-  const percentage = clickX / rect.width
+  const percentage = Math.max(0, Math.min(1, clickX / rect.width))
+  
+  // 立即更新 UI（因为 currentTime 不会立即更新）
+  if (duration.value > 0) {
+    progress.value = percentage * 100
+    tooltipPosition.value = percentage * 100
+  }
+  
   globalSeek(percentage * duration.value)
 }
 
@@ -778,18 +785,22 @@ const stopDragging = (e) => {
   if (!isDragging.value) return
   
   const progressBar = document.querySelector('.player-progress')
+  let finalPercentage = 0
+  
   if (progressBar && e.type !== 'mouseleave') {
     const rect = progressBar.getBoundingClientRect()
     let percentage = (e.clientX - rect.left) / rect.width
     percentage = Math.max(0, Math.min(1, percentage))
+    finalPercentage = percentage
     globalSeek(percentage * duration.value)
   }
   
   isDragging.value = false
   
-  // 拖动结束后，立即更新 tooltip 位置到当前播放位置
-  if (duration.value > 0) {
-    tooltipPosition.value = (currentTime.value / duration.value) * 100
+  // 拖动结束后，使用拖动结束时的位置更新 tooltip（因为 currentTime 不会立即更新）
+  if (finalPercentage > 0) {
+    tooltipPosition.value = finalPercentage * 100
+    progress.value = finalPercentage * 100
   }
 }
 
