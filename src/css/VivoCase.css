@@ -1,0 +1,251 @@
+/* Section 1 - scoped */
+.vivo-case {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.case-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.case-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.case-desc {
+  font-size: 1.125rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.case-tech {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tech-badge {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.case-content {
+  margin-bottom: 3rem;
+}
+
+.case-iframe-container {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.iframe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.iframe-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fullscreen-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.fullscreen-btn:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.fullscreen-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.case-iframe {
+  width: 100%;
+  height: 800px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.case-iframe.fullscreen {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+}
+
+.case-info {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.case-info h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  margin-bottom: 1.5rem;
+}
+
+.info-item h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.info-item p {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.info-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-item li {
+  color: var(--text-light);
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.info-item li::before {
+  content: '•';
+  position: absolute;
+  left: 0.5rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.case-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .vivo-case {
+    padding: 1rem;
+  }
+
+  .case-title {
+    font-size: 2rem;
+  }
+
+  .case-desc {
+    font-size: 1rem;
+  }
+
+  .case-iframe {
+    height: 600px;
+  }
+
+  .case-info {
+    padding: 1.5rem;
+  }
+
+  .case-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .case-title {
+    font-size: 1.75rem;
+  }
+
+  .case-iframe {
+    height: 400px;
+  }
+
+  .case-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .info-item h3 {
+    font-size: 1.125rem;
+  }
+}
