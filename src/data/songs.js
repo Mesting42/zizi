@@ -73,10 +73,10 @@ export const recommendedSongs = [
     lrc: '/lyrics/以父之名.lrc'
   },
   {
-    id: 'music_花海___周杰伦wav',
+    id: 'music_花海___周杰伦m4a',
     title: '花海',
     artist: '周杰伦',
-    url: '/music/花海.wav',
+    url: '/music/花海.m4a',
     cover: '/images/13416469428051659.jpeg',
     duration: '4:24',
     lrc: '/lyrics/花海.lrc'
