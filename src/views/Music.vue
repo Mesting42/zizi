@@ -555,7 +555,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeMount, computed, onUnmounted, shallowRef } from 'vue'
+import { ref, watch, onMounted, onBeforeMount, computed, onUnmounted, shallowRef, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlayer } from '../composables/usePlayer'
 import { recommendedSongs, featuredPlaylists, treasurePlaylists, dailyRecommendSongs } from '../data/songs.js'
@@ -724,32 +724,16 @@ const togglePlay = () => {
   globalTogglePlay()
 }
 
-const updateTooltipPosition = () => {
-  if (duration.value > 0) {
-    const rawProgress = (currentTime.value / duration.value) * 100
-    tooltipPosition.value = rawProgress
-  }
-}
-
 const seek = (e) => {
-  const progressBar = e.currentTarget
-  const rect = progressBar.getBoundingClientRect()
-  const clickX = e.clientX - rect.left
-  const percentage = Math.max(0, Math.min(1, clickX / rect.width))
-  
-  // 立即更新 UI（因为 currentTime 不会立即更新）
-  if (duration.value > 0) {
-    progress.value = percentage * 100
-    tooltipPosition.value = percentage * 100
-  }
-  
-  globalSeek(percentage * duration.value)
+  const rect = e.currentTarget.getBoundingClientRect()
+  const percent = (e.clientX - rect.left) / rect.width
+  globalSeek(percent * duration.value)
 }
 
 // 开始拖动
 const startDragging = (e) => {
   isDragging.value = true
-  // 先更新位置，让 dragCurrentTime 根据点击位置计算
+  dragCurrentTime.value = currentTime.value
   updateDragPosition(e)
 }
 
@@ -765,19 +749,22 @@ const updateDragPosition = (e) => {
   if (!progressBar) return
   
   const rect = progressBar.getBoundingClientRect()
-  let percentage = (e.clientX - rect.left) / rect.width
-  percentage = Math.max(0, Math.min(1, percentage))
+  let percent = (e.clientX - rect.left) / rect.width
+  percent = Math.max(0, Math.min(1, percent))
   
   // 更新进度条显示
-  progress.value = percentage * 100
+  progress.value = percent * 100
   
   // 更新拖动时的时间显示
-  if (duration.value > 0) {
-    dragCurrentTime.value = percentage * duration.value
-  }
+  dragCurrentTime.value = percent * duration.value
   
-  // 更新 tooltip 位置 - 直接使用百分比
-  tooltipPosition.value = percentage * 100
+  // 更新 tooltip 位置
+  const progressBarWidth = rect.width
+  const progressPixels = percent * progressBarWidth
+  const maxOffset = 35
+  const currentOffset = Math.min(progressPixels * 0.4, maxOffset)
+  const tooltipPixels = progressPixels - currentOffset
+  tooltipPosition.value = (tooltipPixels / progressBarWidth) * 100
 }
 
 // 停止拖动
@@ -785,22 +772,15 @@ const stopDragging = (e) => {
   if (!isDragging.value) return
   
   const progressBar = document.querySelector('.player-progress')
-  let finalPercentage = 0
-  
   if (progressBar && e.type !== 'mouseleave') {
     const rect = progressBar.getBoundingClientRect()
-    let percentage = (e.clientX - rect.left) / rect.width
-    percentage = Math.max(0, Math.min(1, percentage))
-    finalPercentage = percentage
-    globalSeek(percentage * duration.value)
-  }
-  
-  isDragging.value = false
-  
-  // 拖动结束后，使用拖动结束时的位置更新 tooltip（因为 currentTime 不会立即更新）
-  if (finalPercentage > 0) {
-    tooltipPosition.value = finalPercentage * 100
-    progress.value = finalPercentage * 100
+    let percent = (e.clientX - rect.left) / rect.width
+    percent = Math.max(0, Math.min(1, percent))
+    // 先设置 isDragging 为 false，让 watch 可以更新 UI
+    isDragging.value = false
+    globalSeek(percent * duration.value)
+  } else {
+    isDragging.value = false
   }
 }
 
@@ -955,27 +935,44 @@ const cancelCreatePlaylist = () => {
   coverPreview.value = '/images/playlist-default.jpg'
 }
 
+const syncProgress = () => {
+  if (duration.value > 0) {
+    const rawProgress = (currentTime.value / duration.value) * 100
+    progress.value = rawProgress
+    
+    const progressBar = document.querySelector('.player-progress')
+    const progressBarWidth = progressBar ? progressBar.offsetWidth : 500
+    const progressPixels = (rawProgress / 100) * progressBarWidth
+    const maxOffset = 35
+    const currentOffset = Math.min(progressPixels * 0.4, maxOffset)
+    const tooltipPixels = progressPixels - currentOffset
+    tooltipPosition.value = (tooltipPixels / progressBarWidth) * 100
+  }
+}
+
 watch(currentTime, () => {
   if (!isDragging.value) {
-    // 更新进度条
     if (duration.value > 0) {
       progress.value = (currentTime.value / duration.value) * 100
     }
     
-    // 直接更新 tooltip 位置（与 MusicPlayer.vue 保持一致）
-    if (duration.value > 0) {
-      tooltipPosition.value = (currentTime.value / duration.value) * 100
+    const progressBar = document.querySelector('.player-progress')
+    if (progressBar) {
+      const progressBarWidth = progressBar.offsetWidth || 500
+      const progressPixels = (progress.value / 100) * progressBarWidth
+      const maxOffset = 35
+      const currentOffset = Math.min(progressPixels * 0.4, maxOffset)
+      const tooltipPixels = progressPixels - currentOffset
+      tooltipPosition.value = (tooltipPixels / progressBarWidth) * 100
     }
   }
 })
 
 onMounted(() => {
   initAudio()
-  // 初始化进度条和 tooltip 位置
-  if (duration.value > 0) {
-    progress.value = (currentTime.value / duration.value) * 100
-    tooltipPosition.value = (currentTime.value / duration.value) * 100
-  }
+  nextTick(() => {
+    syncProgress()
+  })
 })
 </script>
 <style scoped>
