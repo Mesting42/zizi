@@ -725,7 +725,7 @@ const togglePlay = () => {
 }
 
 const updateTooltipPosition = () => {
-  if (!isDragging.value && duration.value > 0) {
+  if (duration.value > 0) {
     const rawProgress = (currentTime.value / duration.value) * 100
     tooltipPosition.value = rawProgress
   }
@@ -786,6 +786,11 @@ const stopDragging = (e) => {
   }
   
   isDragging.value = false
+  
+  // 拖动结束后，立即更新 tooltip 位置到当前播放位置
+  if (duration.value > 0) {
+    tooltipPosition.value = (currentTime.value / duration.value) * 100
+  }
 }
 
 const seekVolume = (e) => {
@@ -945,7 +950,11 @@ watch(currentTime, () => {
     if (duration.value > 0) {
       progress.value = (currentTime.value / duration.value) * 100
     }
-    updateTooltipPosition()
+    
+    // 直接更新 tooltip 位置（与 MusicPlayer.vue 保持一致）
+    if (duration.value > 0) {
+      tooltipPosition.value = (currentTime.value / duration.value) * 100
+    }
   }
 })
 
@@ -954,8 +963,8 @@ onMounted(() => {
   // 初始化进度条和 tooltip 位置
   if (duration.value > 0) {
     progress.value = (currentTime.value / duration.value) * 100
+    tooltipPosition.value = (currentTime.value / duration.value) * 100
   }
-  updateTooltipPosition()
 })
 </script>
 <style scoped>
