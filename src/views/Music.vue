@@ -409,15 +409,18 @@
         class="player-progress" 
         :class="{ dragging: isDragging }"
         @click="seek"
-        @mousedown="isDragging = true"
+        @mousedown="startDragging"
+        @mousemove="handleDragging"
+        @mouseup="stopDragging"
+        @mouseleave="stopDragging"
       >
         <div class="player-progress-bar">
           <div class="player-progress-now" :style="{ width: progress + '%' }"></div>
           <div 
             class="player-progress-tooltip" 
-            :style="{ left: (isDragging ? tooltipPosition : tooltipPosition) + '%' }"
+            :style="{ left: tooltipPosition + '%' }"
           >
-            <span class="tooltip-time-current">{{ formatTime(currentTime) }}</span>
+            <span class="tooltip-time-current">{{ formatTime(isDragging ? dragCurrentTime : currentTime) }}</span>
             <span class="tooltip-time-sep">/</span>
             <span class="tooltip-time-duration">{{ formatTime(duration) }}</span>
           </div>
@@ -601,6 +604,7 @@ const previousVolume = ref(0.7)
 const showModeMessage = ref(false)
 const modeMessageText = ref('')
 const isDragging = ref(false)
+const dragCurrentTime = ref(0)
 const searchQuery = ref('')
 const searchResults = ref([])
 const showSearchResults = ref(false)
@@ -742,6 +746,58 @@ const seek = (e) => {
   const clickX = e.clientX - rect.left
   const percentage = clickX / rect.width
   globalSeek(percentage * duration.value)
+}
+
+// 开始拖动
+const startDragging = (e) => {
+  isDragging.value = true
+  dragCurrentTime.value = currentTime.value
+  updateDragPosition(e)
+}
+
+// 拖动中
+const handleDragging = (e) => {
+  if (!isDragging.value) return
+  updateDragPosition(e)
+}
+
+// 更新拖动位置
+const updateDragPosition = (e) => {
+  const progressBar = document.querySelector('.player-progress')
+  if (!progressBar) return
+  
+  const rect = progressBar.getBoundingClientRect()
+  let percentage = (e.clientX - rect.left) / rect.width
+  percentage = Math.max(0, Math.min(1, percentage))
+  
+  // 更新进度条显示
+  progress.value = percentage * 100
+  
+  // 更新拖动时的时间显示
+  dragCurrentTime.value = percentage * duration.value
+  
+  // 更新 tooltip 位置
+  const progressBarWidth = rect.width
+  const progressPixels = percentage * progressBarWidth
+  const maxOffset = 35
+  const currentOffset = Math.min(progressPixels * 0.4, maxOffset)
+  const tooltipPixels = progressPixels - currentOffset
+  tooltipPosition.value = (tooltipPixels / progressBarWidth) * 100
+}
+
+// 停止拖动
+const stopDragging = (e) => {
+  if (!isDragging.value) return
+  
+  const progressBar = document.querySelector('.player-progress')
+  if (progressBar && e.type !== 'mouseleave') {
+    const rect = progressBar.getBoundingClientRect()
+    let percentage = (e.clientX - rect.left) / rect.width
+    percentage = Math.max(0, Math.min(1, percentage))
+    globalSeek(percentage * duration.value)
+  }
+  
+  isDragging.value = false
 }
 
 const seekVolume = (e) => {
