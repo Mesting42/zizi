@@ -1,0 +1,323 @@
+/*
+ * Mobile high-refresh rendering profile
+ * -------------------------------------
+ * Modern Android flagships and iPad Pro can render at 90/120 Hz, leaving only
+ * 11.1/8.3 ms per frame. Keep scrolling on the compositor by avoiding live
+ * backdrop sampling, large repainting shadows and off-screen card rendering.
+ */
+
+html.mobile-performance {
+  height: 100%;
+  scroll-behavior: auto !important;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html.mobile-performance body {
+  min-height: calc(var(--app-vh, 1vh) * 100);
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+  scroll-behavior: auto !important;
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeSpeed;
+}
+
+html.mobile-performance body,
+html.mobile-performance body .app-shell,
+html.mobile-performance body .app-main {
+  min-height: calc(var(--app-vh, 1vh) * 100);
+}
+
+html.mobile-performance body .app-main {
+  isolation: isolate;
+}
+
+/* Live backdrop blur is the largest source of dropped frames on vendor
+   WebViews. The translucent surface colours remain, so the visual identity is
+   preserved without resampling the entire screen for every scroll frame. */
+html.mobile-performance body * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.mobile-performance body .nav,
+html.mobile-performance body .music-hero,
+html.mobile-performance body .music-tabs,
+html.mobile-performance body .playlist-card,
+html.mobile-performance body .song-card,
+html.mobile-performance body .song-item,
+html.mobile-performance body .all-playlist-cover,
+html.mobile-performance body .mobile-queue-card,
+html.mobile-performance body .playlist-detail .detail-header {
+  box-shadow: 0 6px 18px rgba(35, 43, 72, .1) !important;
+}
+
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .nav,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .music-hero,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .music-tabs,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .playlist-card,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .song-card,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .song-item,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .all-playlist-cover,
+html.mobile-performance body:is(.dark-mode, .music-theme-dark) .mobile-queue-card {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .22) !important;
+}
+
+/* Skip layout and paint work for rows that are outside the viewport. */
+html.mobile-performance body .music-page .content-section,
+html.mobile-performance body .all-playlist-card,
+html.mobile-performance body .playlist-detail .song-item,
+html.mobile-performance body .mobile-queue-item,
+html.mobile-performance body .article-item,
+html.mobile-performance body .category-card {
+  content-visibility: auto;
+  contain: layout paint style;
+}
+
+html.mobile-performance body .music-page .content-section {
+  contain-intrinsic-size: auto 560px;
+}
+
+/* The favourites area is painted directly over the full-page theme image.
+   Some Android WebViews expose the rectangular edge of a paint-contained
+   layer here, so keep this one section in the page's normal paint layer. */
+html.mobile-performance body .music-page .content-section.favorite-section {
+  content-visibility: visible !important;
+  contain: none !important;
+  contain-intrinsic-size: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html.mobile-performance body .all-playlist-card {
+  contain-intrinsic-size: auto 236px;
+}
+
+html.mobile-performance body .playlist-detail .song-item,
+html.mobile-performance body .mobile-queue-item {
+  contain-intrinsic-size: auto 68px;
+}
+
+html.mobile-performance body .article-item,
+html.mobile-performance body .category-card {
+  contain-intrinsic-size: auto 240px;
+}
+
+html.mobile-performance body img {
+  image-rendering: auto;
+}
+
+/* Do not replay dozens of staggered module entrance animations on touch
+   devices. Page changes use one short compositor-only transition instead. */
+html.mobile-performance body .app-shell .module-enter,
+html.mobile-performance body .app-shell .module-enter.module-entered {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+.mobile-route-fast-enter-active,
+.mobile-route-fast-leave-active {
+  transition: opacity 120ms linear !important;
+  will-change: opacity;
+}
+
+.mobile-route-fast-leave-active {
+  position: absolute !important;
+  inset: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+.mobile-route-fast-enter-from,
+.mobile-route-fast-leave-to {
+  opacity: 0;
+}
+
+/* While the finger is moving, pause decorative animation layers and drop
+   hover transitions. Controls and the themed progress character keep working. */
+html.mobile-performance body.is-user-scrolling .music-page-bg *,
+html.mobile-performance body.is-user-scrolling .music-page-bg *::before,
+html.mobile-performance body.is-user-scrolling .music-page-bg *::after,
+html.mobile-performance body.is-user-scrolling .aurora-background *,
+html.mobile-performance body.is-user-scrolling .hero-bg-glow,
+html.mobile-performance body.is-user-scrolling .card-overlay,
+html.mobile-performance body.is-user-scrolling .home-tech-canvas {
+  animation-play-state: paused !important;
+}
+
+html.mobile-performance body.is-user-scrolling .playlist-card,
+html.mobile-performance body.is-user-scrolling .song-card,
+html.mobile-performance body.is-user-scrolling .song-item,
+html.mobile-performance body.is-user-scrolling .all-playlist-cover,
+html.mobile-performance body.is-user-scrolling .mobile-queue-item,
+html.mobile-performance body.is-user-scrolling .article-item,
+html.mobile-performance body.is-user-scrolling .category-card {
+  transition: none !important;
+  will-change: auto !important;
+}
+
+html.mobile-performance body.is-user-scrolling .music-page-bg .mpb-theme-scene,
+html.mobile-performance body.is-user-scrolling .music-page-bg .mpb-mobile-scene-atmosphere,
+html.mobile-performance body.is-user-scrolling .music-page-bg .mpb-custom-media,
+html.mobile-performance body.is-user-scrolling .music-page-bg .mpb-custom-media img,
+html.mobile-performance body.is-user-scrolling .music-page-bg .mpb-custom-media video {
+  filter: none !important;
+}
+
+/* APK WebView: keep every theme recognisable as a static scene and reserve the
+   animation budget for the record, controls and progress IP character. */
+html.native-music-app body .music-page-bg,
+html.native-music-app body .music-page-bg * {
+  will-change: auto !important;
+}
+
+html.native-music-app body .music-page-bg .mpb-motion-layer,
+html.native-music-app body .music-page-bg .mpb-orb,
+html.native-music-app body .music-page-bg .mpb-notes,
+html.native-music-app body .music-page-bg .mpb-sparkles,
+html.native-music-app body .music-page-bg .mpb-ip-elements,
+html.native-music-app body .music-page-bg .mpb-shinchan-elements {
+  display: none !important;
+}
+
+html.native-music-app body .music-page-bg .mpb-theme-scene,
+html.native-music-app body .music-page-bg .mpb-theme-wash,
+html.native-music-app body .music-page-bg .mpb-vignette {
+  animation: none !important;
+  transition: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Native keeps the complete subject and one slow accent. The colour wash is
+   already the atmosphere layer, so the blurred duplicate can be skipped. */
+html.native-music-app body .music-page-bg .mpb-mobile-scene-atmosphere,
+html.low-memory-device body .music-page-bg .mpb-mobile-scene-atmosphere {
+  display: none !important;
+}
+
+html.native-music-app body .music-page-bg .mpb-mobile-scene-subject {
+  opacity: var(--mpb-mobile-subject-opacity, .64) !important;
+  filter: none !important;
+  transform: translate3d(-50%, 0, 0) !important;
+}
+
+html.native-music-app body .music-page-bg .mpb-mobile-motion i:nth-child(n + 2),
+html.low-memory-device body .music-page-bg .mpb-mobile-motion i:nth-child(n + 2) {
+  display: none !important;
+}
+
+html.native-music-app body .music-page .playlist-card,
+html.native-music-app body .music-page .song-card,
+html.native-music-app body .music-page .song-item,
+html.native-music-app body .all-playlist-card,
+html.native-music-app body .mobile-queue-item {
+  transform: none !important;
+}
+
+/* Comfortable touch targets and cut-out / gesture-bar spacing across Xiaomi,
+   Honor, vivo, OPPO, Samsung and Apple devices. */
+@media (any-pointer: coarse) {
+  html.mobile-performance body button,
+  html.mobile-performance body [role='button'],
+  html.mobile-performance body a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html.mobile-performance body .app-main {
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+
+  html.mobile-performance body .music-page,
+  html.mobile-performance body .music-player-page,
+  html.mobile-performance body .all-playlists-page,
+  html.mobile-performance body .playlist-detail,
+  html.mobile-performance body .mobile-queue-page {
+    min-height: calc(var(--app-vh, 1vh) * 100);
+  }
+}
+
+/* iPad portrait and landscape share the tablet layout instead of falling
+   through to either the narrow phone layout or the oversized desktop canvas. */
+@media (min-width: 768px) and (max-width: 1366px) and (any-pointer: coarse) {
+  html.mobile-performance body .music-page .music-hero,
+  html.mobile-performance body .music-page .music-tabs,
+  html.mobile-performance body .music-page .music-body {
+    width: min(calc(100% - 40px), 1040px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  html.mobile-performance body .all-playlists-content,
+  html.mobile-performance body .playlist-detail .detail-container,
+  html.mobile-performance body .mobile-queue-content {
+    width: min(calc(100% - 32px), 1040px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  html.mobile-performance body .all-playlists-grid {
+    grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+    gap: 24px 18px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1366px) and (any-pointer: coarse) and (orientation: portrait) {
+  html.mobile-performance body .music-page .music-hero {
+    padding-top: max(26px, env(safe-area-inset-top));
+  }
+
+  html.mobile-performance body .music-player-page.is-compact-player .player-container {
+    padding-top: calc(max(76px, env(safe-area-inset-top) + 60px)) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1366px) and (any-pointer: coarse) and (orientation: landscape) {
+  html.mobile-performance body .music-page .music-hero {
+    padding-top: max(18px, env(safe-area-inset-top));
+    padding-bottom: 18px;
+  }
+
+  html.mobile-performance body .music-page .hero-title {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+  }
+
+  html.mobile-performance body .music-player-page.is-compact-player .player-container {
+    padding-top: calc(max(58px, env(safe-area-inset-top) + 48px)) !important;
+    padding-bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html.mobile-performance body .music-player-page.is-compact-player .vinyl-record {
+    width: clamp(270px, 45vmin, 410px) !important;
+    height: clamp(270px, 45vmin, 410px) !important;
+  }
+
+  html.mobile-performance body .music-player-page.is-compact-player .mobile-record-song-info {
+    margin-top: clamp(14px, 2.4vh, 24px);
+  }
+
+  html.mobile-performance body .mobile-queue-page {
+    height: calc(var(--app-vh, 1vh) * 100);
+    padding-top: max(14px, env(safe-area-inset-top));
+    overflow: hidden;
+  }
+
+  html.mobile-performance body .mobile-queue-list {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.mobile-performance body *,
+  html.mobile-performance body *::before,
+  html.mobile-performance body *::after {
+    scroll-behavior: auto !important;
+  }
+}

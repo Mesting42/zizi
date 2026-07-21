@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#cfeaff"/><stop offset=".5" stop-color="#f5d8ff"/><stop offset="1" stop-color="#ffd5df"/></linearGradient>
+    <filter id="glow"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#7056a1" flood-opacity=".18"/></filter>
+  </defs>
+  <rect width="960" height="540" rx="34" fill="url(#bg)"/>
+  <g fill="#fff" opacity=".75"><ellipse cx="125" cy="405" rx="130" ry="50"/><ellipse cx="242" cy="414" rx="94" ry="40"/><ellipse cx="755" cy="154" rx="130" ry="48"/><ellipse cx="860" cy="163" rx="80" ry="36"/></g>
+  <path d="M0 468Q165 424 323 470T640 463T960 441V540H0Z" fill="#fff" opacity=".44"/>
+  <g fill="none" stroke="#fff" stroke-width="5" opacity=".72"><path d="M96 103Q190 40 292 116T497 89"/><path d="M519 401Q640 330 753 402T940 361"/></g>
+  <g transform="translate(485 276)" filter="url(#glow)">
+    <ellipse cy="128" rx="142" ry="35" fill="#fff" opacity=".75"/>
+    <path d="M-93-60-68-108-34-79C-12-88 16-88 37-79L72-108 96-58V44C96 97 53 128 1 128S-94 97-94 44Z" fill="#fffdf9" stroke="#413944" stroke-width="6"/>
+    <ellipse cx="-35" cy="8" rx="8" ry="13" fill="#332d35"/><ellipse cx="36" cy="8" rx="8" ry="13" fill="#332d35"/><ellipse cx="1" cy="36" rx="12" ry="8" fill="#f1c53e"/>
+    <path d="M-57 27-109 18M-57 44-113 48M58 27 110 18M58 44 114 48" stroke="#413944" stroke-width="5" stroke-linecap="round"/>
+    <g transform="translate(63 -77) rotate(-9)"><ellipse cx="-22" rx="34" ry="24" fill="#e9415b"/><ellipse cx="22" rx="34" ry="24" fill="#e9415b"/><circle r="17" fill="#ff6a7b"/></g>
+    <path d="M-70 88Q0 140 72 87L59 158H-57Z" fill="#7a69cc"/><circle cx="1" cy="116" r="9" fill="#fff5b1"/>
+  </g>
+  <g fill="#ed6080" opacity=".7"><path d="M157 244c0-25 38-25 38 0 0-25 38-25 38 0 0 26-38 49-38 49s-38-23-38-49Z"/><path d="M740 361c0-19 29-19 29 0 0-19 29-19 29 0 0 20-29 37-29 37s-29-17-29-37Z"/></g>
+  <g fill="#fff" opacity=".85"><circle cx="75" cy="170" r="8"/><circle cx="325" cy="75" r="11"/><circle cx="676" cy="92" r="7"/><circle cx="889" cy="305" r="10"/></g>
+  <text x="58" y="72" fill="#70598f" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="6">CLOUDY BOW DREAM</text>
+  <text x="59" y="103" fill="#806f95" font-family="Arial,sans-serif" font-size="16">floating hearts · ribbon trails · sleepy clouds</text>
+</svg>

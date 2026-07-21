@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/startup_splash_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_splash_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:importantForAccessibility="noHideDescendants">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp">
+
+        <FrameLayout
+            android:id="@+id/startup_logo_stage"
+            android:layout_width="92dp"
+            android:layout_height="92dp">
+
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_gravity="center"
+                android:background="@drawable/splash_logo_plate"
+                android:padding="7dp">
+
+                <ImageView
+                    android:id="@+id/startup_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/mesting_launcher_icon" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.18"
+            android:text="MESTING"
+            android:textColor="#F5F0EB"
+            android:textSize="21sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.2"
+            android:text="MUSIC SPACE"
+            android:textColor="#82F5F0EB"
+            android:textSize="10sp" />
+
+        <View
+            android:id="@+id/startup_loading_indicator"
+            android:layout_width="44dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="32dp"
+            android:alpha="0.5"
+            android:background="@drawable/splash_loading_bar" />
+    </LinearLayout>
+</FrameLayout>

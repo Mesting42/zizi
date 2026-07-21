@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 import AboutTemplate from './AboutTemplate.vue';
 import { handleFileChange, loadAvatar, setupScrollAnimation } from '../assets/js/about.js';
 import '../assets/css/about.css';
@@ -18,8 +18,25 @@ const avatarUrl = ref('https://api.dicebear.com/7.x/avataaars/svg?seed=Felix');
 // 模板引用
 const templateRef = ref(null);
 
+const revealAboutCards = () => {
+  if (!templateRef.value) return;
+
+  const cards = [
+    templateRef.value.projectCard,
+    templateRef.value.educationCard,
+    templateRef.value.workCard,
+    templateRef.value.contactCard,
+    templateRef.value.interestCard
+  ].filter(card => card !== null);
+
+  setupScrollAnimation(cards);
+};
+
 // 组件挂载后初始化
 onMounted(async () => {
+  await nextTick();
+  revealAboutCards();
+  setTimeout(revealAboutCards, 160);
   // 从存储加载头像
   try {
     avatarUrl.value = await loadAvatar();
@@ -31,17 +48,7 @@ onMounted(async () => {
   
   // 等待下一帧确保子组件已挂载
   setTimeout(() => {
-    if (templateRef.value) {
-      const cards = [
-        templateRef.value.projectCard,
-        templateRef.value.educationCard,
-        templateRef.value.workCard,
-        templateRef.value.contactCard,
-        templateRef.value.interestCard
-      ].filter(card => card !== null);
-      
-      setupScrollAnimation(cards);
-    }
+    revealAboutCards();
   }, 100);
 });
 
@@ -53,5 +60,3 @@ onUnmounted(() => {
 <style scoped>
 @import '../css/About.css';
 </style>
-
-

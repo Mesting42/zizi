@@ -1,0 +1,125 @@
+.border-glow-card {
+  --edge-proximity: 0;
+  --cursor-angle: 45deg;
+  --edge-sensitivity: 30;
+  --color-sensitivity: calc(var(--edge-sensitivity) + 20);
+  --border-radius: 28px;
+  --glow-padding: 40px;
+  --cone-spread: 25;
+
+  position: relative;
+  border-radius: var(--border-radius);
+  isolation: isolate;
+  transform: translate3d(0, 0, 0.01px);
+  display: grid;
+  overflow: visible;
+}
+
+.border-glow-card::before,
+.border-glow-card::after,
+.border-glow-card > .edge-light {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transition: opacity 0.25s ease-out;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.border-glow-card:not(:hover):not(.sweep-active)::before,
+.border-glow-card:not(:hover):not(.sweep-active) > .edge-light {
+  opacity: 0;
+  transition: opacity 0.75s ease-in-out;
+}
+
+.border-glow-card::after {
+  display: none;
+}
+
+/* 文档 BorderGlow：彩色 mesh 渐变边框 + 光标方向锥形遮罩 */
+.border-glow-card::before {
+  border: 1px solid transparent;
+  clip-path: inset(0 round var(--border-radius));
+  background:
+    linear-gradient(var(--card-bg, #eef1f8) 0 100%) padding-box,
+    linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+    var(--gradient-one) border-box,
+    var(--gradient-two) border-box,
+    var(--gradient-three) border-box,
+    var(--gradient-four) border-box,
+    var(--gradient-five) border-box,
+    var(--gradient-six) border-box,
+    var(--gradient-seven) border-box,
+    var(--gradient-base) border-box;
+  opacity: max(0, calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity))));
+  mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+}
+
+/* 文档 BorderGlow：边框外发光层 */
+.border-glow-card > .edge-light {
+  inset: calc(var(--glow-padding) * -1);
+  z-index: 1;
+  clip-path: inset(var(--glow-padding) round var(--border-radius));
+  mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black 2.5%,
+      transparent 10%,
+      transparent 90%,
+      black 97.5%
+    );
+  opacity: max(0, calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity))));
+  mix-blend-mode: plus-lighter;
+}
+
+.border-glow-card > .edge-light::before {
+  content: "";
+  position: absolute;
+  inset: var(--glow-padding);
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--glow-color),
+    inset 0 0 1px 0 var(--glow-color-60),
+    inset 0 0 3px 0 var(--glow-color-50),
+    inset 0 0 6px 0 var(--glow-color-40),
+    inset 0 0 15px 0 var(--glow-color-30),
+    inset 0 0 25px 2px var(--glow-color-20),
+    inset 0 0 50px 2px var(--glow-color-10),
+    0 0 1px 0 var(--glow-color-60),
+    0 0 3px 0 var(--glow-color-50),
+    0 0 6px 0 var(--glow-color-40),
+    0 0 15px 0 var(--glow-color-30),
+    0 0 25px 2px var(--glow-color-20),
+    0 0 50px 2px var(--glow-color-10);
+}
+
+.border-glow-card > .border-glow-inner {
+  display: contents;
+  position: relative;
+  z-index: 1;
+}
+
+.border-glow-card > .border-glow-inner.card {
+  display: block;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.border-glow-card > .border-glow-inner.card:hover {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .border-glow-card::before,
+  .border-glow-card > .edge-light {
+    display: none;
+  }
+}

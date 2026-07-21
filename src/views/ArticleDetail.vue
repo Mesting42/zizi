@@ -20,46 +20,48 @@
 
       <!-- 文章主体 -->
       <article class="article-content">
-        <!-- 返回按钮 -->
-        <div class="back-nav">
-          <router-link v-if="route.query.fromCategory && route.query.fromCategory !== '全部'" :to="`/category/${route.query.fromCategory}`" class="back-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span>返回{{ route.query.fromCategory }}</span>
-          </router-link>
-          <router-link v-else to="/articles" class="back-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span>返回文章列表</span>
-          </router-link>
-        </div>
+        <div class="article-toolbar">
+          <!-- 返回按钮 -->
+          <div class="back-nav">
+            <router-link v-if="route.query.fromCategory && route.query.fromCategory !== '全部'" :to="`/category/${route.query.fromCategory}`" class="back-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              <span>返回{{ route.query.fromCategory }}</span>
+            </router-link>
+            <router-link to="/articles" class="back-link article-list-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              <span>返回文章列表</span>
+            </router-link>
+          </div>
 
-        <!-- 操作按钮 -->
-        <div class="article-actions">
-          <button @click="toggleEditMode" :class="['action-btn', isEditable ? 'active' : '']">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
-            <span>{{ isEditable ? '取消编辑' : '编辑' }}</span>
-          </button>
-          <button @click="saveChanges" :disabled="!hasChanges" :class="['action-btn', 'save-btn', hasChanges ? 'has-changes' : '']">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-              <polyline points="17 21 17 13 7 13 7 21"/>
-              <polyline points="7 3 7 8 15 8"/>
-            </svg>
-            <span>保存</span>
-          </button>
-          <button @click="showDeleteConfirm = true" class="action-btn delete-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-            <span>删除</span>
-          </button>
+          <!-- 操作按钮 -->
+          <div class="article-actions">
+            <button @click="toggleEditMode" :class="['action-btn', isEditable ? 'active' : '']">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <span>{{ isEditable ? '取消编辑' : '编辑' }}</span>
+            </button>
+            <button @click="saveChanges" :disabled="!hasChanges" :class="['action-btn', 'save-btn', hasChanges ? 'has-changes' : '']">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span>保存</span>
+            </button>
+            <button @click="showDeleteConfirm = true" class="action-btn delete-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              <span>删除</span>
+            </button>
+          </div>
         </div>
 
         <!-- 文章头部 -->
@@ -81,12 +83,14 @@
           <h1 
             class="article-title" 
             :contenteditable="isEditable"
+            spellcheck="false"
             @blur="handleTitleBlur"
             @input="handleTitleInput"
           >{{ article.title }}</h1>
           <p 
             class="article-excerpt"
             :contenteditable="isEditable"
+            spellcheck="false"
             @blur="handleExcerptBlur"
             @input="handleExcerptInput"
           >{{ article.excerpt }}</p>
@@ -108,17 +112,12 @@
             v-html="article.content" 
             class="markdown-content"
             :contenteditable="isEditable"
+            spellcheck="false"
             @blur="handleContentBlur"
             @input="handleContentInput"
             @mouseup="handleTextSelection"
             @keyup="handleTextSelection"
           ></div>
-          <pre v-if="isEditable" style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 5px; font-size: 12px;">
-            调试信息：
-            Content长度: {{ article.content.length }}
-            Content前100字符: {{ article.content.substring(0, 100) }}
-            IsMarkdown: {{ article.isMarkdown }}
-          </pre>
         </div>
 
         <!-- 浮动工具栏 -->
@@ -293,18 +292,22 @@ const linkUrl = ref('')
 const showToolbar = ref(false)
 const toolbarPosition = ref({ top: 0, left: 0 })
 const showBackToTop = ref(false)
+let scrollFrame = 0
 
 // 监听滚动，控制回到顶部按钮显示
-const handleScroll = (e) => {
-  const scrollElement = document.scrollingElement || document.documentElement
-  const targetScrollTop = e?.target && typeof e.target.scrollTop === 'number' ? e.target.scrollTop : 0
-  const scrollTop =
-    window.scrollY ||
-    scrollElement.scrollTop ||
-    document.body.scrollTop ||
-    targetScrollTop
+const handleScroll = () => {
+  if (scrollFrame) return
+  scrollFrame = requestAnimationFrame(() => {
+    scrollFrame = 0
+    const scrollElement = document.scrollingElement || document.documentElement
+    const scrollTop =
+      window.scrollY ||
+      scrollElement.scrollTop ||
+      document.body.scrollTop ||
+      0
 
-  showBackToTop.value = scrollTop > 200
+    showBackToTop.value = scrollTop > 200
+  })
 }
 
 // 回到顶部
@@ -314,6 +317,7 @@ const scrollToTop = () => {
     document.scrollingElement,
     document.documentElement,
     document.body,
+    document.querySelector('.app-main'),
     document.querySelector('.main-content'),
     document.querySelector('.article-detail'),
     document.querySelector('.article-container')
@@ -617,25 +621,19 @@ onMounted(() => {
   
   // 添加滚动监听
   window.addEventListener('scroll', handleScroll, { passive: true })
-  // 捕获内部滚动容器的 scroll（scroll 不冒泡，但可 capture）
-  document.addEventListener('scroll', handleScroll, { passive: true, capture: true })
-  // 初始化一次，避免必须滚动后才更新状态
   nextTick(() => handleScroll())
 })
 
 onUnmounted(() => {
-  // 不再清除body背景样式，让App.vue统一管理
+  if (scrollFrame) {
+    cancelAnimationFrame(scrollFrame)
+    scrollFrame = 0
+  }
 
-  // 移除点击外部事件监听
   document.removeEventListener('click', handleClickOutside)
-  
-  // 移除滚动监听
   window.removeEventListener('scroll', handleScroll)
-  document.removeEventListener('scroll', handleScroll, true)
 })
 </script>
 <style scoped>
 @import '../css/ArticleDetail.css';
 </style>
-
-

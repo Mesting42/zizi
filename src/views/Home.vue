@@ -1,294 +1,419 @@
 <template>
-  <div class="home">
-    <!-- ① 顶部介绍模块 - 采用不对称布局 -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 class="hero-greeting">Hi，我是</h1>
-          <h2 class="hero-name">Mesting</h2>
-          <p class="hero-role">前端实习生 · Vue 学习者 · 技术分享者</p>
-          <p class="hero-desc">热爱前端开发，专注于 Vue3 生态和现代 Web 技术。在这里记录我的学习历程，分享技术心得和实践经验，与大家共同成长进步。我相信持续学习和分享是成长的必经之路。</p>
-          <div class="hero-buttons">
-            <router-link to="/about" class="btn btn-primary">
-              <span>了解我</span>
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
+  <div ref="homeRoot" class="home home-v2 home-motion motion-scroll-pending">
+    <div class="home-opening-curtain" aria-hidden="true"></div>
+
+    <section class="hero home-hero" aria-labelledby="home-title">
+      <HomeTechCanvas />
+      <div class="hero-noise" aria-hidden="true"></div>
+      <div class="hero-scanline" aria-hidden="true"></div>
+
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <p class="hero-kicker motion-hero-eyebrow" data-hero-reveal>
+            <span class="hero-kicker-dot"></span>
+            DIGITAL ATELIER · {{ currentYear }}
+          </p>
+
+          <h1 id="home-title" class="hero-title">
+            <span class="hero-title-mask">
+              <span class="hero-title-inner">Mesting</span>
+            </span>
+          </h1>
+
+          <p class="hero-role motion-hero-role" data-hero-reveal>
+            <span>Design.</span>
+            <span>Code.</span>
+            <span>Music.</span>
+          </p>
+
+          <p class="hero-desc motion-hero-desc" data-hero-reveal>
+            用代码构建有情绪、有细节的数字体验。这里不只是文章目录，
+            也是我持续生长的作品、音乐与想法档案。
+          </p>
+
+          <div class="hero-actions" data-hero-reveal>
+            <a href="#selected-work" class="hero-action hero-action-primary motion-hero-action">
+              <span>查看精选作品</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
-            </router-link>
-            <a href="https://github.com" target="_blank" class="btn btn-outline">
-              <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              GitHub
             </a>
+            <router-link to="/about" class="hero-action hero-action-secondary motion-hero-action">
+              进入个人档案
+            </router-link>
+          </div>
+
+          <div class="hero-availability" data-hero-reveal>
+            <span class="availability-pulse"></span>
+            <span>个人博客持续更新中</span>
+            <span class="availability-divider"></span>
+            <span>{{ currentTimeLabel }}</span>
           </div>
         </div>
-        <div class="hero-decoration">
-          <div class="decoration-circle decoration-1"></div>
-          <div class="decoration-circle decoration-2"></div>
-          <div class="decoration-circle decoration-3"></div>
+
+        <div class="hero-visual motion-hero-panel motion-hero-parallax" aria-hidden="true">
+          <div class="hero-orbit hero-orbit-outer"></div>
+          <div class="hero-orbit hero-orbit-middle"></div>
+          <div class="hero-orbit hero-orbit-inner"></div>
+          <div class="hero-core">
+            <span class="hero-core-label">M</span>
+            <span class="hero-core-ring"></span>
+          </div>
+          <span class="orbit-node orbit-node-one"></span>
+          <span class="orbit-node orbit-node-two"></span>
+          <span class="orbit-node orbit-node-three"></span>
+          <div class="hero-coordinate hero-coordinate-top">31.2304° N</div>
+          <div class="hero-coordinate hero-coordinate-bottom">121.4737° E</div>
+        </div>
+
+        <div class="hero-status-panel motion-hero-panel-item" data-hero-reveal>
+          <div class="hero-status-head">
+            <span>LIVE SIGNAL</span>
+            <span class="hero-status-bars"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <strong>正在构建更完整的个人数字空间</strong>
+          <p>Vue 3 · Motion System · Music Experience</p>
+          <div class="hero-status-progress"><span></span></div>
         </div>
       </div>
+
+      <a href="#selected-work" class="hero-scroll" aria-label="向下浏览精选作品">
+        <span>SCROLL TO EXPLORE</span>
+        <i></i>
+      </a>
     </section>
 
-    <!-- 主要内容区域 - 采用网格布局 -->
-    <div class="main-content">
-      <!-- 左侧内容 -->
-      <div class="content-left">
-        <!-- ② 最新文章模块 -->
-        <section class="articles-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-              </svg>
-              最新文章
-            </h2>
-            <router-link to="/articles" class="view-all">全部 →</router-link>
-          </div>
-          <div class="article-grid">
-            <div v-for="article in articles.slice(0, 3)" :key="article.id" class="article-card">
-              <div class="article-number">{{ article.id }}</div>
-              <div class="article-content">
-                <h3 class="article-title">{{ article.title }}</h3>
-                <p class="article-excerpt">{{ article.excerpt }}</p>
-                <div class="article-meta">
-                  <span class="article-date">{{ article.date }}</span>
-                  <span class="article-category">{{ article.category }}</span>
-                </div>
-              </div>
-              <router-link :to="`/article/${article.id}`" class="article-link">
-                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </router-link>
-            </div>
-          </div>
-        </section>
-
-        <!-- ②.5 项目案例模块 -->
-        <section class="projects-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                <line x1="8" y1="21" x2="16" y2="21"/>
-                <line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-              项目案例
-            </h2>
-            <router-link to="/articles" class="view-all">查看全部 →</router-link>
-          </div>
-          <div class="projects-grid">
-            <div class="project-card">
-              <div class="project-image">
-                <div class="project-icon">📱</div>
-              </div>
-              <div class="project-info">
-                <h3 class="project-title">Vivo响应式网站</h3>
-                <p class="project-desc">采用语义化 HTML5 结构和 CSS3 高级特性，实现流畅的动画效果和多端适配，完整还原品牌视觉风格。</p>
-                <div class="project-tags">
-                  <span class="project-tag">HTML5</span>
-                  <span class="project-tag">CSS3</span>
-                  <span class="project-tag">响应式</span>
-                </div>
-              </div>
-              <router-link to="/vivo-case" class="project-link">
-                查看案例
-                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </router-link>
-            </div>
-            <div class="project-card">
-              <div class="project-image">
-                <div class="project-icon">🌍</div>
-              </div>
-              <div class="project-info">
-                <h3 class="project-title">响应式国外网站</h3>
-                <p class="project-desc">一个现代化的在线学习平台网站，采用响应式设计，适配各种设备尺寸，展示精美的UI设计和流畅的用户体验。</p>
-                <div class="project-tags">
-                  <span class="project-tag">HTML5</span>
-                  <span class="project-tag">CSS3</span>
-                  <span class="project-tag">Flexbox</span>
-                  <span class="project-tag">Grid</span>
-                </div>
-              </div>
-              <router-link to="/foreign-case" class="project-link">
-                查看案例
-                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </router-link>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- 右侧边栏 -->
-      <div class="content-right">
-        <!-- ③ 技术方向模块 -->
-        <section class="tech-section">
-          <h2 class="section-title-small">
-            <svg class="section-icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-              <polyline points="2 17 12 22 22 17"/>
-              <polyline points="2 12 12 17 22 12"/>
-            </svg>
-            技术栈
-          </h2>
-          <p class="tech-desc">专注于现代前端技术栈，持续学习与实践</p>
-          <div class="tech-tags">
-            <router-link v-for="tech in techStack" :key="tech.name" :to="`/category/${tech.name}`" class="tech-tag">
-              <span class="tech-icon">{{ tech.icon }}</span>
-              <span class="tech-name">{{ tech.name }}</span>
-            </router-link>
-          </div>
-        </section>
-
-        <!-- ④ 关于本站模块 -->
-        <section class="about-site-section">
-          <h2 class="section-title-small">
-            <svg class="section-icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
-            关于本站
-          </h2>
-          <p class="site-desc">
-            这里是我记录个人前端学习历程的地方，使用 Vue3 + Vite 技术栈构建。我致力于分享实用的技术心得和开发经验，记录每一个成长瞬间。无论是基础知识的积累，还是项目实践的总结，都希望能为同样在学习路上的你提供一些参考和启发。
-          </p>
-          <div class="site-tech">
-            <span class="tech-badge">Vue3</span>
-            <span class="tech-badge">Vite</span>
-            <span class="tech-badge">CSS3</span>
-          </div>
-        </section>
-
-        <!-- 快速导航 -->
-        <section class="quick-nav">
-          <h2 class="section-title-small">
-            <svg class="section-icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            快速导航
-          </h2>
-          <div class="nav-links">
-            <router-link to="/articles" class="nav-link">
-              <span class="nav-icon">📝</span>
-              <span class="nav-text">全部文章</span>
-            </router-link>
-            <router-link to="/about" class="nav-link">
-              <span class="nav-icon">👤</span>
-              <span class="nav-text">关于我</span>
-            </router-link>
-            <router-link to="/vivo-case" class="nav-link">
-              <span class="nav-icon">🚀</span>
-              <span class="nav-text">项目案例</span>
-            </router-link>
-          </div>
-        </section>
-
-        <!-- 联系方式 -->
-        <section class="contact-section">
-          <h2 class="section-title-small">
-            <svg class="section-icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-            联系方式
-          </h2>
-          <p class="contact-desc">欢迎与我交流，共同学习进步</p>
-          <div class="contact-links">
-            <a href="https://github.com" target="_blank" class="contact-link">
-              <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              <span class="contact-text">GitHub</span>
-            </a>
-            <a href="mailto:example@email.com" class="contact-link">
-              <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-              <span class="contact-text">Email</span>
-            </a>
-            <a href="https://twitter.com" target="_blank" class="contact-link">
-              <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-              </svg>
-              <span class="contact-text">Twitter</span>
-            </a>
-          </div>
-        </section>
+    <div class="home-signal-strip" aria-hidden="true">
+      <div class="home-signal-track">
+        <span v-for="(signal, index) in homeSignalsLoop" :key="`${signal}-${index}`">
+          {{ signal }}
+          <i></i>
+        </span>
       </div>
     </div>
+
+    <main class="home-content">
+      <div class="home-content-atmosphere" aria-hidden="true">
+        <span class="home-atmosphere-orb home-atmosphere-orb-a"></span>
+        <span class="home-atmosphere-orb home-atmosphere-orb-b"></span>
+        <span class="home-atmosphere-orb home-atmosphere-orb-c"></span>
+        <span class="home-atmosphere-scan"></span>
+        <span class="home-atmosphere-marker home-atmosphere-marker-a">01 / WORK</span>
+        <span class="home-atmosphere-marker home-atmosphere-marker-b">MESTING / ARCHIVE</span>
+      </div>
+      <aside class="home-side-rail home-side-rail-left" aria-hidden="true">
+        <div class="home-side-rail-inner">
+          <small>PROJECT INDEX</small>
+          <span v-for="chapter in homeChapters" :key="chapter.number">
+            <b>{{ chapter.number }}</b>{{ chapter.label }}
+          </span>
+        </div>
+      </aside>
+
+      <aside class="home-side-rail home-side-rail-right" aria-hidden="true">
+        <div class="home-side-rail-inner">
+          <small>LOCAL / SHANGHAI</small>
+          <strong>{{ currentTimeLabel }}</strong>
+          <span><i></i> SITE ONLINE</span>
+        </div>
+      </aside>
+
+      <section id="selected-work" class="home-section selected-work motion-section">
+        <span class="section-watermark" aria-hidden="true">01</span>
+        <div class="section-heading">
+          <div>
+            <p class="section-index motion-section-eyebrow">01 / SELECTED WORK</p>
+            <h2 class="motion-section-title">把想法做成<br>可以触摸的体验</h2>
+          </div>
+          <p class="section-lead motion-section-link">
+            不只展示结果，也保留设计、尝试和迭代的过程。
+          </p>
+        </div>
+
+        <article class="featured-project motion-stagger-item">
+          <div class="featured-project-media motion-image-reveal">
+            <img src="/vivo/img/banner2.jpg" alt="Vivo 响应式网站案例界面" />
+            <div class="featured-project-screen">
+              <span>FEATURED / 01</span>
+              <strong>Responsive<br>Experience</strong>
+            </div>
+            <span class="media-corner media-corner-top"></span>
+            <span class="media-corner media-corner-bottom"></span>
+          </div>
+          <div class="featured-project-copy">
+            <p class="project-type">WEB DESIGN · FRONTEND</p>
+            <h3>Vivo 响应式品牌站</h3>
+            <p>
+              从视觉还原、响应式布局到交互动效，重新组织品牌信息的浏览节奏，
+              让页面在不同设备中依然保持完整的视觉表达。
+            </p>
+            <div class="project-facts">
+              <span><small>ROLE</small>设计与开发</span>
+              <span><small>STACK</small>HTML · CSS · JS</span>
+              <span><small>YEAR</small>2024</span>
+            </div>
+            <router-link to="/vivo-case" class="text-link">
+              查看完整案例
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </router-link>
+          </div>
+        </article>
+
+        <div class="project-pair">
+          <router-link to="/foreign-case" class="project-teaser project-teaser-visual motion-stagger-item">
+            <img src="/foreign/img/pic4.png" alt="国外响应式站点案例" class="motion-image-reveal" />
+            <span class="project-teaser-number">02</span>
+            <div>
+              <small>UI SYSTEM</small>
+              <strong>国外响应式站点</strong>
+            </div>
+          </router-link>
+
+          <router-link to="/music" class="project-teaser project-teaser-music motion-stagger-item">
+            <div class="sound-wave" aria-hidden="true">
+              <i v-for="index in 18" :key="index" :style="{ '--wave-index': index }"></i>
+            </div>
+            <span class="project-teaser-number">03</span>
+            <div>
+              <small>IMMERSIVE MODULE</small>
+              <strong>音乐空间体验</strong>
+            </div>
+          </router-link>
+        </div>
+
+        <div class="home-capability-rail motion-stagger-item">
+          <div class="capability-rail-intro">
+            <small>CRAFT SYSTEM / 2026</small>
+            <strong>从视觉到交互，保持同一种表达。</strong>
+          </div>
+          <article v-for="(capability, index) in homeCapabilities" :key="capability.title">
+            <span>0{{ index + 1 }}</span>
+            <div>
+              <strong>{{ capability.title }}</strong>
+              <small>{{ capability.detail }}</small>
+            </div>
+            <i aria-hidden="true"></i>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-section latest-thinking motion-section">
+        <span class="section-watermark" aria-hidden="true">02</span>
+        <div class="section-heading section-heading-compact">
+          <div>
+            <p class="section-index motion-section-eyebrow">02 / LATEST THINKING</p>
+            <h2 class="motion-section-title">最近写下的想法</h2>
+          </div>
+          <router-link to="/articles" class="text-link motion-section-link">
+            查看全部文章
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </router-link>
+        </div>
+
+        <div class="article-ledger">
+          <router-link
+            v-for="(article, index) in articles.slice(0, 3)"
+            :key="article.id"
+            :to="`/article/${article.id}`"
+            class="ledger-row motion-stagger-item"
+          >
+            <span class="ledger-number">0{{ index + 1 }}</span>
+            <span class="ledger-category">{{ article.category }}</span>
+            <span class="ledger-title">{{ article.title }}</span>
+            <span class="ledger-date">{{ article.date }}</span>
+            <span class="ledger-arrow" aria-hidden="true">↗</span>
+          </router-link>
+        </div>
+      </section>
+
+      <section class="music-portal motion-section">
+        <span class="section-watermark section-watermark-light" aria-hidden="true">03</span>
+        <div class="music-portal-backdrop" aria-hidden="true"></div>
+        <div class="music-portal-copy">
+          <p class="section-index motion-section-eyebrow">03 / MUSIC SPACE</p>
+          <h2 class="motion-section-title">让旋律成为<br>网站的另一条叙事线</h2>
+          <p class="motion-stagger-item">
+            从歌单、歌词到主题背景，这里是一块可以随心情切换的声音空间。
+          </p>
+          <router-link to="/music" class="music-portal-action motion-stagger-item">
+            进入音乐空间
+            <span>↗</span>
+          </router-link>
+        </div>
+
+        <div class="music-now motion-stagger-item">
+          <div class="music-vinyl" :class="{ 'is-playing': isPlaying }">
+            <img :src="activeSong.cover" :alt="`${activeSong.name}封面`" />
+          </div>
+          <div class="music-now-copy">
+            <small>NOW IN PLAYER</small>
+            <strong>{{ activeSong.name }}</strong>
+            <span>{{ activeSong.artist }}</span>
+          </div>
+          <div class="music-equalizer" :class="{ 'is-playing': isPlaying }" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-section digital-archive motion-section">
+        <span class="section-watermark" aria-hidden="true">04</span>
+        <div class="section-heading section-heading-compact">
+          <div>
+            <p class="section-index motion-section-eyebrow">04 / DIGITAL ARCHIVE</p>
+            <h2 class="motion-section-title">一份正在更新的<br>个人数字档案</h2>
+          </div>
+          <p class="section-lead motion-section-link">代码、文章和音乐共同构成这里。</p>
+        </div>
+
+        <div class="archive-grid">
+          <article class="archive-card archive-card-large motion-stagger-item">
+            <span class="archive-card-label">LOCAL TIME</span>
+            <strong>{{ currentTimeLabel }}</strong>
+            <p>Asia / Shanghai</p>
+            <div class="archive-clock-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+          </article>
+
+          <article class="archive-card motion-stagger-item">
+            <span class="archive-card-label">ARTICLES</span>
+            <strong>{{ articles.length.toString().padStart(2, '0') }}</strong>
+            <p>持续记录与整理</p>
+          </article>
+
+          <article class="archive-card motion-stagger-item">
+            <span class="archive-card-label">CURRENT FOCUS</span>
+            <strong class="archive-card-word">体验细节</strong>
+            <p>Motion · UI · Music</p>
+          </article>
+
+          <article class="archive-card archive-card-stack motion-stagger-item">
+            <span class="archive-card-label">TOOLKIT</span>
+            <div class="archive-tags">
+              <span v-for="tech in techStack" :key="tech">{{ tech }}</span>
+            </div>
+          </article>
+
+          <article class="archive-card archive-card-contact motion-stagger-item">
+            <span class="archive-card-label">LET'S CONNECT</span>
+            <strong class="archive-card-word">保持联系</strong>
+            <div class="archive-contact-links">
+              <a href="https://github.com" target="_blank" rel="noreferrer">GitHub ↗</a>
+              <a href="mailto:contact@mesting.com">Email ↗</a>
+              <router-link to="/about">About ↗</router-link>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import HomeTechCanvas from '../components/HomeTechCanvas.vue'
+import { useHomeMotion } from '../composables/useHomeMotion'
+import { usePlayer } from '../composables/usePlayer'
+
+const homeRoot = ref(null)
+const clock = ref(new Date())
+const currentYear = new Date().getFullYear()
+const { currentSong, isPlaying } = usePlayer()
 
 const articles = ref([
   {
     id: 1,
     title: 'Vue3 Composition API 完全指南',
-    excerpt: '深入了解 Vue3 的 Composition API，从 setup 函数、ref、reactive 到 computed、watch，全面掌握响应式编程的核心概念。通过实际案例演示如何组织代码逻辑，提升代码的可维护性和复用性。',
+    excerpt: '深入了解 Vue3 的 Composition API，从 setup 函数到响应式编程。',
     date: '2024-01-15',
     category: 'Vue'
   },
   {
     id: 2,
     title: '现代 CSS 技巧与实践',
-    excerpt: '探索 CSS 的最新特性，包括 Flexbox、Grid 布局、CSS 变量、动画和过渡效果。学习如何构建现代化的网页布局，掌握响应式设计的最佳实践，打造美观且高性能的用户界面。',
+    excerpt: '探索 Grid、Flexbox、CSS 变量和动画的组合方式。',
     date: '2024-01-10',
     category: 'CSS'
   },
   {
     id: 3,
     title: 'JavaScript 异步编程详解',
-    excerpt: '从回调函数到 Promise，再到 Async/Await 语法糖，全面掌握 JavaScript 异步编程的演进历程。深入理解事件循环机制，学会处理复杂的异步场景，编写更优雅的异步代码。',
+    excerpt: '从 Promise 到 Async/Await，梳理异步控制流与事件循环。',
     date: '2024-01-05',
     category: 'JavaScript'
   },
   {
     id: 4,
     title: '前端性能优化实战',
-    excerpt: '从资源加载优化、代码分割、懒加载到渲染性能优化，全方位提升用户体验。学习使用 Chrome DevTools 进行性能分析，掌握关键性能指标（KPI）的优化策略，让网页飞起来。',
+    excerpt: '从资源加载、拆包到渲染优化，建立完整的性能思维。',
     date: '2024-01-02',
     category: '性能优化'
   },
   {
     id: 5,
     title: 'Vite 构建工具深入浅出',
-    excerpt: '了解 Vite 的核心原理，基于 ES Modules 的极速开发服务器和 Rollup 的高效打包。对比传统构建工具的优势，学习插件系统、环境配置和部署优化，大幅提升开发效率和构建速度。',
+    excerpt: '了解 Vite 的核心原理与插件系统，让开发体验更轻快。',
     date: '2023-12-28',
     category: '工具'
   }
 ])
 
-const techStack = ref([
-  { name: 'Vue', icon: '⚡' },
-  { name: 'JavaScript', icon: '📜' },
-  { name: 'CSS', icon: '🎨' },
-  { name: '学习记录', icon: '📚' }
-])
+const techStack = ['Vue 3', 'JavaScript', 'CSS', 'GSAP', 'Vite', 'Responsive UI']
 
-// 组件挂载时不设置body背景，由App.vue统一管理
+const homeSignals = [
+  'PRODUCT THINKING',
+  'MOTION LANGUAGE',
+  'FRONTEND CRAFT',
+  'RESPONSIVE SYSTEM',
+  'MUSIC EXPERIENCE',
+  'DIGITAL ARCHIVE'
+]
+
+const homeSignalsLoop = [...homeSignals, ...homeSignals]
+
+const homeChapters = [
+  { number: '01', label: 'WORK' },
+  { number: '02', label: 'THINKING' },
+  { number: '03', label: 'MUSIC' },
+  { number: '04', label: 'ARCHIVE' }
+]
+
+const homeCapabilities = [
+  { title: 'Visual Direction', detail: '层级、留白与品牌感' },
+  { title: 'Motion Language', detail: '克制而连续的反馈' },
+  { title: 'Responsive Craft', detail: '跨设备保持完整体验' }
+]
+
+const activeSong = computed(() => ({
+  name: currentSong.value?.name || '晴天',
+  artist: currentSong.value?.artist || '周杰伦',
+  cover: currentSong.value?.cover || '/images/covers/qingtian.jpg'
+}))
+
+const currentTimeLabel = computed(() => new Intl.DateTimeFormat('zh-CN', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+}).format(clock.value))
+
+let clockTimer = 0
+
+useHomeMotion(homeRoot)
+
 onMounted(() => {
-  // 不再设置body背景样式，让App.vue统一管理
+  clockTimer = window.setInterval(() => {
+    clock.value = new Date()
+  }, 30000)
 })
 
-// 组件卸载时不恢复body背景，让App.vue统一管理
 onUnmounted(() => {
-  // 不再清除body背景样式
+  window.clearInterval(clockTimer)
 })
 </script>
+
 <style scoped>
 @import '../css/Home.css';
 </style>
-
-

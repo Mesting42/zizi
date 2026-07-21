@@ -1,110 +1,65 @@
 <template>
   <footer class="footer">
-    <div class="footer-waves">
-      <svg class="wave wave1" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path fill="#667eea" fill-opacity="0.1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-      </svg>
-      <svg class="wave wave2" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path fill="#764ba2" fill-opacity="0.1" d="M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,197.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-      </svg>
-    </div>
-
     <div class="footer-container">
-      <div class="footer-main">
-        <div class="footer-section brand-section">
-          <div class="footer-logo">
-            <span class="logo-icon">🚀</span>
-            <span class="logo-text">Mesting</span>
-          </div>
-          <p class="footer-description">
-            记录学习历程，分享技术心得，持续成长进步
-          </p>
-          <div class="social-links">
-            <a href="https://github.com" target="_blank" class="social-link github-link" title="GitHub">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-            </a>
-            <a href="#" class="social-link twitter-link" title="Twitter">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-              </svg>
-            </a>
-            <a href="#" class="social-link email-link" title="Email">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="footer-section">
-          <h3 class="footer-title">快速导航</h3>
-          <ul class="footer-links">
-            <li>
-              <router-link to="/" class="footer-link">
-                <span class="link-icon">🏠</span>
-                首页
+      <div class="footer-glass">
+        <div class="footer-inner">
+          <div class="footer-main">
+            <section class="footer-brand" aria-label="站点介绍">
+              <router-link to="/" class="footer-logo">
+                <span class="logo-mark">M</span>
+                <span>Mesting</span>
               </router-link>
-            </li>
-            <li>
-              <router-link to="/articles" class="footer-link">
-                <span class="link-icon">📝</span>
-                全部文章
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/about" class="footer-link">
-                <span class="link-icon">👤</span>
-                关于我
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/vivo-case" class="footer-link">
-                <span class="link-icon">🚀</span>
-                项目案例
-              </router-link>
-            </li>
-          </ul>
-        </div>
+              <p class="footer-description">
+                记录前端学习、项目实践与日常灵感，把每一次成长沉淀成可复用的经验。
+              </p>
+              <div class="footer-social-links">
+                <a href="https://github.com" target="_blank" rel="noreferrer" class="footer-social-link" title="GitHub">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+                <a href="mailto:contact@mesting.com" class="footer-social-link" title="Email">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </a>
+              </div>
+            </section>
 
-        <div class="footer-section">
-          <h3 class="footer-title">技术栈</h3>
-          <div class="tech-tags">
-            <span class="tech-tag">Vue3</span>
-            <span class="tech-tag">Vite</span>
-            <span class="tech-tag">JavaScript</span>
-            <span class="tech-tag">CSS3</span>
+            <section class="footer-section">
+              <h3 class="footer-title">导航</h3>
+              <ul class="footer-links">
+                <li><router-link to="/">首页</router-link></li>
+                <li><router-link to="/articles">全部文章</router-link></li>
+                <li><router-link to="/music">音乐空间</router-link></li>
+                <li><router-link to="/about">关于我</router-link></li>
+              </ul>
+            </section>
+
+            <section class="footer-section">
+              <h3 class="footer-title">专题</h3>
+              <ul class="footer-links">
+                <li><router-link to="/category/Vue">Vue 学习</router-link></li>
+                <li><router-link to="/category/CSS">CSS 实践</router-link></li>
+                <li><router-link to="/vivo-case">Vivo 案例</router-link></li>
+                <li><router-link to="/foreign-case">国外站案例</router-link></li>
+              </ul>
+            </section>
+
+            <section class="footer-section">
+              <h3 class="footer-title">技术栈</h3>
+              <div class="tech-tags">
+                <span>Vue3</span>
+                <span>Vite</span>
+                <span>JavaScript</span>
+                <span>CSS3</span>
+              </div>
+            </section>
           </div>
-        </div>
-
-        <div class="footer-section">
-          <h3 class="footer-title">联系我</h3>
-          <div class="contact-info">
-            <div class="contact-item">
-              <span class="contact-icon">📧</span>
-              <span>contact@mesting.com</span>
-            </div>
-            <div class="contact-item">
-              <span class="contact-icon">📍</span>
-              <span>中国 · 北京</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <div class="footer-bottom-content">
-          <p class="copyright">
-            © {{ currentYear }} Mesting. 用心记录每一个学习瞬间，持续成长，分享技术
-          </p>
-          <div class="footer-bottom-links">
-            <a href="#" class="bottom-link">隐私政策</a>
-            <span class="separator">|</span>
-            <a href="#" class="bottom-link">使用条款</a>
-            <span class="separator">|</span>
-            <a href="#" class="bottom-link">网站地图</a>
+          <div class="footer-bottom">
+            <p>© {{ currentYear }} Mesting. Crafted with Vue & curiosity.</p>
+            <p>持续学习，持续记录。</p>
           </div>
         </div>
       </div>
@@ -114,443 +69,337 @@
 
 <script setup>
 import { computed } from 'vue'
-
 const currentYear = computed(() => new Date().getFullYear())
 </script>
 
 <style scoped>
-/* Footer 容器 */
 .footer {
-  position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  margin-top: 4rem;
-  overflow: hidden;
+  margin-top: 3rem;
+  padding: 0;
+  color: var(--text-light);
 }
 
-/* 波浪动画 */
-.footer-waves {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100px;
-  overflow: hidden;
-  line-height: 0;
+body.dark-mode .footer {
+  background: #120F17;
 }
 
-.wave {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 100%;
-  animation: wave 20s linear infinite;
-}
-
-.wave2 {
-  animation-delay: -10s;
-  opacity: 0.5;
-}
-
-@keyframes wave {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* Footer 主容器 */
 .footer-container {
+  width: 100%;
+}
+
+.footer-glass {
   position: relative;
-  max-width: 1400px;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 36px 36px 0 0;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.88), transparent 28%),
+    radial-gradient(circle at 88% 118%, rgba(91, 108, 255, 0.16), transparent 38%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.28) 48%, rgba(255, 255, 255, 0.14) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.94) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 26px 80px rgba(15, 23, 42, 0.09),
+    0 4px 10px rgba(15, 23, 42, 0.04),
+    0 0 34px rgba(91, 108, 255, 0.09);
+  backdrop-filter: blur(56px) saturate(220%) contrast(108%);
+  -webkit-backdrop-filter: blur(56px) saturate(220%) contrast(108%);
+}
+
+.footer-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(91, 108, 255, 0.44) 28%, rgba(14, 165, 233, 0.28) 56%, rgba(255, 255, 255, 0.74) 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.78;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.footer-glass::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.64), transparent 28%),
+    radial-gradient(circle at 82% 120%, rgba(91, 108, 255, 0.18), transparent 38%),
+    linear-gradient(112deg, transparent 24%, rgba(255, 255, 255, 0.28) 45%, rgba(255, 255, 255, 0.08) 54%, transparent 74%);
+  background-size: auto, auto, 220% 100%;
+  background-position: 0 0, 100% 100%, 0 50%;
+  mix-blend-mode: screen;
+  opacity: 0.62;
+  pointer-events: none;
+  z-index: 0;
+  animation: footerGlassSheen 16s ease-in-out infinite;
+}
+
+.footer-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
+.footer-inner {
+  width: min(100% - 48px, 1400px);
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 4rem 2rem 2rem;
+  padding: clamp(2.4rem, 3.6vw, 3rem) 0 clamp(1.4rem, 2.4vw, 1.8rem);
 }
 
-/* Footer 主要内容区 */
+body.dark-mode .footer-glass {
+  border-color: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, rgba(26, 21, 36, 0.98) 0%, #120F17 100%);
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 -8px 32px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+}
+
+body.dark-mode .footer-glass::before {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.12), rgba(109, 40, 217, 0.08) 42%, rgba(244, 114, 182, 0.05) 72%, rgba(167, 139, 250, 0.04));
+  opacity: 0.22;
+}
+
+body.dark-mode .footer-glass::after {
+  opacity: 0.08;
+  mix-blend-mode: normal;
+}
+
 .footer-main {
+  position: relative;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 3rem;
-  margin-bottom: 3rem;
+  grid-template-columns: minmax(260px, 1.7fr) repeat(3, 1fr);
+  gap: 2.5rem;
 }
 
-/* Footer 区块 */
-.footer-section {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.footer-section:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.footer-section:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.footer-section:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.footer-section:nth-child(4) {
-  animation-delay: 0.4s;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 品牌区块 */
-.brand-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+.footer-brand,
+.footer-section { min-width: 0; }
 
 .footer-logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1.75rem;
-  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1.22rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
 }
 
-.logo-icon {
-  font-size: 2rem;
-  animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
+.logo-mark {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(91, 108, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .footer-description {
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
-  margin: 0;
+  max-width: 380px;
+  margin: 1rem 0 1.25rem;
+  color: var(--text-muted);
+  line-height: 1.85;
 }
 
-/* 社交链接 */
-.social-links {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-start;
+.footer-social-links { display: flex; gap: 0.65rem; }
+
+.footer-social-link,
+.tech-tags span {
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
-.social-link {
-  width: 40px;
-  height: 40px;
-  display: flex;
+.footer-social-link {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  color: white;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.social-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-3px) scale(1.1);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.social-link svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* Footer 标题 */
-.footer-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 0 0 1.25rem 0;
-  color: white;
+  border-radius: 999px;
+  color: var(--text-primary);
   position: relative;
-  display: inline-block;
+  isolation: isolate;
+  transition:
+    transform var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
 }
 
-.footer-title::after {
-  content: '';
-  position: absolute;
-  bottom: -0.5rem;
-  left: 0;
-  width: 40px;
-  height: 3px;
-  background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.3));
-  border-radius: 2px;
-  transition: width 0.3s ease;
+.footer-social-link:hover {
+  transform: translateY(-3px) scale(1.05);
+  color: var(--primary-color);
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 14px 28px rgba(91, 108, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  transition:
+    transform 0.35s var(--ease-spring),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
 }
 
-.footer-section:hover .footer-title::after {
-  width: 100%;
+.footer-social-link svg {
+  position: relative;
+  z-index: 1;
+  width: 19px;
+  height: 19px;
 }
 
-/* Footer 链接列表 */
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+body.dark-mode .footer-social-link {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(36, 30, 48, 0.72);
+  color: #c4b5fd;
+  box-shadow: none;
 }
 
-.footer-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  padding: 0.5rem;
-  border-radius: 8px;
+body.dark-mode .footer-social-link:hover {
+  border-color: rgba(167, 139, 250, 0.22);
+  background: rgba(109, 40, 217, 0.16);
+  color: #f5f3ff;
+  box-shadow: 0 8px 20px rgba(76, 29, 149, 0.2);
 }
 
-.footer-link:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
-}
-
-.link-icon {
-  font-size: 1rem;
-  transition: transform 0.3s ease;
-}
-
-.footer-link:hover .link-icon {
-  transform: scale(1.2);
-}
-
-/* 技术标签 */
-.tech-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tech-tag {
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  font-size: 0.875rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.tech-tag:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* 联系信息 */
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: rgba(255, 255, 255, 0.85);
-  transition: all 0.3s ease;
-}
-
-.contact-item:hover {
-  color: white;
-  transform: translateX(5px);
-}
-
-.contact-icon {
-  font-size: 1.25rem;
-}
-
-/* Footer 底部 */
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 2rem;
-}
-
-.footer-bottom-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.copyright {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.875rem;
-}
-
-.footer-bottom-links {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.bottom-link {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: all 0.3s ease;
-}
-
-.bottom-link:hover {
-  color: white;
-  text-decoration: underline;
-}
-
-.separator {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-/* 响应式设计 */
-@media (max-width: 1024px) {
-  .footer-main {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  .brand-section {
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 768px) {
-  .footer-container {
-    padding: 3rem 1.5rem 1.5rem;
-  }
-
-  .footer-main {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .brand-section {
-    grid-column: span 1;
-  }
-
-  .footer-bottom-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .footer-bottom-links {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-logo {
-    font-size: 1.5rem;
-  }
-
-  .logo-icon {
-    font-size: 1.75rem;
-  }
-
-  .footer-title {
-    font-size: 1rem;
-  }
-}
-
-/* 暗黑模式样式 */
-body.dark-mode .footer {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-}
-
-body.dark-mode .footer-description {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-body.dark-mode .social-link {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode .social-link:hover {
-  background: rgba(99, 102, 241, 0.3);
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-}
-
-body.dark-mode .footer-title {
-  color: #ffffff;
-}
-
-body.dark-mode .footer-title::after {
-  background: linear-gradient(90deg, #667eea, rgba(102, 126, 234, 0.3));
-}
-
-body.dark-mode .footer-link {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-body.dark-mode .footer-link:hover {
-  color: #ffffff;
-  background: rgba(99, 102, 241, 0.15);
-}
-
-body.dark-mode .tech-tag {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-body.dark-mode .tech-tag:hover {
-  background: rgba(99, 102, 241, 0.3);
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
-}
-
-body.dark-mode .contact-item {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-body.dark-mode .contact-item:hover {
-  color: #ffffff;
+body.dark-mode .tech-tags span {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(109, 40, 217, 0.1);
+  color: #b8afc8;
+  box-shadow: none;
 }
 
 body.dark-mode .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.06);
 }
 
-body.dark-mode .copyright {
-  color: rgba(255, 255, 255, 0.7);
+.footer-title {
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+  font-size: 0.96rem;
 }
 
-body.dark-mode .bottom-link {
-  color: rgba(255, 255, 255, 0.7);
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
-body.dark-mode .bottom-link:hover {
-  color: #ffffff;
+.footer-links a {
+  color: var(--text-muted);
+  font-weight: 650;
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
-body.dark-mode .separator {
-  color: rgba(255, 255, 255, 0.3);
+.footer-links a:hover { color: var(--primary-color); transform: translateX(2px); }
+
+.tech-tags { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+
+.tech-tags span {
+  padding: 0.42rem 0.72rem;
+  border-radius: 999px;
+  color: var(--text-light);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.footer-bottom {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: clamp(2rem, 3vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.34);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.footer-bottom p { margin: 0; }
+
+@keyframes footerGlassSheen {
+  0%,
+  100% {
+    background-position: 0 0, 100% 100%, 0 50%;
+  }
+  50% {
+    background-position: 0 0, 100% 100%, 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-glass::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .footer-main { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .footer-glass { border-radius: 28px 28px 0 0; }
+  .footer-inner {
+    width: min(100% - 28px, 1400px);
+    padding: 2rem 0 1.25rem;
+  }
+  .footer-main { grid-template-columns: 1fr; gap: 1.75rem; }
+  .footer-bottom { flex-direction: column; }
+}
+/* 页脚与站点暗黑画布保持同一套中性黑灰层次。 */
+body.dark-mode .footer {
+  background: #070809;
+}
+
+body.dark-mode .footer-glass {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, rgba(20, 22, 25, 0.98), #08090a 100%);
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.035), 0 -10px 34px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(14px) saturate(105%);
+  -webkit-backdrop-filter: blur(14px) saturate(105%);
+}
+
+body.dark-mode .footer-glass::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(131, 181, 165, 0.04) 44%, rgba(255, 255, 255, 0.018));
+  opacity: 0.2;
+}
+
+body.dark-mode .footer-social-link,
+body.dark-mode .tech-tags span {
+  border-color: rgba(255, 255, 255, 0.07);
+  background: rgba(27, 30, 34, 0.86);
+  color: #bfc5cb;
+}
+
+body.dark-mode .footer-social-link:hover {
+  border-color: rgba(131, 181, 165, 0.2);
+  background: rgba(131, 181, 165, 0.1);
+  color: #f4f5f6;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
 }
 </style>

@@ -64,7 +64,7 @@
             </div>
           </div>
         </div>
-        <button v-if="['学习记录', 'CSS', 'JavaScript', 'Vue'].includes(categoryName)" @click="showAddForm = true" class="btn-add-new">
+        <button v-if="['学习记录', 'CSS', 'JavaScript', 'Vue', '前端开发', '后端开发'].includes(categoryName)" @click="showAddForm = true" class="btn-add-new">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -773,6 +773,9 @@ const getBadgeClass = (category) => {
 // 组件挂载时不设置body背景，由App.vue统一管理
 onMounted(() => {
   // 不再设置body背景样式，让App.vue统一管理
+  if (route.query.create === '1' && ['学习记录', 'CSS', 'JavaScript', 'Vue', '前端开发', '后端开发'].includes(categoryName.value)) {
+    showAddForm.value = true
+  }
 })
 
 // 组件卸载时不恢复body背景，让App.vue统一管理
@@ -783,5 +786,4 @@ onUnmounted(() => {
 <style scoped>
 @import '../css/Category.css';
 </style>
-
 

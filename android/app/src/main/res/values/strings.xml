@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mesting 音乐</string>
+    <string name="title_activity_main">Mesting 音乐</string>
+    <string name="package_name">com.mesting.music</string>
+    <string name="custom_url_scheme">com.mesting.music</string>
+</resources>

@@ -13,13 +13,25 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true
+    open: true,
+    proxy: {
+      '/api/lrclib': {
+        target: 'https://lrclib.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/lrclib/, '/api'),
+        headers: {
+          'Lrclib-Client': 'personal-blog/1.0',
+          'User-Agent': 'personal-blog/1.0'
+        }
+      }
+    }
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
-          'vue-vendor': ['vue', 'vue-router']
+          'vue-vendor': ['vue', 'vue-router'],
+          gsap: ['gsap']
         }
       }
     },

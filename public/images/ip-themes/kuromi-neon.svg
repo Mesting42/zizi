@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#21182c"/><stop offset=".55" stop-color="#5a326e"/><stop offset="1" stop-color="#bf5b9c"/></linearGradient>
+    <radialGradient id="halo"><stop stop-color="#ff7cc2" stop-opacity=".8"/><stop offset="1" stop-color="#ff7cc2" stop-opacity="0"/></radialGradient>
+    <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#ff6fc0" flood-opacity=".55"/></filter>
+  </defs>
+  <rect width="960" height="540" rx="34" fill="url(#bg)"/>
+  <circle cx="700" cy="270" r="230" fill="url(#halo)" opacity=".42"/>
+  <g opacity=".16" fill="#fff"><path d="M0 385 150 270l150 115 150-115 150 115 150-115 150 115 110-85v240H0Z"/><path d="M0 0h960v46H0zM0 92h960v46H0z"/></g>
+  <g stroke="#f7a2da" stroke-width="4" opacity=".45"><path d="M73 87h178M93 107h112M72 421h206M763 93h123"/><path d="m115 159 31 20-31 20 31 20-31 20" fill="none"/></g>
+  <g transform="translate(625 278)" filter="url(#glow)">
+    <path d="M-98-43-123-132-60-88C-27-105 25-105 59-88L123-132 98-41V54C98 111 56 146 0 146S-98 111-98 54Z" fill="#28202f" stroke="#17131d" stroke-width="7"/>
+    <path d="M-76-15C-65-63-33-85 0-85S66-63 77-15V53C77 95 43 121 0 121S-77 95-77 53Z" fill="#fffaf8"/>
+    <ellipse cx="-31" cy="18" rx="10" ry="15" fill="#322539"/><ellipse cx="31" cy="18" rx="10" ry="15" fill="#322539"/>
+    <path d="M-10 50Q0 61 10 50" fill="none" stroke="#322539" stroke-width="5" stroke-linecap="round"/>
+    <g transform="translate(0 -72)"><circle r="27" fill="#f06fae"/><circle cy="-3" r="10" fill="#fffaf8"/><path d="M-13 11 0 5 13 11 7 21H-7Z" fill="#fffaf8"/></g>
+    <path d="M-73 98Q0 152 75 98L63 177H-62Z" fill="#1d1823"/><path d="m-20 132 20-13 20 13-20 13Z" fill="#ef72b0"/>
+  </g>
+  <g fill="#f991ca"><path d="m91 302 18 35 39 5-28 27 7 39-36-19-35 19 7-39-29-27 39-5Z"/><path d="m310 94 12 23 26 4-19 18 5 26-24-13-23 13 4-26-18-18 26-4Z"/></g>
+  <g fill="#201728" stroke="#f88ac8" stroke-width="3"><circle cx="214" cy="249" r="42"/><circle cx="856" cy="396" r="50"/></g>
+  <text x="57" y="72" fill="#ff91ce" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="6">KUROMI NEON ROOM</text>
+  <text x="58" y="103" fill="#dfb8dc" font-family="Arial,sans-serif" font-size="16">blackberry beat · checker lights · cheeky mood</text>
+</svg>

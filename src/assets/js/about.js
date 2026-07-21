@@ -133,27 +133,81 @@ export async function loadAvatar() {
 }
 
 // Intersection Observer实现滚动动画
+const resolveAnimationElement = (card) => card?.value || card?.$el || card;
+
+const isElementInViewport = (element) => {
+  const rect = element.getBoundingClientRect();
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+
+  return rect.width > 0
+    && rect.height > 0
+    && rect.bottom > 0
+    && rect.right > 0
+    && rect.top < viewportHeight
+    && rect.left < viewportWidth;
+};
+
+const revealVisibleCard = (element) => {
+  if (!element || element.classList.contains('animate-in')) {
+    return false;
+  }
+
+  if (isElementInViewport(element)) {
+    element.classList.add('animate-in');
+    requestAnimationFrame(() => {
+      if (isElementInViewport(element)) {
+        element.classList.add('animate-in');
+      }
+    });
+    return true;
+  }
+
+  return false;
+};
+
 export function setupScrollAnimation(cards) {
+  const elements = cards
+    .map(resolveAnimationElement)
+    .filter((element) => element instanceof Element);
+
+  if (!elements.length) {
+    return null;
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    elements.forEach((element) => element.classList.add('animate-in'));
+    return null;
+  }
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting || isElementInViewport(entry.target)) {
           entry.target.classList.add('animate-in');
           observer.unobserve(entry.target);
         }
       });
     },
     {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+      threshold: 0.02,
+      rootMargin: '0px 0px -6% 0px'
     }
   );
 
-  cards.forEach((card) => {
-    if (card) {
-      observer.observe(card);
+  elements.forEach((element) => {
+    if (!revealVisibleCard(element)) {
+      observer.observe(element);
     }
   });
+
+  setTimeout(() => {
+    elements.forEach((element) => {
+      if (revealVisibleCard(element)) {
+        observer.unobserve(element);
+      }
+    });
+  }, 180);
 
   return observer;
 }

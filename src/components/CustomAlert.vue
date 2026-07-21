@@ -1,6 +1,7 @@
 <template>
-  <div v-if="visible" class="custom-alert-overlay" @click="handleOverlayClick">
-    <div class="custom-alert-container" @click.stop>
+  <Teleport to="body">
+    <div v-if="visible" class="custom-alert-overlay" @click="handleOverlayClick">
+      <div class="custom-alert-container" @click.stop>
       <div class="alert-header" :class="`alert-${type}`">
         <div class="alert-icon">
           <svg v-if="type === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -43,8 +44,9 @@
           {{ confirmText }}
         </button>
       </div>
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup>
@@ -106,12 +108,12 @@ const handleOverlayClick = () => {
 /* 遮罩层 */
 .custom-alert-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: rgba(218, 239, 232, 0.24);
+  backdrop-filter: blur(9px) saturate(112%);
+  -webkit-backdrop-filter: blur(9px) saturate(112%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,9 +123,10 @@ const handleOverlayClick = () => {
 
 /* 弹窗容器 */
 .custom-alert-container {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(35, 94, 79, 0.18);
   width: 90%;
   max-width: 450px;
   overflow: hidden;
@@ -242,13 +245,14 @@ const handleOverlayClick = () => {
 
 /* 取消按钮 */
 .alert-btn-cancel {
-  background: #f1f5f9;
-  color: #64748b;
+  border: 1px solid var(--action-secondary-border);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
 }
 
 .alert-btn-cancel:hover {
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--action-secondary-bg-hover);
+  color: var(--action-secondary-text);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -352,12 +356,13 @@ const handleOverlayClick = () => {
 
 /* 深色模式适配 */
 body.dark-mode .custom-alert-overlay {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(8, 29, 24, 0.46);
 }
 
 body.dark-mode .custom-alert-container {
-  background: rgba(30, 30, 30, 0.95);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  background: rgba(24, 31, 34, 0.96);
+  border-color: rgba(126, 196, 176, 0.12);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.48);
 }
 
 body.dark-mode .alert-header {
@@ -384,17 +389,51 @@ body.dark-mode .alert-title {
   color: rgba(255, 255, 255, 0.95);
 }
 
-body.dark-mode .alert-message {
+body.dark-mode .alert-body p {
   color: rgba(255, 255, 255, 0.8);
 }
 
 body.dark-mode .alert-btn-cancel {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  border-color: var(--action-secondary-border);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
 }
 
 body.dark-mode .alert-btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 1);
+  background: var(--action-secondary-bg-hover);
+  color: #d9fff4;
+}
+
+/* Calmer dialog actions */
+.alert-btn-confirm,
+.alert-btn-confirm.alert-btn-info {
+  background: var(--action-primary-bg) !important;
+  color: var(--action-primary-text) !important;
+  box-shadow:
+    var(--action-primary-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+.alert-btn-confirm:hover,
+.alert-btn-confirm.alert-btn-info:hover {
+  background: var(--action-primary-bg-hover) !important;
+  box-shadow:
+    var(--action-primary-shadow-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+.alert-btn-confirm.alert-btn-success {
+  background: #2f7d68 !important;
+  box-shadow: 0 12px 26px rgba(47, 125, 104, 0.22) !important;
+}
+
+.alert-btn-confirm.alert-btn-error {
+  background: #b9434b !important;
+  box-shadow: 0 12px 26px rgba(185, 67, 75, 0.24) !important;
+}
+
+.alert-btn-confirm.alert-btn-warning {
+  background: #9a6a1d !important;
+  box-shadow: 0 12px 26px rgba(154, 106, 29, 0.22) !important;
 }
 </style>
