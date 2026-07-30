@@ -372,7 +372,7 @@ const plainLyricsToDisplayLines = (plainLyrics) => {
     .map((text) => ({ time: Number.POSITIVE_INFINITY, text, unsynced: true }))
 }
 
-const LRCLIB_CLIENT = 'personal-blog/1.0'
+const LRCLIB_CLIENT = 'personal-digital-space/1.0'
 const LRCLIB_HEADERS = {
   'Lrclib-Client': LRCLIB_CLIENT,
   'User-Agent': LRCLIB_CLIENT

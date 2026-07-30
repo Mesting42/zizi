@@ -1,153 +1,118 @@
 <template>
-  <header class="header" :class="{ 'is-home-hero': isHomeHero }">
-    <div class="header-container">
-      <nav class="nav" aria-label="主导航">
-        <router-link to="/" class="logo" aria-label="返回首页">
-          <span class="logo-mark">M</span>
-          <span class="logo-text">Mesting</span>
-        </router-link>
+  <header class="header site-cinematic-header">
+    <div class="header-container site-cinematic-header-container">
+      <nav class="site-cinematic-nav" :aria-label="copy.navAria">
+        <router-link to="/" class="site-cinematic-brand" :aria-label="copy.homeAria">MESTING</router-link>
 
-        <div v-if="isMusicModule && activeMusicIp !== 'classic'" class="music-nav-decor" aria-hidden="true">
-          <span class="music-nav-crayon"></span>
-          <span class="music-nav-note music-nav-note--one">♪</span>
-          <span class="music-nav-note music-nav-note--two">♫</span>
-          <span class="music-nav-character-pair" :class="`music-nav-character-pair--${activeMusicIp}`">
-            <template v-if="activeMusicIp === 'shinchan'">
-              <img
-              class="music-nav-character music-nav-character--shinchan"
-              src="/images/motion-walk-shinchan-stride.png"
-              alt=""
-              >
-              <img
-              class="music-nav-character music-nav-character--shiro"
-              src="/images/progress-shiro-walk-stride.png"
-              alt=""
-              >
-            </template>
-            <template v-else>
-              <img
-                class="music-nav-ip-character"
-                :class="`music-nav-ip-character--${activeMusicIp}`"
-                :src="activeMusicIp === 'hello-kitty' ? '/images/ip-themes/hello-kitty-main.png' : '/images/ip-themes/kuromi-main.png'"
-                alt=""
-              >
-              <img
-                class="music-nav-ip-companion"
-                :class="`music-nav-ip-companion--${activeMusicIp}`"
-                :src="activeMusicIp === 'hello-kitty' ? '/images/ip-themes/hello-kitty-angel.png' : '/images/ip-themes/kuromi-melody.png'"
-                alt=""
-              >
-            </template>
-          </span>
+        <div class="site-cinematic-links">
+          <router-link
+            v-for="item in navItems"
+            :key="item.key"
+            :to="item.to"
+            :class="{ 'is-current': currentNav === item.key }"
+          >{{ item.label }}</router-link>
         </div>
 
-        <ul class="nav-links">
-          <li><router-link to="/" active-class="active">首页</router-link></li>
-          <li><router-link to="/articles" active-class="active">文章</router-link></li>
-          <li><router-link to="/music" active-class="active">音乐</router-link></li>
-          <li><router-link to="/about" active-class="active">关于</router-link></li>
-          <li v-if="!isMusicModule">
-            <button class="dark-mode-toggle" type="button" @click="toggleDarkMode" :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'">
-              <svg v-if="isDarkMode" class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"/>
-                <line x1="12" y1="1" x2="12" y2="3"/>
-                <line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/>
-                <line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-              </svg>
-              <svg v-else class="icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-            </button>
-          </li>
-        </ul>
+        <button
+          class="site-language-toggle"
+          type="button"
+          :aria-label="copy.languageAria"
+          @click="toggleLocale"
+        >
+          <span :class="{ active: isChinese }">中</span>
+          <i aria-hidden="true"></i>
+          <span :class="{ active: !isChinese }">EN</span>
+        </button>
+
+        <button
+          class="site-cinematic-menu-toggle"
+          type="button"
+          :aria-expanded="isMobileMenuOpen"
+          aria-controls="site-cinematic-mobile-menu"
+          :aria-label="isMobileMenuOpen ? copy.closeMenu : copy.openMenu"
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
+        >
+          <svg v-if="!isMobileMenuOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
       </nav>
     </div>
+
+    <Transition name="site-cinematic-menu">
+      <nav
+        v-if="isMobileMenuOpen"
+        id="site-cinematic-mobile-menu"
+        class="site-cinematic-mobile-menu"
+        :aria-label="copy.mobileNavAria"
+      >
+        <router-link
+          v-for="(item, index) in navItems"
+          :key="item.key"
+          :to="item.to"
+          :class="{ 'is-current': currentNav === item.key }"
+          :style="{ '--menu-link-delay': `${0.05 + index * 0.06}s` }"
+          @click="isMobileMenuOpen = false"
+        >{{ item.label }}</router-link>
+      </nav>
+    </Transition>
   </header>
 </template>
 
 <script setup>
-import { computed, ref, onBeforeUnmount, onMounted, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMusicBackground } from '../composables/useMusicBackground'
-import { getMusicThemeIp } from '../config/musicThemeCatalog'
+import { useLocale } from '../composables/useLocale'
 
-const isDarkMode = ref(false)
 const route = useRoute()
-const isMusicModule = computed(() => route.path.startsWith('/music'))
-const isHomeHero = ref(route.path === '/')
-const { settings: musicBackgroundSettings } = useMusicBackground()
-const activeMusicIp = computed(() => getMusicThemeIp(musicBackgroundSettings.preset))
+const { isChinese, toggleLocale } = useLocale()
+const isMobileMenuOpen = ref(false)
+const copy = computed(() => isChinese.value ? {
+  navAria: '主导航',
+  homeAria: '返回首页',
+  mobileNavAria: '移动端主导航',
+  openMenu: '打开导航菜单',
+  closeMenu: '关闭导航菜单',
+  languageAria: '切换为英文'
+} : {
+  navAria: 'Main navigation',
+  homeAria: 'Back to home',
+  mobileNavAria: 'Mobile navigation',
+  openMenu: 'Open navigation menu',
+  closeMenu: 'Close navigation menu',
+  languageAria: 'Switch to Chinese'
+})
+const navItems = computed(() => isChinese.value ? [
+  { key: 'home', label: '首页', to: '/' },
+  { key: 'articles', label: '思考', to: '/articles' },
+  { key: 'music', label: '音乐', to: '/music' },
+  { key: 'about', label: '关于', to: '/about' }
+] : [
+  { key: 'home', label: 'Home', to: '/' },
+  { key: 'articles', label: 'Thinking', to: '/articles' },
+  { key: 'music', label: 'Music', to: '/music' },
+  { key: 'about', label: 'About', to: '/about' }
+])
+const currentNav = computed(() => {
+  const { path } = route
 
-let headerSurfaceFrame = 0
-
-const syncHomeHeaderSurface = () => {
-  if (headerSurfaceFrame) return
-
-  headerSurfaceFrame = window.requestAnimationFrame(() => {
-    headerSurfaceFrame = 0
-
-    if (route.path !== '/') {
-      isHomeHero.value = false
-      return
-    }
-
-    const homeContent = document.querySelector('.home-content')
-    // 首屏还在导航下方时，导航透出首屏；进入内容区后恢复通用玻璃外观。
-    isHomeHero.value = !homeContent || homeContent.getBoundingClientRect().top > 92
-  })
-}
-
-onMounted(() => {
-  const savedMode = localStorage.getItem('darkMode')
-  if (savedMode === 'true') {
-    isDarkMode.value = true
-    if (!isMusicModule.value) {
-      document.body.classList.add('dark-mode')
-      document.documentElement.style.colorScheme = 'dark'
-    }
+  if (path === '/') {
+    if (route.hash === '#thinking-archive') return 'articles'
+    if (route.hash === '#about-space') return 'about'
+    return 'home'
   }
+  if (path.startsWith('/music')) return 'music'
+  if (path === '/about') return 'about'
 
-  syncHomeHeaderSurface()
-  window.addEventListener('scroll', syncHomeHeaderSurface, { passive: true })
-  window.addEventListener('resize', syncHomeHeaderSurface)
+  return 'articles'
+})
+watch(() => route.fullPath, (fullPath) => {
+  isMobileMenuOpen.value = false
 })
 
-watch(() => route.path, () => {
-  syncHomeHeaderSurface()
-})
-
-onBeforeUnmount(() => {
-  window.cancelAnimationFrame(headerSurfaceFrame)
-  window.removeEventListener('scroll', syncHomeHeaderSurface)
-  window.removeEventListener('resize', syncHomeHeaderSurface)
-})
-
-const toggleDarkMode = () => {
-  if (isMusicModule.value) return
-  const nextDark = !isDarkMode.value
-
-  const clearViewTransitionSnapshots = () => {
-    document.body.classList.remove('theme-transitioning')
-  }
-
-  const applyTheme = () => {
-    isDarkMode.value = nextDark
-    document.body.classList.toggle('dark-mode', nextDark)
-    document.documentElement.style.colorScheme = nextDark ? 'dark' : 'light'
-    localStorage.setItem('darkMode', String(nextDark))
-  }
-
-  // 仅切换真实页面颜色，不再创建整页快照或遮罩层。
-  // 音乐模块有多层 fixed 背景，根快照在 Chromium 中可能残留为灰色蒙层。
-  clearViewTransitionSnapshots()
-  applyTheme()
-  requestAnimationFrame(clearViewTransitionSnapshots)
-}
 </script>
 
 <style scoped>
@@ -156,7 +121,7 @@ const toggleDarkMode = () => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 12000;
   width: 100%;
   padding: 0.75rem 0;
   background: transparent;
@@ -579,7 +544,7 @@ body:is(.dark-mode, .music-theme-dark) .nav::after {
 }
 
 .nav-links a:hover,
-.nav-links a.active {
+#app .header .nav-links a.active {
   color: var(--primary-color);
   border-color: rgba(255, 255, 255, 0.72);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.24));
@@ -997,11 +962,247 @@ body.dark-mode.page-home .header.is-home-hero .dark-mode-toggle {
 }
 
 body.dark-mode.page-home .header.is-home-hero .nav-links a:hover,
-body.dark-mode.page-home .header.is-home-hero .nav-links a.active,
+body.dark-mode.page-home .header.is-home-hero .nav-links a.is-current,
 body.dark-mode.page-home .header.is-home-hero .dark-mode-toggle:hover {
   border-color: rgba(166, 223, 205, 0.22);
   background: rgba(107, 182, 159, 0.16);
   color: #effbf7;
   box-shadow: 0 0 18px rgba(94, 174, 151, 0.1);
+}
+
+/* Current-page navigation is a site-level signal, not a music-theme color.
+   Keep it identical on every route so the header never changes its meaning. */
+/* Music's classic skin styles every link with !important. These selectors keep
+   the current-page signal above that skin, without restoring theme-specific
+   active colors. */
+body[class*="music-ip-"].page-music .nav-links a.is-current,
+body[class*="music-ip-"].music-appearance-dark.page-music .nav-links a.is-current,
+.nav-links a.is-current {
+  border: 1px solid rgba(178, 231, 213, 0.52) !important;
+  color: #f4fffa !important;
+  background: linear-gradient(135deg, #327762, #235c4f) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(240, 255, 249, 0.24),
+    0 7px 18px rgba(13, 54, 44, 0.28),
+    0 0 0 1px rgba(154, 221, 197, 0.08) !important;
+}
+
+/* Unified navigation for every non-home route. The home page owns its
+   cinematic navigation; all other pages use this same quiet system. */
+.header.site-cinematic-header {
+  padding: 0;
+  pointer-events: none;
+}
+
+.site-cinematic-header-container {
+  width: min(100% - 48px, 1540px);
+  max-width: none;
+  pointer-events: auto;
+}
+
+.site-cinematic-nav {
+  position: relative;
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(1, 1, 1, 0.68), rgba(1, 1, 1, 0.44));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.site-cinematic-brand,
+.site-cinematic-links a,
+.site-cinematic-mobile-menu a {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.site-cinematic-brand {
+  color: #ffffff;
+  letter-spacing: 0.3em;
+}
+
+.site-cinematic-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 2.4vw, 44px);
+}
+
+.site-cinematic-links a {
+  position: relative;
+  padding: 6px 0;
+  transition: color 300ms ease;
+}
+
+.site-cinematic-links a::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: #ffffff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-cinematic-links a:hover,
+.site-cinematic-links a.is-current { color: #ffffff; }
+.site-cinematic-links a:hover::after,
+.site-cinematic-links a.is-current::after { transform: scaleX(1); transform-origin: left; }
+
+.site-language-toggle {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 11px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, .46);
+  background: rgba(255, 255, 255, .08);
+  font: 600 10px/1 Inter, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.site-language-toggle span.active { color: #fff; }
+.site-language-toggle i { width: 1px; height: 11px; background: rgba(255, 255, 255, .22); }
+
+.site-cinematic-menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  color: #ffffff;
+  background: transparent;
+  cursor: pointer;
+}
+
+.site-cinematic-menu-toggle svg { width: 22px; height: 22px; }
+
+.site-cinematic-mobile-menu {
+  position: fixed;
+  z-index: 1200;
+  top: 4rem;
+  right: 1rem;
+  left: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  background: rgba(10, 10, 10, 0.78);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  pointer-events: auto;
+}
+
+.site-cinematic-mobile-menu a {
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.25em;
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+  animation: site-cinematic-menu-link-in 420ms cubic-bezier(0.16, 1, 0.3, 1) var(--menu-link-delay) forwards;
+  transition: color 300ms ease;
+}
+
+.site-cinematic-mobile-menu a:hover,
+.site-cinematic-mobile-menu a.is-current { color: #ffffff; }
+.site-cinematic-menu-enter-active,
+.site-cinematic-menu-leave-active { transition: opacity 300ms ease-out, transform 300ms ease-out; }
+.site-cinematic-menu-enter-from,
+.site-cinematic-menu-leave-to { opacity: 0; transform: translate3d(0, -10px, 0); }
+
+@keyframes site-cinematic-menu-link-in {
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@media (max-width: 768px) {
+  .site-cinematic-header-container { width: calc(100% - 32px); }
+  .site-cinematic-nav { min-height: 72px; }
+  .site-cinematic-brand { font-size: 0.6rem; letter-spacing: 0.25em; }
+  .site-cinematic-links { display: none; }
+  .site-language-toggle { margin-left: auto; }
+  .site-cinematic-menu-toggle { display: grid; }
+}
+
+/* Music is its own world: a compact, warm-tinted floating station rather
+   than the neutral black navigation used by the archive pages. */
+body.page-music .site-cinematic-header {
+  padding: 16px 0 0;
+}
+
+body.page-music .site-cinematic-header-container {
+  width: min(calc(100% - 48px), 1120px);
+}
+
+body.page-music .site-cinematic-nav {
+  isolation: isolate;
+  min-height: 62px;
+  padding: 0 24px;
+  overflow: hidden;
+  border: 1px solid rgba(226, 171, 100, 0.24);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(65, 21, 38, 0.72), rgba(28, 20, 34, 0.62) 50%, rgba(80, 52, 26, 0.58)),
+    rgba(19, 13, 22, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 231, 194, 0.13),
+    0 16px 42px rgba(13, 5, 12, 0.28),
+    0 0 34px rgba(192, 121, 68, 0.08);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+
+body.page-music .site-cinematic-nav::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -130% 36% -130% -12%;
+  background: radial-gradient(ellipse, rgba(230, 156, 84, 0.2), transparent 62%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+body.page-music .site-cinematic-brand {
+  color: #fff0d8;
+}
+
+body.page-music .site-cinematic-links a {
+  color: rgba(255, 229, 199, 0.7);
+}
+
+body.page-music .site-cinematic-links a:hover,
+body.page-music .site-cinematic-links a.is-current {
+  color: #fff5e7;
+}
+
+body.page-music .site-cinematic-links a::after {
+  background: linear-gradient(90deg, #e6ad64, #f3d2a0);
+}
+
+body.page-music .site-cinematic-menu-toggle {
+  color: #fff0dc;
+}
+
+@media (max-width: 768px) {
+  body.page-music .site-cinematic-header { padding-top: 10px; }
+  body.page-music .site-cinematic-header-container { width: calc(100% - 32px); }
+  body.page-music .site-cinematic-nav { min-height: 58px; padding: 0 18px; }
 }
 </style>

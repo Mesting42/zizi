@@ -86,12 +86,21 @@ const { allSongs } = await import('../src/data/songs.js')
 const { usePlayer } = await import('../src/composables/usePlayer.js')
 
 const player = usePlayer()
+const getSong = (title) => {
+  const song = allSongs.find(item => item.title === title)
+  assert.ok(song, `本地曲库缺少测试歌曲：${title}`)
+  return song
+}
 
-assert.equal(allSongs.length, 8, '本地曲库应包含 8 首歌曲')
-assert.equal(new Set(allSongs.map(song => song.id)).size, 8, '每首本地歌曲必须拥有唯一 ID')
+assert.ok(allSongs.length >= 8, '本地曲库应至少包含 8 首歌曲')
+assert.equal(
+  new Set(allSongs.map(song => song.id)).size,
+  allSongs.length,
+  '每首本地歌曲必须拥有唯一 ID'
+)
 
 const restoredLegacySong = player.syncSongWithCatalog({
-  ...allSongs[2],
+  ...getSong('稻香'),
   id: 'music__music__________mp3'
 })
 assert.equal(restoredLegacySong.title, '稻香', '旧缓存的冲突 ID 必须通过真实 URL 恢复正确歌曲')
@@ -109,14 +118,14 @@ player.prev()
 assert.equal(player.currentSong.value.title, '晴天', '空播放列表时上一首应按本地曲库反向切换')
 assert.equal(player.playlist.value.length, 0)
 
-player.playSong(allSongs[2], allSongs)
+player.playSong(getSong('稻香'), allSongs)
 assert.equal(player.currentSong.value.title, '稻香', '普通点播应直接播放所选歌曲')
 assert.equal(player.playlist.value.length, 0, '普通点播即使传入页面歌曲组也不能自动填充播放列表')
 player.next()
 assert.equal(player.currentSong.value.title, '夜曲', '普通点播后的下一首仍应从本地曲库继续')
 
-player.addToPlaylist(allSongs[0])
-player.addToPlaylist(allSongs[7])
+player.addToPlaylist(getSong('起风了'))
+player.addToPlaylist(getSong('花海'))
 assert.deepEqual(
   player.playlist.value.map(song => song.title),
   ['起风了', '花海'],
@@ -185,7 +194,7 @@ assert.equal(player.playlist.value.length, 0)
 player.playCollection(allSongs.slice(0, 3), 1)
 assert.equal(player.currentSong.value.title, '晴天', '“播放全部”可以明确建立播放列表并从所选歌曲开始')
 assert.deepEqual(player.playlist.value.map(song => song.title), ['稻香', '起风了'])
-player.playSong(allSongs[4], allSongs)
+player.playSong(getSong('七里香'), allSongs)
 assert.equal(player.currentSong.value.title, '七里香')
 assert.deepEqual(
   player.playlist.value.map(song => song.title),

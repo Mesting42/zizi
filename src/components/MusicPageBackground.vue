@@ -26,13 +26,14 @@
       />
       <video
         v-else-if="settings.mediaKind === 'video'"
+        ref="customVideo"
         :key="mediaUrl"
         :src="mediaUrl"
         autoplay
         muted
         loop
         playsinline
-        preload="auto"
+        preload="metadata"
         @canplay="ensureCustomVideoPlayback"
       ></video>
       <div class="mpb-custom-shade"></div>
@@ -197,7 +198,6 @@
       <div class="mpb-orb mpb-orb--1"></div>
       <div class="mpb-orb mpb-orb--2"></div>
       <div class="mpb-orb mpb-orb--3"></div>
-      <div class="mpb-orb mpb-orb--4"></div>
     </template>
 
     <div v-if="!useLeanRendering" class="mpb-notes">
@@ -439,7 +439,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useMusicBackground } from '../composables/useMusicBackground'
 import { getMusicIp, getMusicThemeIp, getMusicThemeMobileComposition } from '../config/musicThemeCatalog'
 import { devicePerformanceProfile } from '../utils/devicePerformance'
@@ -451,7 +451,9 @@ defineProps({
 })
 
 const { settings, mediaUrl, customMediaStyle } = useMusicBackground()
-const useLeanRendering = devicePerformanceProfile.isMobilePerformance
+const customVideo = ref(null)
+const useLeanRendering =
+  devicePerformanceProfile.isMobilePerformance || devicePerformanceProfile.isLowMemory
 const isClassicTheme = computed(() => settings.mode === 'custom' || settings.preset === 'classic')
 const classicAppearance = computed(() => (
   settings.customAppearance === 'dark' ? 'dark' : 'sunny'
@@ -463,10 +465,27 @@ const showIpDecorations = computed(() => (
 const ensureCustomVideoPlayback = (event) => {
   const video = event.currentTarget
   video.muted = true
+  if (document.hidden) {
+    video.pause()
+    return
+  }
   video.play().catch(() => {
     // 某些浏览器会在切换标签页后延迟自动播放；保留首帧而不打断页面。
   })
 }
+
+const syncCustomVideoVisibility = () => {
+  const video = customVideo.value
+  if (!video) return
+  if (document.hidden) {
+    video.pause()
+  } else {
+    video.play().catch(() => {})
+  }
+}
+
+onMounted(() => document.addEventListener('visibilitychange', syncCustomVideoVisibility))
+onBeforeUnmount(() => document.removeEventListener('visibilitychange', syncCustomVideoVisibility))
 
 const THEME_SCENES = {
   classic: {
@@ -895,8 +914,8 @@ const motionBalloons = Array.from({ length: 9 }, (_, index) => ({
 }))
 
 const NOTE_SYMBOLS = ['♪', '♫', '♩', '♬']
-const NOTE_COUNT = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches ? 10 : 16
-const SPARKLE_COUNT = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches ? 14 : 22
+const NOTE_COUNT = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches ? 6 : 9
+const SPARKLE_COUNT = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches ? 8 : 11
 
 const notes = Array.from({ length: NOTE_COUNT }, (_, index) => {
   const left = ((index * 41.3 + (index % 11) * 17.7) % 94) + 3
@@ -952,6 +971,24 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, index) => {
   overflow: hidden;
   background: linear-gradient(145deg, rgba(255, 247, 224, 0.48), rgba(238, 246, 255, 0.46) 48%, rgba(255, 231, 239, 0.42));
   transition: background 320ms ease;
+}
+
+/*
+ * Keep the ambient scene visually rich without making the browser composite
+ * dozens of moving blurred layers while the page is idle or being scrolled.
+ * Playback resumes the small set of remaining ambient animations.
+ */
+.music-page-bg:not(.playing) *,
+.music-page-bg:not(.playing) *::before,
+.music-page-bg:not(.playing) *::after {
+  animation-play-state: paused !important;
+}
+
+:global(body.is-user-scrolling) .music-page-bg *,
+:global(body.is-user-scrolling) .music-page-bg *::before,
+:global(body.is-user-scrolling) .music-page-bg *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
 }
 
 .mpb-theme-wash {

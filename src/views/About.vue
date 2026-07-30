@@ -17,26 +17,29 @@ const avatarUrl = ref('https://api.dicebear.com/7.x/avataaars/svg?seed=Felix');
 
 // 模板引用
 const templateRef = ref(null);
+let aboutRevealObserver = null;
+const aboutRevealTimers = [];
 
 const revealAboutCards = () => {
   if (!templateRef.value) return;
 
   const cards = [
     templateRef.value.projectCard,
-    templateRef.value.educationCard,
-    templateRef.value.workCard,
     templateRef.value.contactCard,
     templateRef.value.interestCard
   ].filter(card => card !== null);
 
-  setupScrollAnimation(cards);
+  // Calls can be scheduled while the template settles. Keep one live
+  // observer so a card has one predictable, repeatable reveal lifecycle.
+  aboutRevealObserver?.disconnect();
+  aboutRevealObserver = setupScrollAnimation(cards);
 };
 
 // 组件挂载后初始化
 onMounted(async () => {
   await nextTick();
   revealAboutCards();
-  setTimeout(revealAboutCards, 160);
+  aboutRevealTimers.push(window.setTimeout(revealAboutCards, 160));
   // 从存储加载头像
   try {
     avatarUrl.value = await loadAvatar();
@@ -47,13 +50,16 @@ onMounted(async () => {
   // 不再设置body背景样式，让App.vue统一管理
   
   // 等待下一帧确保子组件已挂载
-  setTimeout(() => {
+  aboutRevealTimers.push(window.setTimeout(() => {
     revealAboutCards();
-  }, 100);
+  }, 100));
 });
 
 // 组件卸载时不恢复body背景，让App.vue统一管理
 onUnmounted(() => {
+  aboutRevealObserver?.disconnect();
+  aboutRevealObserver = null;
+  aboutRevealTimers.forEach(timer => window.clearTimeout(timer));
   // 不再清除body背景样式
 });
 </script>

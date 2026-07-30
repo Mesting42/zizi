@@ -1,419 +1,1288 @@
 <template>
-  <div ref="homeRoot" class="home home-v2 home-motion motion-scroll-pending">
-    <div class="home-opening-curtain" aria-hidden="true"></div>
-
-    <section class="hero home-hero" aria-labelledby="home-title">
-      <HomeTechCanvas />
-      <div class="hero-noise" aria-hidden="true"></div>
-      <div class="hero-scanline" aria-hidden="true"></div>
-
-      <div class="hero-layout">
-        <div class="hero-copy">
-          <p class="hero-kicker motion-hero-eyebrow" data-hero-reveal>
-            <span class="hero-kicker-dot"></span>
-            DIGITAL ATELIER · {{ currentYear }}
-          </p>
-
-          <h1 id="home-title" class="hero-title">
-            <span class="hero-title-mask">
-              <span class="hero-title-inner">Mesting</span>
-            </span>
-          </h1>
-
-          <p class="hero-role motion-hero-role" data-hero-reveal>
-            <span>Design.</span>
-            <span>Code.</span>
-            <span>Music.</span>
-          </p>
-
-          <p class="hero-desc motion-hero-desc" data-hero-reveal>
-            用代码构建有情绪、有细节的数字体验。这里不只是文章目录，
-            也是我持续生长的作品、音乐与想法档案。
-          </p>
-
-          <div class="hero-actions" data-hero-reveal>
-            <a href="#selected-work" class="hero-action hero-action-primary motion-hero-action">
-              <span>查看精选作品</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </a>
-            <router-link to="/about" class="hero-action hero-action-secondary motion-hero-action">
-              进入个人档案
-            </router-link>
-          </div>
-
-          <div class="hero-availability" data-hero-reveal>
-            <span class="availability-pulse"></span>
-            <span>个人博客持续更新中</span>
-            <span class="availability-divider"></span>
-            <span>{{ currentTimeLabel }}</span>
-          </div>
+  <div ref="homeRoot" class="oddy-space">
+    <main>
+      <section id="top" class="oddy-hero nk-hero">
+        <div class="nk-video-shell" aria-hidden="true">
+          <video ref="heroVideo" class="nk-hero-video" autoplay muted loop playsinline preload="auto">
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4" type="video/mp4">
+          </video>
         </div>
 
-        <div class="hero-visual motion-hero-panel motion-hero-parallax" aria-hidden="true">
-          <div class="hero-orbit hero-orbit-outer"></div>
-          <div class="hero-orbit hero-orbit-middle"></div>
-          <div class="hero-orbit hero-orbit-inner"></div>
-          <div class="hero-core">
-            <span class="hero-core-label">M</span>
-            <span class="hero-core-ring"></span>
-          </div>
-          <span class="orbit-node orbit-node-one"></span>
-          <span class="orbit-node orbit-node-two"></span>
-          <span class="orbit-node orbit-node-three"></span>
-          <div class="hero-coordinate hero-coordinate-top">31.2304° N</div>
-          <div class="hero-coordinate hero-coordinate-bottom">121.4737° E</div>
-        </div>
+        <PortfolioHeader />
 
-        <div class="hero-status-panel motion-hero-panel-item" data-hero-reveal>
-          <div class="hero-status-head">
-            <span>LIVE SIGNAL</span>
-            <span class="hero-status-bars"><i></i><i></i><i></i><i></i></span>
-          </div>
-          <strong>正在构建更完整的个人数字空间</strong>
-          <p>Vue 3 · Motion System · Music Experience</p>
-          <div class="hero-status-progress"><span></span></div>
-        </div>
-      </div>
-
-      <a href="#selected-work" class="hero-scroll" aria-label="向下浏览精选作品">
-        <span>SCROLL TO EXPLORE</span>
-        <i></i>
-      </a>
-    </section>
-
-    <div class="home-signal-strip" aria-hidden="true">
-      <div class="home-signal-track">
-        <span v-for="(signal, index) in homeSignalsLoop" :key="`${signal}-${index}`">
-          {{ signal }}
-          <i></i>
-        </span>
-      </div>
-    </div>
-
-    <main class="home-content">
-      <div class="home-content-atmosphere" aria-hidden="true">
-        <span class="home-atmosphere-orb home-atmosphere-orb-a"></span>
-        <span class="home-atmosphere-orb home-atmosphere-orb-b"></span>
-        <span class="home-atmosphere-orb home-atmosphere-orb-c"></span>
-        <span class="home-atmosphere-scan"></span>
-        <span class="home-atmosphere-marker home-atmosphere-marker-a">01 / WORK</span>
-        <span class="home-atmosphere-marker home-atmosphere-marker-b">MESTING / ARCHIVE</span>
-      </div>
-      <aside class="home-side-rail home-side-rail-left" aria-hidden="true">
-        <div class="home-side-rail-inner">
-          <small>PROJECT INDEX</small>
-          <span v-for="chapter in homeChapters" :key="chapter.number">
-            <b>{{ chapter.number }}</b>{{ chapter.label }}
-          </span>
-        </div>
-      </aside>
-
-      <aside class="home-side-rail home-side-rail-right" aria-hidden="true">
-        <div class="home-side-rail-inner">
-          <small>LOCAL / SHANGHAI</small>
-          <strong>{{ currentTimeLabel }}</strong>
-          <span><i></i> SITE ONLINE</span>
-        </div>
-      </aside>
-
-      <section id="selected-work" class="home-section selected-work motion-section">
-        <span class="section-watermark" aria-hidden="true">01</span>
-        <div class="section-heading">
-          <div>
-            <p class="section-index motion-section-eyebrow">01 / SELECTED WORK</p>
-            <h2 class="motion-section-title">把想法做成<br>可以触摸的体验</h2>
-          </div>
-          <p class="section-lead motion-section-link">
-            不只展示结果，也保留设计、尝试和迭代的过程。
-          </p>
-        </div>
-
-        <article class="featured-project motion-stagger-item">
-          <div class="featured-project-media motion-image-reveal">
-            <img src="/vivo/img/banner2.jpg" alt="Vivo 响应式网站案例界面" />
-            <div class="featured-project-screen">
-              <span>FEATURED / 01</span>
-              <strong>Responsive<br>Experience</strong>
+        <div class="nk-hero-footer">
+          <div class="nk-hero-copy-block">
+            <p class="nk-hero-subtitle"><i aria-hidden="true"></i>{{ copy.heroEyebrow }}</p>
+            <h1 class="nk-hero-heading">
+              <span>{{ copy.heroTitle[0] }}</span>
+              <span>{{ copy.heroTitle[1] }}</span>
+            </h1>
+            <div class="nk-hero-actions">
+              <router-link class="nk-hero-action nk-hero-action-primary" to="/#projects">{{ copy.exploreProjects }}</router-link>
+              <router-link class="nk-hero-action nk-hero-action-secondary" to="/#about-space">{{ copy.aboutSpace }}</router-link>
             </div>
-            <span class="media-corner media-corner-top"></span>
-            <span class="media-corner media-corner-bottom"></span>
           </div>
-          <div class="featured-project-copy">
-            <p class="project-type">WEB DESIGN · FRONTEND</p>
-            <h3>Vivo 响应式品牌站</h3>
-            <p>
-              从视觉还原、响应式布局到交互动效，重新组织品牌信息的浏览节奏，
-              让页面在不同设备中依然保持完整的视觉表达。
-            </p>
-            <div class="project-facts">
-              <span><small>ROLE</small>设计与开发</span>
-              <span><small>STACK</small>HTML · CSS · JS</span>
-              <span><small>YEAR</small>2024</span>
-            </div>
-            <router-link to="/vivo-case" class="text-link">
-              查看完整案例
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </router-link>
+          <div class="nk-hero-keywords" :aria-label="copy.disciplinesAria">
+            <span>Flutter / Android</span>
+            <span>Vue 3</span>
+            <span>Visual &amp; Sound</span>
           </div>
-        </article>
-
-        <div class="project-pair">
-          <router-link to="/foreign-case" class="project-teaser project-teaser-visual motion-stagger-item">
-            <img src="/foreign/img/pic4.png" alt="国外响应式站点案例" class="motion-image-reveal" />
-            <span class="project-teaser-number">02</span>
-            <div>
-              <small>UI SYSTEM</small>
-              <strong>国外响应式站点</strong>
-            </div>
-          </router-link>
-
-          <router-link to="/music" class="project-teaser project-teaser-music motion-stagger-item">
-            <div class="sound-wave" aria-hidden="true">
-              <i v-for="index in 18" :key="index" :style="{ '--wave-index': index }"></i>
-            </div>
-            <span class="project-teaser-number">03</span>
-            <div>
-              <small>IMMERSIVE MODULE</small>
-              <strong>音乐空间体验</strong>
-            </div>
-          </router-link>
         </div>
+      </section>
 
-        <div class="home-capability-rail motion-stagger-item">
-          <div class="capability-rail-intro">
-            <small>CRAFT SYSTEM / 2026</small>
-            <strong>从视觉到交互，保持同一种表达。</strong>
+      <section
+        ref="marqueeSection"
+        class="oddy-marquee-section"
+        :class="{ 'is-dragging': marqueeDragging }"
+        :aria-label="copy.marqueeAria"
+        @pointerdown="beginMarqueeDrag"
+        @pointermove="moveMarqueeDrag"
+        @pointerup="finishMarqueeDrag"
+        @pointercancel="finishMarqueeDrag"
+        @lostpointercapture="finishMarqueeDrag"
+        @dragstart.prevent
+      >
+        <div v-if="marqueeMounted" ref="marqueeTrack" class="oddy-marquee-track">
+          <div v-for="repeat in 2" :key="repeat" class="oddy-marquee-group" aria-hidden="true">
+            <figure
+              v-for="(asset, assetIndex) in marqueeAssets"
+              :key="`${repeat}-${asset.src}`"
+              class="oddy-marquee-card"
+              :data-card-index="assetIndex"
+            >
+              <div class="oddy-marquee-card-inner">
+                <video
+                  class="oddy-marquee-media"
+                  :src="asset.src"
+                  :aria-label="asset.alt"
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                  preload="metadata"
+                  disablepictureinpicture
+                ></video>
+                <span class="oddy-marquee-glint" aria-hidden="true"></span>
+                <span class="oddy-marquee-focus" aria-hidden="true"></span>
+                <div class="oddy-marquee-caption">
+                  <small>REFERENCE / {{ String(assetIndex + 1).padStart(2, '0') }}</small>
+                  <strong>{{ asset.alt }}</strong>
+                  <i aria-hidden="true">↗</i>
+                </div>
+              </div>
+            </figure>
           </div>
-          <article v-for="(capability, index) in homeCapabilities" :key="capability.title">
-            <span>0{{ index + 1 }}</span>
-            <div>
-              <strong>{{ capability.title }}</strong>
-              <small>{{ capability.detail }}</small>
+        </div>
+      </section>
+
+      <AmbientSideFields />
+
+      <section id="about-space" class="oddy-quote-section">
+        <div class="oddy-quote-layout">
+          <div class="oddy-quote-copy oddy-reveal">
+            <span class="oddy-quote-mark" aria-hidden="true">“</span>
+            <h2>{{ copy.quote[0] }}<br><span>{{ copy.quote[1] }}</span><br>{{ copy.quote[2] }}</h2>
+            <p class="oddy-signature">{{ copy.signature }}</p>
+            <div class="oddy-signal-row" :aria-label="copy.keywordsAria">
+              <span>VUE 3</span>
+              <span>THREE.JS</span>
+              <span>VISUAL NOTES</span>
             </div>
-            <i aria-hidden="true"></i>
+          </div>
+          <div ref="avatarMount" class="oddy-avatar-card">
+            <div class="oddy-avatar-label">LIVE AVATAR / 01</div>
+            <div class="oddy-avatar-viewport">
+              <img
+                class="oddy-avatar-fallback"
+                :class="{ 'is-hidden': avatarReady }"
+                src="/images/avatar-fallback.png"
+                :alt="isChinese ? 'Mesting 的数字分身预览' : 'Mesting digital avatar preview'"
+                width="1016"
+                height="940"
+                loading="eager"
+                decoding="async"
+                fetchpriority="low"
+              >
+              <AvatarMouseFollow
+                v-if="avatarVisible && !avatarFailed"
+                :model-url="avatarModelUrl"
+                :max-yaw="14"
+                :max-pitch="7"
+                :camera-zoom="0.98"
+                :camera-target-y="0.18"
+                :max-pixel-ratio="1.25"
+                :max-fps="24"
+                :interactive="false"
+                :show-pointer="false"
+                :show-status="false"
+                @ready="handleAvatarReady"
+                @error="handleAvatarError"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="oddy-offerings oddy-reveal" :aria-label="copy.exploreSpaceAria">
+        <div class="oddy-offering-grid">
+          <article class="oddy-offering oddy-offering-dark">
+            <p class="oddy-card-index">{{ copy.offerings[0].index }}</p>
+            <h2>{{ copy.offerings[0].title }}</h2>
+            <p>{{ copy.offerings[0].lines[0] }}<br>{{ copy.offerings[0].lines[1] }}</p>
+            <div class="oddy-offering-bottom">
+              <strong>{{ copy.offerings[0].meta }}</strong>
+              <router-link class="oddy-button oddy-button-light" to="/#projects">{{ copy.offerings[0].action }} <span>↘</span></router-link>
+            </div>
+          </article>
+          <article class="oddy-offering oddy-offering-light">
+            <p class="oddy-card-index">{{ copy.offerings[1].index }}</p>
+            <h2>{{ copy.offerings[1].title }}</h2>
+            <p>{{ copy.offerings[1].lines[0] }}<br>{{ copy.offerings[1].lines[1] }}</p>
+            <div class="oddy-offering-bottom">
+              <strong>{{ copy.offerings[1].meta }}</strong>
+              <router-link class="oddy-button oddy-button-secondary" to="/#thinking-archive">{{ copy.offerings[1].action }} <span>↘</span></router-link>
+            </div>
           </article>
         </div>
       </section>
 
-      <section class="home-section latest-thinking motion-section">
-        <span class="section-watermark" aria-hidden="true">02</span>
-        <div class="section-heading section-heading-compact">
+      <section class="oddy-notes oddy-reveal" aria-labelledby="notes-title">
+        <div class="oddy-notes-heading">
           <div>
-            <p class="section-index motion-section-eyebrow">02 / LATEST THINKING</p>
-            <h2 class="motion-section-title">最近写下的想法</h2>
+            <p class="oddy-kicker">{{ copy.notesKicker }}</p>
+            <h2 id="notes-title">{{ copy.notesTitle[0] }}<br><span>{{ copy.notesTitle[1] }}</span></h2>
           </div>
-          <router-link to="/articles" class="text-link motion-section-link">
-            查看全部文章
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </router-link>
+          <div class="oddy-carousel-controls">
+            <button type="button" :aria-label="copy.previousNote" @click="previousNote">←</button>
+            <button type="button" :aria-label="copy.nextNote" @click="nextNote">→</button>
+          </div>
         </div>
+        <div class="oddy-notes-window" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
+          <div class="oddy-notes-track" :style="{ transform: `translateX(-${activeNote * 100}%)` }">
+            <article v-for="note in spaceNotes" :key="note.index" class="oddy-note-card">
+              <span class="oddy-note-quote" aria-hidden="true">✳</span>
+              <p>{{ note.text }}</p>
+              <footer>
+                <span class="oddy-note-number">{{ note.index }}</span>
+                <span><b>{{ note.title }}</b>{{ note.meta }}</span>
+              </footer>
+            </article>
+          </div>
+        </div>
+        <div class="oddy-pagination" aria-hidden="true">
+          <i v-for="(note, index) in spaceNotes" :key="note.index" :class="{ active: index === activeNote }"></i>
+        </div>
+      </section>
 
-        <div class="article-ledger">
+      <section id="projects" class="oddy-projects" aria-labelledby="projects-title">
+        <header class="oddy-projects-intro oddy-reveal">
+          <p class="oddy-kicker">{{ copy.projectsKicker }} / {{ currentYear }}</p>
+          <h2 id="projects-title">{{ copy.projectsTitle[0] }} <span>{{ copy.projectsTitle[1] }}</span></h2>
+        </header>
+        <div class="oddy-project-stack">
+          <article
+            v-for="project in projects"
+            :id="project.anchor"
+            :key="project.anchor"
+            class="oddy-project oddy-reveal"
+          >
+            <div class="oddy-project-copy">
+              <p>{{ project.index }}</p>
+              <h3>{{ project.title }}</h3>
+              <span>{{ project.description }}</span>
+            </div>
+            <component
+              :is="project.to ? 'router-link' : 'a'"
+              :to="project.to ? { path: project.to, query: { fromProject: project.anchor } } : undefined"
+              :href="project.href"
+              class="oddy-project-visual"
+              :class="{ 'oddy-project-visual--flutter': project.kind === 'flutter' }"
+              :data-project-image="project.kind === 'flutter' ? null : project.anchor"
+              :aria-label="`${copy.viewProjectAria} ${project.title}`"
+            >
+              <div class="oddy-project-visual-clip">
+                <div v-if="project.kind === 'flutter'" class="oddy-flutter-project" aria-hidden="true">
+                  <div class="oddy-flutter-project-copy">
+                    <span>FLUTTER / ANDROID</span>
+                    <strong>Mesting<br><i>Music</i></strong>
+                    <small>MAKE LISTENING PERSONAL</small>
+                  </div>
+                  <div class="oddy-flutter-record"></div>
+                  <div class="oddy-flutter-phone">
+                    <img src="/generated/flutter-music/recommendation.png" alt="" loading="lazy" decoding="async">
+                  </div>
+                  <div class="oddy-flutter-stat"><b>25</b><span>VISUAL<br>THEMES</span></div>
+                </div>
+                <img
+                  v-else-if="activeProjectImages.has(project.anchor)"
+                  :src="project.image"
+                  :alt="project.title"
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                >
+              </div>
+              <b>{{ copy.openProject }} <i>↗</i></b>
+            </component>
+          </article>
+        </div>
+      </section>
+
+      <section id="thinking-archive" class="oddy-article-archive oddy-reveal" aria-labelledby="article-archive-title">
+        <header class="oddy-article-archive-heading">
+          <div>
+            <p class="oddy-kicker">{{ copy.archiveKicker }} / {{ articleArchive.length }} {{ copy.notesCount }}</p>
+            <h2 id="article-archive-title">{{ copy.archiveTitle[0] }}<br><span>{{ copy.archiveTitle[1] }}</span></h2>
+          </div>
+        </header>
+
+        <div class="oddy-article-list">
           <router-link
-            v-for="(article, index) in articles.slice(0, 3)"
+            v-for="(article, index) in articlePreview"
             :key="article.id"
             :to="`/article/${article.id}`"
-            class="ledger-row motion-stagger-item"
+            class="oddy-article-row"
           >
-            <span class="ledger-number">0{{ index + 1 }}</span>
-            <span class="ledger-category">{{ article.category }}</span>
-            <span class="ledger-title">{{ article.title }}</span>
-            <span class="ledger-date">{{ article.date }}</span>
-            <span class="ledger-arrow" aria-hidden="true">↗</span>
-          </router-link>
-        </div>
-      </section>
-
-      <section class="music-portal motion-section">
-        <span class="section-watermark section-watermark-light" aria-hidden="true">03</span>
-        <div class="music-portal-backdrop" aria-hidden="true"></div>
-        <div class="music-portal-copy">
-          <p class="section-index motion-section-eyebrow">03 / MUSIC SPACE</p>
-          <h2 class="motion-section-title">让旋律成为<br>网站的另一条叙事线</h2>
-          <p class="motion-stagger-item">
-            从歌单、歌词到主题背景，这里是一块可以随心情切换的声音空间。
-          </p>
-          <router-link to="/music" class="music-portal-action motion-stagger-item">
-            进入音乐空间
-            <span>↗</span>
+            <span class="oddy-article-index">{{ String(index + 1).padStart(2, '0') }}</span>
+            <div class="oddy-article-copy">
+              <p>{{ article.category }} · {{ article.date }}</p>
+              <h3>{{ article.title }}</h3>
+              <span>{{ article.excerpt }}</span>
+            </div>
+            <div class="oddy-article-meta">
+              <span>{{ article.readTime }} {{ copy.minRead }}</span>
+              <i>↗</i>
+            </div>
           </router-link>
         </div>
 
-        <div class="music-now motion-stagger-item">
-          <div class="music-vinyl" :class="{ 'is-playing': isPlaying }">
-            <img :src="activeSong.cover" :alt="`${activeSong.name}封面`" />
-          </div>
-          <div class="music-now-copy">
-            <small>NOW IN PLAYER</small>
-            <strong>{{ activeSong.name }}</strong>
-            <span>{{ activeSong.artist }}</span>
-          </div>
-          <div class="music-equalizer" :class="{ 'is-playing': isPlaying }" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i>
-          </div>
-        </div>
-      </section>
-
-      <section class="home-section digital-archive motion-section">
-        <span class="section-watermark" aria-hidden="true">04</span>
-        <div class="section-heading section-heading-compact">
+        <router-link class="oddy-article-entry" to="/articles">
           <div>
-            <p class="section-index motion-section-eyebrow">04 / DIGITAL ARCHIVE</p>
-            <h2 class="motion-section-title">一份正在更新的<br>个人数字档案</h2>
+            <p>{{ copy.fullArchive }} / {{ articleArchive.length }} {{ copy.articlesCount }}</p>
+            <h3>{{ copy.archiveEntryTitle }}</h3>
+            <span>{{ copy.archiveEntryText }}</span>
           </div>
-          <p class="section-lead motion-section-link">代码、文章和音乐共同构成这里。</p>
-        </div>
+          <i>↗</i>
+        </router-link>
+      </section>
 
-        <div class="archive-grid">
-          <article class="archive-card archive-card-large motion-stagger-item">
-            <span class="archive-card-label">LOCAL TIME</span>
-            <strong>{{ currentTimeLabel }}</strong>
-            <p>Asia / Shanghai</p>
-            <div class="archive-clock-lines" aria-hidden="true"><i></i><i></i><i></i></div>
-          </article>
-
-          <article class="archive-card motion-stagger-item">
-            <span class="archive-card-label">ARTICLES</span>
-            <strong>{{ articles.length.toString().padStart(2, '0') }}</strong>
-            <p>持续记录与整理</p>
-          </article>
-
-          <article class="archive-card motion-stagger-item">
-            <span class="archive-card-label">CURRENT FOCUS</span>
-            <strong class="archive-card-word">体验细节</strong>
-            <p>Motion · UI · Music</p>
-          </article>
-
-          <article class="archive-card archive-card-stack motion-stagger-item">
-            <span class="archive-card-label">TOOLKIT</span>
-            <div class="archive-tags">
-              <span v-for="tech in techStack" :key="tech">{{ tech }}</span>
-            </div>
-          </article>
-
-          <article class="archive-card archive-card-contact motion-stagger-item">
-            <span class="archive-card-label">LET'S CONNECT</span>
-            <strong class="archive-card-word">保持联系</strong>
-            <div class="archive-contact-links">
-              <a href="https://github.com" target="_blank" rel="noreferrer">GitHub ↗</a>
-              <a href="mailto:contact@mesting.com">Email ↗</a>
-              <router-link to="/about">About ↗</router-link>
-            </div>
-          </article>
+      <section class="oddy-partner-shell oddy-reveal">
+        <div class="oddy-partner" @pointermove="spawnTrail">
+          <div class="oddy-partner-orb oddy-partner-orb--notes" aria-hidden="true">
+            <span class="oddy-partner-orb-index">01 / NOTES</span>
+            <span class="oddy-partner-orb-orbit"><i></i><i></i><i></i></span>
+            <span class="oddy-partner-orb-caption">WORK IN<br>MOTION</span>
+          </div>
+          <div class="oddy-partner-orb oddy-partner-orb--sound" aria-hidden="true">
+            <span class="oddy-partner-orb-index">02 / SOUND</span>
+            <span class="oddy-partner-orb-record"><i></i></span>
+            <span class="oddy-partner-orb-bars"><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <span
+            v-for="trail in trailItems"
+            :key="trail.id"
+            class="oddy-trail-image"
+            :style="{ left: `${trail.x}px`, top: `${trail.y}px`, '--trail-rotation': `${trail.rotation}deg` }"
+            aria-hidden="true"
+          ><img :src="trail.src" alt=""></span>
+          <div class="oddy-partner-content">
+            <p class="oddy-kicker">{{ copy.conversationKicker }}</p>
+            <h2>{{ copy.partnerTitle[0] }}<br><span>{{ copy.partnerTitle[1] }}</span></h2>
+            <a class="oddy-button oddy-button-primary" href="mailto:3541798955@qq.com">
+              <span class="oddy-button-avatar">M</span>{{ copy.writeEmail }}
+            </a>
+          </div>
         </div>
       </section>
     </main>
+
+    <footer class="oddy-footer">
+      <div class="oddy-footer-top">
+        <div class="oddy-footer-invite">
+          <p>{{ copy.footerEyebrow }}</p>
+          <h2>{{ copy.footerTitle[0] }}<br><span>{{ copy.footerTitle[1] }}</span></h2>
+          <a class="oddy-button oddy-button-primary" href="mailto:3541798955@qq.com">{{ copy.startConversation }} <span>↗</span></a>
+        </div>
+        <div class="oddy-footer-links">
+          <div>
+            <span class="oddy-footer-link-title">{{ copy.explore }}</span>
+            <router-link to="/#projects">{{ copy.projects }}</router-link>
+            <router-link to="/#about-space">{{ copy.about }}</router-link>
+            <router-link to="/music">{{ copy.music }}</router-link>
+          </div>
+          <div>
+            <span class="oddy-footer-link-title">{{ copy.connect }}</span>
+            <a href="https://github.com" target="_blank" rel="noreferrer">GitHub ↗</a>
+            <a href="mailto:3541798955@qq.com">{{ copy.email }} ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="oddy-copyright"><span>{{ copy.copyright }}</span><span>CHINA / {{ currentYear }}</span></div>
+    </footer>
+
+    <nav class="oddy-bottom-nav" :aria-label="copy.quickNavAria">
+      <button type="button" class="oddy-bottom-mark" :aria-label="copy.backToTop" @click="scrollToTop">M</button>
+      <a href="mailto:3541798955@qq.com">{{ copy.writeEmail }} <span>↗</span></a>
+    </nav>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import HomeTechCanvas from '../components/HomeTechCanvas.vue'
-import { useHomeMotion } from '../composables/useHomeMotion'
-import { usePlayer } from '../composables/usePlayer'
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { gsap } from 'gsap'
+import { useArticles } from '../utils/articlesStore'
+import { localizeArticle } from '../utils/articleTranslations'
+import { useLocale } from '../composables/useLocale'
+import PortfolioHeader from '../components/PortfolioHeader.vue'
+import AmbientSideFields from '../components/AmbientSideFields.vue'
+
+const avatarModelUrl = '/models/avatar/mesting-rodin-rebuild-optimized.glb'
+let avatarComponentPreload = null
+
+const preloadAvatarComponent = () => {
+  if (!avatarComponentPreload) {
+    avatarComponentPreload = import('../components/AvatarMouseFollow.vue')
+  }
+  return avatarComponentPreload
+}
+
+const AvatarMouseFollow = defineAsyncComponent(preloadAvatarComponent)
 
 const homeRoot = ref(null)
-const clock = ref(new Date())
+const heroVideo = ref(null)
+const avatarMount = ref(null)
+const marqueeSection = ref(null)
+const marqueeTrack = ref(null)
+const marqueeDragging = ref(false)
+const marqueeMounted = ref(false)
+const avatarVisible = ref(false)
+const avatarReady = ref(false)
+const avatarFailed = ref(false)
+const activeNote = ref(0)
+const activeProjectImages = ref(new Set())
+const trailItems = ref([])
 const currentYear = new Date().getFullYear()
-const { currentSong, isPlaying } = usePlayer()
+const { articles } = useArticles()
+const { isChinese } = useLocale()
 
-const articles = ref([
+const homeCopy = {
+  en: {
+    heroEyebrow: 'MESTING / PERSONAL DIGITAL SPACE · 2026',
+    heroTitle: ['Code, Interfaces & Sound.', 'Made to Keep Evolving.'],
+    exploreProjects: 'Explore Projects',
+    aboutSpace: 'About This Space',
+    disciplinesAria: 'Creative disciplines',
+    marqueeAria: 'A draggable stream of creative references',
+    quote: ['I want this space to feel', 'like a work in motion,', 'not a display case.'],
+    signature: 'Mesting, always in progress',
+    keywordsAria: 'Digital space keywords',
+    avatarAlt: 'Mesting 3D digital avatar',
+    exploreSpaceAria: 'Explore the space',
+    offerings: [
+      {
+        index: '01 / SELECTED WORK',
+        title: 'Project Archive',
+        lines: ['From concept pages to usable interactive experiences.', 'A record of finished work and ideas still evolving.'],
+        meta: 'Continuously updated',
+        action: 'View Projects'
+      },
+      {
+        index: '02 / NOTES & SOUND',
+        title: 'Notes & Sound',
+        lines: ['Thoughts in progress, fragments from reading, and playlists.', 'Not yet defined, but worth keeping.'],
+        meta: 'Always unfolding',
+        action: 'Read Notes'
+      }
+    ],
+    notesKicker: 'A FEW NOTES FROM THE SPACE',
+    notesTitle: ['Questions in the process', 'that do not need quick answers.'],
+    previousNote: 'Previous note',
+    nextNote: 'Next note',
+    projectsKicker: 'SELECTED PROJECTS',
+    projectsTitle: ['A project is not an ending.', 'It is the start of another conversation.'],
+    viewProjectAria: 'View',
+    openProject: 'Open Project',
+    archiveKicker: 'THINKING ARCHIVE',
+    notesCount: 'NOTES',
+    archiveTitle: ['Paths already taken,', 'reframed as thoughts worth reopening.'],
+    minRead: 'MIN READ',
+    fullArchive: 'FULL ARCHIVE',
+    articlesCount: 'ARTICLES',
+    archiveEntryTitle: 'Enter the Complete Thinking Archive',
+    archiveEntryText: 'Browse every article, study log, and practice note by category.',
+    conversationKicker: 'OPEN TO CONVERSATION',
+    partnerTitle: ['Stay curious.', 'Stay connected.'],
+    writeEmail: 'Write an Email',
+    footerEyebrow: 'MESTING / PERSONAL DIGITAL SPACE',
+    footerTitle: ['Let the next project', 'begin with a conversation.'],
+    startConversation: 'Start a Conversation',
+    explore: 'Explore',
+    projects: 'Projects',
+    about: 'About',
+    music: 'Music',
+    connect: 'Connect',
+    email: 'Email',
+    copyright: 'Mesting Personal Space',
+    quickNavAria: 'Quick navigation',
+    backToTop: 'Back to top'
+  },
+  zh: {
+    heroEyebrow: 'MESTING / 个人数字空间 · 2026',
+    heroTitle: ['代码、界面与声音。', '在这里持续生长。'],
+    exploreProjects: '浏览作品',
+    aboutSpace: '认识这个空间',
+    disciplinesAria: '创作方向',
+    marqueeAria: '可拖动的创意灵感卡片流',
+    quote: ['我想把这个空间做成', '一处持续流动的作品，', '而不是展示柜。'],
+    signature: 'Mesting，持续制作中',
+    keywordsAria: '数字空间关键词',
+    avatarAlt: 'Mesting 3D 数字分身',
+    exploreSpaceAria: '探索这个空间',
+    offerings: [
+      {
+        index: '01 / 精选作品',
+        title: '作品档案',
+        lines: ['从概念页面到真实可用的交互体验。', '记录已经完成、也仍在继续演化的项目。'],
+        meta: '持续更新',
+        action: '查看作品'
+      },
+      {
+        index: '02 / 思考与声音',
+        title: '思考与声音',
+        lines: ['把正在形成的判断、阅读片段与播放列表放在一起。', '不急着定义，但值得被保留下来。'],
+        meta: '随时发生',
+        action: '阅读笔记'
+      }
+    ],
+    notesKicker: '来自这个空间的几条记录',
+    notesTitle: ['创作里那些', '不必很快回答的事。'],
+    previousNote: '上一条记录',
+    nextNote: '下一条记录',
+    projectsKicker: '精选作品',
+    projectsTitle: ['作品不是终点，', '而是继续对话的开始。'],
+    viewProjectAria: '查看',
+    openProject: '打开项目',
+    archiveKicker: '思考档案',
+    notesCount: '篇记录',
+    archiveTitle: ['把走过的路径，', '整理成可以再次打开的思考。'],
+    minRead: '分钟阅读',
+    fullArchive: '完整档案',
+    articlesCount: '篇文章',
+    archiveEntryTitle: '进入完整思考档案',
+    archiveEntryText: '按分类浏览所有文章、学习记录与实践笔记。',
+    conversationKicker: '保持交流',
+    partnerTitle: ['保持好奇，', '也保持联系。'],
+    writeEmail: '写一封邮件',
+    footerEyebrow: 'MESTING / 个人数字空间',
+    footerTitle: ['让下一次创作，', '从一场对话开始。'],
+    startConversation: '开始交流',
+    explore: '浏览',
+    projects: '作品',
+    about: '关于',
+    music: '音乐',
+    connect: '联系',
+    email: '邮箱',
+    copyright: 'Mesting 个人数字空间',
+    quickNavAria: '快捷导航',
+    backToTop: '回到顶部'
+  }
+}
+
+const copy = computed(() => homeCopy[isChinese.value ? 'zh' : 'en'])
+
+const handleAvatarReady = () => {
+  avatarReady.value = true
+}
+
+const handleAvatarError = () => {
+  avatarReady.value = false
+  avatarFailed.value = true
+}
+
+const marqueeAssets = [
   {
-    id: 1,
-    title: 'Vue3 Composition API 完全指南',
-    excerpt: '深入了解 Vue3 的 Composition API，从 setup 函数到响应式编程。',
-    date: '2024-01-15',
-    category: 'Vue'
+    src: 'https://videos.pexels.com/video-files/37013442/15681498_3840_2160_30fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-space-voyage-preview-eECLH3Yc.gif',
+    alt: 'glowing circuit current'
   },
   {
-    id: 2,
-    title: '现代 CSS 技巧与实践',
-    excerpt: '探索 Grid、Flexbox、CSS 变量和动画的组合方式。',
-    date: '2024-01-10',
-    category: 'CSS'
+    src: 'https://videos.pexels.com/video-files/10288594/10288594-hd_1920_1080_25fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-portfolio-cosmic-preview-BpvWJ3Nc.gif',
+    alt: 'scrolling circuit pathways'
   },
   {
-    id: 3,
-    title: 'JavaScript 异步编程详解',
-    excerpt: '从 Promise 到 Async/Await，梳理异步控制流与事件循环。',
-    date: '2024-01-05',
-    category: 'JavaScript'
+    src: 'https://videos.pexels.com/video-files/11041434/11041434-hd_1920_1080_30fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-velorah-preview-CJNTtbpd.gif',
+    alt: 'monochrome data matrix'
   },
   {
-    id: 4,
-    title: '前端性能优化实战',
-    excerpt: '从资源加载、拆包到渲染优化，建立完整的性能思维。',
-    date: '2024-01-02',
-    category: '性能优化'
+    src: 'https://videos.pexels.com/video-files/6466100/6466100-uhd_3840_2160_30fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-asme-preview-B_nGDnTP.gif',
+    alt: 'blue signal interface'
   },
   {
-    id: 5,
-    title: 'Vite 构建工具深入浅出',
-    excerpt: '了解 Vite 的核心原理与插件系统，让开发体验更轻快。',
-    date: '2023-12-28',
-    category: '工具'
+    src: 'https://videos.pexels.com/video-files/36405803/15438012_1920_1080_30fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-transform-data-preview-Cx5OU29N.gif',
+    alt: 'connected processor core'
+  },
+  {
+    src: 'https://videos.pexels.com/video-files/30308684/12992536_1920_1080_24fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-aethera-preview-DknSlcTa.gif',
+    alt: 'three dimensional network'
+  },
+  {
+    src: 'https://videos.pexels.com/video-files/29882131/12828950_1920_1080_25fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-orbit-web3-preview-BXt4OttD.gif',
+    alt: 'neon circuit loop'
+  },
+  {
+    src: 'https://videos.pexels.com/video-files/34645078/14683767_3840_2160_30fps.mp4',
+    trailSrc: 'https://motionsites.ai/assets/hero-nexora-preview-cx5HmUgo.gif',
+    alt: 'digital data field'
+  }
+]
+
+const spaceNotes = computed(() => isChinese.value
+  ? [
+      { index: '01', title: '视觉不是装饰', meta: '让页面自己说出它想成为的样子。', text: '设计的价值不只是“更好看”，而在于让人愿意停下来，再多看一会。' },
+      { index: '02', title: '让作品保持开放', meta: '每个项目都可以继续生长。', text: '完成不是终点。使用、反馈与重新燃起的好奇心，会让作品变得更加完整。' },
+      { index: '03', title: '慢一点也是进度', meta: '把仍在形成的想法留下来。', text: '有些答案不需要立刻出现。先记录、先观察，时间会替我们补上另一半。' },
+      { index: '04', title: '声音是一条线索', meta: '先听见，再重新看见。', text: '音乐常常会替画面打开一扇门，也让日常里细小的片段更容易被记住。' },
+      { index: '05', title: '忠于自己的好奇', meta: '不必把自己缩成一个标签。', text: '技术、图像、文字和声音可以同时存在，只要它们来自同一种真诚。' }
+    ]
+  : [
+      { index: '01', title: 'Visuals Are Not Decoration', meta: 'Let the page reveal how it wants to feel.', text: 'Design is not only about looking better. It should make someone want to pause and stay a little longer.' },
+      { index: '02', title: 'Keep the Work Open', meta: 'Every project can continue to grow.', text: 'Completion is not the end. Good work becomes more complete through use, feedback, and renewed curiosity.' },
+      { index: '03', title: 'Slower Is Still Progress', meta: 'Keep the ideas that are still taking shape.', text: 'Some answers do not need to arrive immediately. Record first, observe first, and let time complete the other half.' },
+      { index: '04', title: 'Sound Is a Clue', meta: 'Listen first, then see again.', text: 'Music often opens a door for an image and makes small fragments of everyday life easier to remember.' },
+      { index: '05', title: 'Stay True to Curiosity', meta: 'Do not reduce yourself to one label.', text: 'Technology, images, words, and sound can coexist. What matters is that they come from the same sincerity.' }
+    ])
+
+const articleArchive = computed(() => [...articles.value]
+  .sort((a, b) => (a.order || a.id || 0) - (b.order || b.id || 0)))
+const articlePreview = computed(() => articleArchive.value
+  .slice(0, 3)
+  .map(article => localizeArticle(article, isChinese.value)))
+
+const projects = computed(() => [
+  {
+    index: isChinese.value ? '01 / 原生音乐产品' : '01 / NATIVE MUSIC PRODUCT',
+    title: 'Mesting Music',
+    description: isChinese.value
+      ? '使用 Flutter 打造的原生 Android 音乐产品，连接发现、播放、主题装扮、云端同步与一起听。'
+      : 'A native Android music product built with Flutter, connecting discovery, playback, themes, cloud sync, and shared listening.',
+    kind: 'flutter',
+    anchor: 'project-mesting-music',
+    to: '/flutter-music-case'
+  },
+  {
+    index: isChinese.value ? '02 / 数字体验' : '02 / DIGITAL EXPERIENCE',
+    title: isChinese.value ? 'Vivo 概念重构' : 'Vivo Concept Rebuild',
+    description: isChinese.value
+      ? '将品牌叙事、页面节奏与动态体验重新组织成一条连续的浏览路径。'
+      : 'Brand storytelling, rhythm, and motion reorganized into one continuous browsing experience.',
+    image: 'https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif',
+    anchor: 'project-vivo-concept-rebuild',
+    to: '/vivo-case'
+  },
+  {
+    index: isChinese.value ? '03 / 海外落地页' : '03 / GLOBAL LANDING',
+    title: isChinese.value ? '海外品牌实验' : 'Global Brand Experiment',
+    description: isChinese.value
+      ? '为不同文化语境下的用户，寻找更直接、更有辨识度的表达方式。'
+      : 'A more direct and distinctive visual language designed for audiences across different cultural contexts.',
+    image: 'https://motionsites.ai/assets/hero-automation-machines-preview-DlTveRIN.gif',
+    anchor: 'project-global-brand-experiment',
+    to: '/foreign-case'
   }
 ])
 
-const techStack = ['Vue 3', 'JavaScript', 'CSS', 'GSAP', 'Vite', 'Responsive UI']
+let revealObserver = null
+let heroVideoObserver = null
+let marqueeObserver = null
+let noteCarouselObserver = null
+let projectImageObserver = null
+let marqueeFrame = 0
+let marqueeLastFrame = 0
+let marqueeOffset = 0
+let marqueeLoopWidth = 0
+let marqueeVelocity = 0
+let marqueePointerId = null
+let marqueeDragStartX = 0
+let marqueeDragStartOffset = 0
+let marqueeLastPointerX = 0
+let marqueeLastPointerTime = 0
+let marqueeReducedMotion = false
+let marqueeIsVisible = true
+let marqueeLastPaint = 0
+let heroVideoIsVisible = true
+let pageIsScrolling = false
+let carouselTimer = 0
+let lastTrailTime = 0
+let trailId = 0
+let projectMotionCleanups = []
+let marqueeCardMotionCleanup = null
+let resetMarqueeCardMotion = null
+let marqueeHovering = false
+let avatarWarmupTimer = 0
+let avatarWarmupIdleHandle = 0
+let avatarModelPrefetched = false
+const trailTimers = new Set()
 
-const homeSignals = [
-  'PRODUCT THINKING',
-  'MOTION LANGUAGE',
-  'FRONTEND CRAFT',
-  'RESPONSIVE SYSTEM',
-  'MUSIC EXPERIENCE',
-  'DIGITAL ARCHIVE'
-]
+const prefetchAvatarModel = () => {
+  if (avatarModelPrefetched || document.hidden) return
 
-const homeSignalsLoop = [...homeSignals, ...homeSignals]
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+  if (connection?.saveData || /(^|-)2g/.test(connection?.effectiveType || '')) return
 
-const homeChapters = [
-  { number: '01', label: 'WORK' },
-  { number: '02', label: 'THINKING' },
-  { number: '03', label: 'MUSIC' },
-  { number: '04', label: 'ARCHIVE' }
-]
+  const hint = document.createElement('link')
+  hint.rel = 'prefetch'
+  hint.as = 'fetch'
+  hint.href = avatarModelUrl
+  hint.crossOrigin = 'anonymous'
+  document.head.append(hint)
+  avatarModelPrefetched = true
+}
 
-const homeCapabilities = [
-  { title: 'Visual Direction', detail: '层级、留白与品牌感' },
-  { title: 'Motion Language', detail: '克制而连续的反馈' },
-  { title: 'Responsive Craft', detail: '跨设备保持完整体验' }
-]
+const wrapMarqueeOffset = (value) => {
+  if (!marqueeLoopWidth) return value
+  return ((value % marqueeLoopWidth) + marqueeLoopWidth) % marqueeLoopWidth
+}
 
-const activeSong = computed(() => ({
-  name: currentSong.value?.name || '晴天',
-  artist: currentSong.value?.artist || '周杰伦',
-  cover: currentSong.value?.cover || '/images/covers/qingtian.jpg'
-}))
+const renderMarquee = () => {
+  if (!marqueeTrack.value) return
+  marqueeTrack.value.style.transform = `translate3d(${-marqueeOffset}px, 0, 0)`
+}
 
-const currentTimeLabel = computed(() => new Intl.DateTimeFormat('zh-CN', {
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false
-}).format(clock.value))
+const measureMarquee = () => {
+  const firstGroup = marqueeTrack.value?.firstElementChild
+  if (!firstGroup) return
+  const previousWidth = marqueeLoopWidth
+  marqueeLoopWidth = firstGroup.getBoundingClientRect().width
+  if (previousWidth && marqueeLoopWidth) marqueeOffset = (marqueeOffset / previousWidth) * marqueeLoopWidth
+  marqueeOffset = wrapMarqueeOffset(marqueeOffset)
+  renderMarquee()
+}
 
-let clockTimer = 0
+const animateMarquee = (time) => {
+  if (!marqueeLastFrame) marqueeLastFrame = time
+  if (time - marqueeLastPaint < 32) {
+    marqueeFrame =
+      marqueeIsVisible && !document.hidden && !pageIsScrolling
+        ? window.requestAnimationFrame(animateMarquee)
+        : 0
+    return
+  }
+  const elapsed = Math.min((time - marqueeLastFrame) / 1000, 0.05)
+  marqueeLastFrame = time
+  marqueeLastPaint = time
 
-useHomeMotion(homeRoot)
+  if (!marqueeDragging.value && !marqueeHovering && !document.hidden && !pageIsScrolling) {
+    if (Math.abs(marqueeVelocity) > 1) {
+      marqueeOffset += marqueeVelocity * elapsed
+      marqueeVelocity *= Math.pow(0.045, elapsed)
+    } else if (!marqueeReducedMotion) {
+      marqueeVelocity = 0
+      marqueeOffset += 30 * elapsed
+    }
+    marqueeOffset = wrapMarqueeOffset(marqueeOffset)
+    renderMarquee()
+  }
+
+  marqueeFrame =
+    marqueeIsVisible && !document.hidden && !pageIsScrolling
+      ? window.requestAnimationFrame(animateMarquee)
+      : 0
+}
+
+const startMarqueeAnimation = () => {
+  if (marqueeFrame || !marqueeIsVisible || !marqueeMounted.value || document.hidden || pageIsScrolling) return
+  marqueeLastFrame = 0
+  marqueeLastPaint = 0
+  marqueeFrame = window.requestAnimationFrame(animateMarquee)
+}
+
+const stopMarqueeAnimation = () => {
+  if (marqueeFrame) window.cancelAnimationFrame(marqueeFrame)
+  marqueeFrame = 0
+  marqueeLastFrame = 0
+}
+
+const handlePageVisibility = () => {
+  if (document.hidden) {
+    stopMarqueeAnimation()
+    heroVideo.value?.pause()
+  } else {
+    startMarqueeAnimation()
+    if (heroVideoIsVisible && !pageIsScrolling) {
+      heroVideo.value?.play().catch(() => {})
+    }
+  }
+}
+
+const handleScrollState = (event) => {
+  pageIsScrolling = Boolean(event.detail?.scrolling)
+  if (pageIsScrolling) {
+    stopMarqueeAnimation()
+    heroVideo.value?.pause()
+    return
+  }
+
+  startMarqueeAnimation()
+  if (heroVideoIsVisible && !document.hidden) {
+    heroVideo.value?.play().catch(() => {})
+  }
+}
+
+const beginMarqueeDrag = (event) => {
+  if (event.pointerType === 'mouse' && event.button !== 0) return
+  resetMarqueeCardMotion?.()
+  marqueeHovering = false
+  measureMarquee()
+  marqueePointerId = event.pointerId
+  marqueeDragging.value = true
+  marqueeVelocity = 0
+  marqueeDragStartX = event.clientX
+  marqueeDragStartOffset = marqueeOffset
+  marqueeLastPointerX = event.clientX
+  marqueeLastPointerTime = performance.now()
+  event.currentTarget.setPointerCapture?.(event.pointerId)
+}
+
+const moveMarqueeDrag = (event) => {
+  if (!marqueeDragging.value || event.pointerId !== marqueePointerId) return
+  const now = performance.now()
+  const elapsed = Math.max(now - marqueeLastPointerTime, 8)
+  const pointerDelta = event.clientX - marqueeLastPointerX
+  const instantVelocity = -(pointerDelta / elapsed) * 1000
+  marqueeVelocity = (marqueeVelocity * 0.55) + (instantVelocity * 0.45)
+  marqueeOffset = wrapMarqueeOffset(marqueeDragStartOffset - (event.clientX - marqueeDragStartX))
+  marqueeLastPointerX = event.clientX
+  marqueeLastPointerTime = now
+  renderMarquee()
+}
+
+const finishMarqueeDrag = (event) => {
+  if (!marqueeDragging.value || event.pointerId !== marqueePointerId) return
+  marqueeDragging.value = false
+  marqueeVelocity = Math.max(-1800, Math.min(1800, marqueeVelocity))
+  if (Math.abs(marqueeVelocity) < 36) marqueeVelocity = 0
+  marqueePointerId = null
+  if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+    event.currentTarget.releasePointerCapture(event.pointerId)
+  }
+}
+
+const nextNote = () => {
+  activeNote.value = (activeNote.value + 1) % spaceNotes.value.length
+}
+
+const previousNote = () => {
+  activeNote.value = (activeNote.value - 1 + spaceNotes.value.length) % spaceNotes.value.length
+}
+
+const pauseCarousel = () => {
+  if (carouselTimer) window.clearInterval(carouselTimer)
+  carouselTimer = 0
+}
+
+const resumeCarousel = () => {
+  if (carouselTimer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  carouselTimer = window.setInterval(nextNote, 4200)
+}
+
+const spawnTrail = (event) => {
+  if (window.matchMedia('(pointer: coarse)').matches) return
+  const now = performance.now()
+  if (now - lastTrailTime < 90) return
+  lastTrailTime = now
+  const bounds = event.currentTarget.getBoundingClientRect()
+  const id = ++trailId
+  const item = {
+    id,
+    x: event.clientX - bounds.left,
+    y: event.clientY - bounds.top,
+    rotation: Math.round(Math.random() * 20 - 10),
+    src: marqueeAssets[id % marqueeAssets.length].trailSrc
+  }
+  trailItems.value = [...trailItems.value, item]
+  const timer = window.setTimeout(() => {
+    trailItems.value = trailItems.value.filter(trail => trail.id !== id)
+    trailTimers.delete(timer)
+  }, 1100)
+  trailTimers.add(timer)
+}
+
+const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+
+const destroyMarqueeCardMotion = () => {
+  marqueeCardMotionCleanup?.()
+  marqueeCardMotionCleanup = null
+  resetMarqueeCardMotion = null
+  marqueeHovering = false
+}
+
+const setupMarqueeCardMotion = () => {
+  destroyMarqueeCardMotion()
+
+  if (
+    !marqueeTrack.value ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    return
+  }
+
+  const track = marqueeTrack.value
+  const cards = [...track.querySelectorAll('.oddy-marquee-card')]
+  const inners = cards.map(card => card.querySelector('.oddy-marquee-card-inner'))
+  const media = cards.map(card => card.querySelector('.oddy-marquee-media'))
+  const captions = cards.map(card => card.querySelector('.oddy-marquee-caption'))
+  const glints = cards.map(card => card.querySelector('.oddy-marquee-glint'))
+  const focuses = cards.map(card => card.querySelector('.oddy-marquee-focus'))
+  let activeCard = null
+
+  const activeMotion = {
+    rotationXTo: null,
+    rotationYTo: null,
+    imageXTo: null,
+    imageYTo: null,
+    focusXTo: null,
+    focusYTo: null
+  }
+
+  const resetMotionTargets = (immediate = false) => {
+    const duration = immediate ? 0 : 0.46
+
+    marqueeHovering = false
+    activeCard = null
+    track.classList.remove('has-card-focus')
+    cards.forEach(card => {
+      card.classList.remove(
+        'is-hovered',
+        'is-neighbor-left',
+        'is-neighbor-right',
+        'is-neighbor-far-left',
+        'is-neighbor-far-right',
+        'is-muted'
+      )
+      card.style.removeProperty('--pointer-x')
+      card.style.removeProperty('--pointer-y')
+    })
+
+    gsap.to(inners, {
+      rotationX: 0,
+      rotationY: 0,
+      z: 0,
+      duration,
+      ease: 'power3.out',
+      overwrite: true
+    })
+    gsap.to(media, {
+      x: 0,
+      y: 0,
+      scale: 1,
+      duration,
+      ease: 'power3.out',
+      overwrite: true
+    })
+    gsap.to(captions, {
+      autoAlpha: 0,
+      y: 16,
+      duration: immediate ? 0 : 0.24,
+      ease: 'power2.out',
+      overwrite: true
+    })
+    gsap.to(glints, {
+      autoAlpha: 0,
+      duration: immediate ? 0 : 0.24,
+      overwrite: true
+    })
+    gsap.to(focuses, {
+      autoAlpha: 0,
+      scale: 0.72,
+      duration: immediate ? 0 : 0.2,
+      overwrite: true
+    })
+  }
+
+  const connectQuickMotion = card => {
+    const cardIndex = cards.indexOf(card)
+    const inner = inners[cardIndex]
+    const video = media[cardIndex]
+    const focus = focuses[cardIndex]
+
+    activeMotion.rotationXTo = gsap.quickTo(inner, 'rotationX', {
+      duration: 0.42,
+      ease: 'power3.out'
+    })
+    activeMotion.rotationYTo = gsap.quickTo(inner, 'rotationY', {
+      duration: 0.42,
+      ease: 'power3.out'
+    })
+    activeMotion.imageXTo = gsap.quickTo(video, 'x', {
+      duration: 0.5,
+      ease: 'power3.out'
+    })
+    activeMotion.imageYTo = gsap.quickTo(video, 'y', {
+      duration: 0.5,
+      ease: 'power3.out'
+    })
+    activeMotion.focusXTo = gsap.quickTo(focus, 'x', {
+      duration: 0.3,
+      ease: 'power3.out'
+    })
+    activeMotion.focusYTo = gsap.quickTo(focus, 'y', {
+      duration: 0.3,
+      ease: 'power3.out'
+    })
+  }
+
+  const activateCard = card => {
+    if (activeCard === card || marqueeDragging.value) return
+
+    if (activeCard) resetMotionTargets()
+    activeCard = card
+    marqueeHovering = true
+    track.classList.add('has-card-focus')
+
+    const activeCenter = card.getBoundingClientRect().left + card.getBoundingClientRect().width * 0.5
+    const positionedCards = cards
+      .map(candidate => {
+        const bounds = candidate.getBoundingClientRect()
+        return {
+          candidate,
+          delta: bounds.left + bounds.width * 0.5 - activeCenter
+        }
+      })
+      .filter(item => item.candidate !== card)
+    const cardsOnLeft = positionedCards.filter(item => item.delta < 0).sort((a, b) => b.delta - a.delta)
+    const cardsOnRight = positionedCards.filter(item => item.delta > 0).sort((a, b) => a.delta - b.delta)
+
+    cards.forEach(candidate => {
+      candidate.classList.remove(
+        'is-hovered',
+        'is-neighbor-left',
+        'is-neighbor-right',
+        'is-neighbor-far-left',
+        'is-neighbor-far-right',
+        'is-muted'
+      )
+      if (candidate !== card) candidate.classList.add('is-muted')
+    })
+
+    card.classList.remove('is-muted')
+    card.classList.add('is-hovered')
+    cardsOnLeft[0]?.candidate.classList.add('is-neighbor-left')
+    cardsOnLeft[0]?.candidate.classList.remove('is-muted')
+    cardsOnLeft[1]?.candidate.classList.add('is-neighbor-far-left')
+    cardsOnLeft[1]?.candidate.classList.remove('is-muted')
+    cardsOnRight[0]?.candidate.classList.add('is-neighbor-right')
+    cardsOnRight[0]?.candidate.classList.remove('is-muted')
+    cardsOnRight[1]?.candidate.classList.add('is-neighbor-far-right')
+    cardsOnRight[1]?.candidate.classList.remove('is-muted')
+
+    const cardIndex = cards.indexOf(card)
+    connectQuickMotion(card)
+    gsap.to(inners[cardIndex], {
+      z: 42,
+      duration: 0.5,
+      ease: 'power3.out',
+      overwrite: 'auto'
+    })
+    gsap.to(media[cardIndex], {
+      scale: 1.055,
+      duration: 0.7,
+      ease: 'power3.out',
+      overwrite: 'auto'
+    })
+    gsap.fromTo(captions[cardIndex], {
+      autoAlpha: 0,
+      y: 18
+    }, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.42,
+      delay: 0.04,
+      ease: 'power3.out',
+      overwrite: true
+    })
+    gsap.to(glints[cardIndex], {
+      autoAlpha: 1,
+      duration: 0.3,
+      overwrite: true
+    })
+    gsap.to(focuses[cardIndex], {
+      autoAlpha: 1,
+      scale: 1,
+      duration: 0.35,
+      ease: 'back.out(1.7)',
+      overwrite: true
+    })
+  }
+
+  const handlePointerOver = event => {
+    const card = event.target.closest?.('.oddy-marquee-card')
+    if (card && track.contains(card)) activateCard(card)
+  }
+
+  const handlePointerMove = event => {
+    if (!activeCard || marqueeDragging.value) return
+    const bounds = activeCard.getBoundingClientRect()
+    const localX = Math.max(0, Math.min(bounds.width, event.clientX - bounds.left))
+    const localY = Math.max(0, Math.min(bounds.height, event.clientY - bounds.top))
+    const normalizedX = localX / Math.max(bounds.width, 1) - 0.5
+    const normalizedY = localY / Math.max(bounds.height, 1) - 0.5
+
+    activeCard.style.setProperty('--pointer-x', `${((normalizedX + 0.5) * 100).toFixed(1)}%`)
+    activeCard.style.setProperty('--pointer-y', `${((normalizedY + 0.5) * 100).toFixed(1)}%`)
+    activeMotion.rotationXTo?.(normalizedY * -6)
+    activeMotion.rotationYTo?.(normalizedX * 8)
+    activeMotion.imageXTo?.(normalizedX * -10)
+    activeMotion.imageYTo?.(normalizedY * -8)
+    activeMotion.focusXTo?.(localX)
+    activeMotion.focusYTo?.(localY)
+  }
+
+  const handlePointerLeave = () => resetMotionTargets()
+
+  track.addEventListener('pointerover', handlePointerOver)
+  track.addEventListener('pointermove', handlePointerMove, { passive: true })
+  track.addEventListener('pointerleave', handlePointerLeave)
+  resetMarqueeCardMotion = () => resetMotionTargets()
+
+  marqueeCardMotionCleanup = () => {
+    track.removeEventListener('pointerover', handlePointerOver)
+    track.removeEventListener('pointermove', handlePointerMove)
+    track.removeEventListener('pointerleave', handlePointerLeave)
+    resetMotionTargets(true)
+    gsap.killTweensOf([...inners, ...media, ...captions, ...glints, ...focuses])
+  }
+}
+
+const setupProjectMotion = () => {
+  projectMotionCleanups.forEach(cleanup => cleanup())
+  projectMotionCleanups = []
+
+  if (
+    !homeRoot.value ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    return
+  }
+
+  homeRoot.value.querySelectorAll('.oddy-project-visual').forEach(visual => {
+    const rotationXTo = gsap.quickTo(visual, 'rotationX', {
+      duration: 0.5,
+      ease: 'power3.out'
+    })
+    const rotationYTo = gsap.quickTo(visual, 'rotationY', {
+      duration: 0.5,
+      ease: 'power3.out'
+    })
+    const scaleTo = gsap.quickTo(visual, 'scale', {
+      duration: 0.42,
+      ease: 'power3.out'
+    })
+    let releaseTimer = null
+
+    gsap.set(visual, {
+      transformPerspective: 1200,
+      transformOrigin: '0% 50%'
+    })
+
+    const keepTransformReady = () => {
+      if (releaseTimer) {
+        window.clearTimeout(releaseTimer)
+        releaseTimer = null
+      }
+      visual.style.willChange = 'transform'
+    }
+
+    const handlePointerMove = event => {
+      const bounds = visual.getBoundingClientRect()
+      const pointerX = (event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5
+      const pointerY = (event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5
+
+      rotationXTo(pointerY * -4)
+      rotationYTo(pointerX * 5)
+    }
+
+    const handlePointerEnter = () => {
+      keepTransformReady()
+      scaleTo(1.008)
+    }
+
+    const handlePointerLeave = () => {
+      rotationXTo(0)
+      rotationYTo(0)
+      scaleTo(1)
+      releaseTimer = window.setTimeout(() => {
+        visual.style.removeProperty('will-change')
+        releaseTimer = null
+      }, 650)
+    }
+
+    const handlePointerDown = event => {
+      if (event.button !== 0) return
+      keepTransformReady()
+      scaleTo(0.992)
+    }
+
+    const handlePointerUp = () => {
+      scaleTo(1.008)
+    }
+
+    visual.addEventListener('pointermove', handlePointerMove)
+    visual.addEventListener('pointerenter', handlePointerEnter)
+    visual.addEventListener('pointerleave', handlePointerLeave)
+    visual.addEventListener('pointerdown', handlePointerDown)
+    visual.addEventListener('pointerup', handlePointerUp)
+    visual.addEventListener('pointercancel', handlePointerLeave)
+
+    projectMotionCleanups.push(() => {
+      if (releaseTimer) window.clearTimeout(releaseTimer)
+      visual.removeEventListener('pointermove', handlePointerMove)
+      visual.removeEventListener('pointerenter', handlePointerEnter)
+      visual.removeEventListener('pointerleave', handlePointerLeave)
+      visual.removeEventListener('pointerdown', handlePointerDown)
+      visual.removeEventListener('pointerup', handlePointerUp)
+      visual.removeEventListener('pointercancel', handlePointerLeave)
+      gsap.killTweensOf(visual)
+      visual.style.removeProperty('will-change')
+    })
+  })
+}
 
 onMounted(() => {
-  clockTimer = window.setInterval(() => {
-    clock.value = new Date()
-  }, 30000)
+  if ('IntersectionObserver' in window) {
+    revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        // Home sections reset after leaving so the reveal is available every
+        // time readers return to them, without a page refresh.
+        const shouldReveal = entry.isIntersecting && entry.intersectionRatio >= 0.01
+        entry.target.classList.toggle('is-visible', shouldReveal)
+      })
+    }, { threshold: 0.01, rootMargin: '0px 0px -2% 0px' })
+    homeRoot.value?.querySelectorAll('.oddy-reveal').forEach(element => revealObserver.observe(element))
+
+    marqueeIsVisible = false
+    marqueeObserver = new IntersectionObserver(([entry]) => {
+      marqueeIsVisible = entry?.isIntersecting ?? false
+      if (marqueeIsVisible) {
+        marqueeMounted.value = true
+        nextTick(() => {
+          measureMarquee()
+          setupMarqueeCardMotion()
+          startMarqueeAnimation()
+        })
+      } else {
+        stopMarqueeAnimation()
+        destroyMarqueeCardMotion()
+        marqueeMounted.value = false
+      }
+    }, { rootMargin: '420px 0px' })
+    if (marqueeSection.value) marqueeObserver.observe(marqueeSection.value)
+
+    heroVideoObserver = new IntersectionObserver(([entry]) => {
+      heroVideoIsVisible = entry?.isIntersecting ?? false
+      if (heroVideoIsVisible && !document.hidden && !pageIsScrolling) {
+        heroVideo.value?.play().catch(() => {})
+      } else {
+        heroVideo.value?.pause()
+      }
+    }, { rootMargin: '80px 0px' })
+    if (heroVideo.value) heroVideoObserver.observe(heroVideo.value)
+
+    noteCarouselObserver = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) resumeCarousel()
+      else pauseCarousel()
+    }, { rootMargin: '180px 0px' })
+    const notesSection = homeRoot.value?.querySelector('.oddy-notes')
+    if (notesSection) noteCarouselObserver.observe(notesSection)
+
+    projectImageObserver = new IntersectionObserver(entries => {
+      const nextActiveImages = new Set(activeProjectImages.value)
+      entries.forEach(entry => {
+        const projectTitle = entry.target.dataset.projectImage
+        if (!projectTitle) return
+        if (entry.isIntersecting) nextActiveImages.add(projectTitle)
+        else nextActiveImages.delete(projectTitle)
+      })
+      activeProjectImages.value = nextActiveImages
+    }, { rootMargin: '360px 0px' })
+    homeRoot.value
+      ?.querySelectorAll('[data-project-image]')
+      .forEach(element => projectImageObserver.observe(element))
+  } else {
+    homeRoot.value?.querySelectorAll('.oddy-reveal').forEach(element => element.classList.add('is-visible'))
+    avatarVisible.value = true
+    marqueeMounted.value = true
+    marqueeIsVisible = true
+    activeProjectImages.value = new Set(
+      projects.value.filter(project => project.image).map(project => project.anchor)
+    )
+    resumeCarousel()
+    nextTick(() => {
+      measureMarquee()
+      setupMarqueeCardMotion()
+      startMarqueeAnimation()
+    })
+  }
+
+  window.addEventListener('resize', measureMarquee, { passive: true })
+
+  // The card has an instant still preview. Warm the original model early while
+  // the first screen is settling, so its decode and shader compilation do not
+  // wait until the reader reaches the avatar on a return scroll.
+  avatarWarmupTimer = window.setTimeout(() => {
+    const warmAvatar = () => {
+      avatarWarmupIdleHandle = 0
+      preloadAvatarComponent()
+      prefetchAvatarModel()
+      avatarVisible.value = true
+    }
+
+    if ('requestIdleCallback' in window) {
+      avatarWarmupIdleHandle = window.requestIdleCallback(warmAvatar, { timeout: 1200 })
+    } else {
+      warmAvatar()
+    }
+  }, 280)
+
+  marqueeReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  measureMarquee()
+  document.addEventListener('visibilitychange', handlePageVisibility)
+  document.addEventListener('mesting:scroll-state', handleScrollState)
+  nextTick(setupProjectMotion)
+  startMarqueeAnimation()
 })
 
 onUnmounted(() => {
-  window.clearInterval(clockTimer)
+  revealObserver?.disconnect()
+  heroVideoObserver?.disconnect()
+  marqueeObserver?.disconnect()
+  noteCarouselObserver?.disconnect()
+  projectImageObserver?.disconnect()
+  window.removeEventListener('resize', measureMarquee)
+  if (avatarWarmupTimer) window.clearTimeout(avatarWarmupTimer)
+  if (avatarWarmupIdleHandle && 'cancelIdleCallback' in window) {
+    window.cancelIdleCallback(avatarWarmupIdleHandle)
+  }
+  document.removeEventListener('visibilitychange', handlePageVisibility)
+  document.removeEventListener('mesting:scroll-state', handleScrollState)
+  heroVideo.value?.pause()
+  stopMarqueeAnimation()
+  destroyMarqueeCardMotion()
+  pauseCarousel()
+  projectMotionCleanups.forEach(cleanup => cleanup())
+  projectMotionCleanups = []
+  trailTimers.forEach(timer => window.clearTimeout(timer))
+  trailTimers.clear()
 })
 </script>
 
-<style scoped>
-@import '../css/Home.css';
+<style>
+@import '../css/HomeOddy.css';
 </style>

@@ -61,7 +61,7 @@ export const allSongs = [
     title: '以父之名',
     artist: '周杰伦',
     url: '/music/以父之名.wav',
-    cover: '/images/covers/yifuzhiming.jpg',
+    cover: '/images/covers/qingtian.jpg',
     duration: '5:42',
     lrc: '/lyrics/以父之名.lrc'
   },
@@ -93,7 +93,7 @@ export const allSongs = [
     title: '花海',
     artist: '周杰伦',
     url: '/music/花海.m4a',
-    cover: '/images/covers/huahai.jpg',
+    cover: '/images/covers/daoxiang.jpg',
     duration: '4:24',
     lrc: '/lyrics/花海.lrc'
   }
@@ -151,7 +151,7 @@ export const explorePlaylists = [
   { id: 'explore-4', name: '电子星球漫游', cover: '/images/13416469474435386.jpeg', onlineQuery: 'electronic synthwave', onlineSource: 'Audius' },
   { id: 'explore-5', name: '爵士午后', cover: '/images/13416469475600604.jpeg', onlineQuery: 'smooth jazz lounge', onlineSource: 'Audius' },
   { id: 'explore-6', name: '清晨原野', cover: '/images/13416469476573717.jpeg', onlineQuery: 'acoustic morning chill', onlineSource: 'Audius' },
-  { id: 'explore-7', name: '灵魂律动', cover: '/images/13416469337261709.jpeg', onlineQuery: 'neo soul groove', onlineSource: 'Audius' },
+  { id: 'explore-7', name: '灵魂律动', cover: '/images/playlist-default.jpg', onlineQuery: 'neo soul groove', onlineSource: 'Audius' },
   { id: 'explore-8', name: '摇滚现场', cover: '/images/13416469362905352.jpeg', onlineQuery: 'alternative rock live', onlineSource: 'Audius' },
   { id: 'explore-9', name: '午夜霓虹', cover: '/images/13416469360258155.jpeg', onlineQuery: 'midnight synth pop', onlineSource: 'Audius' },
   { id: 'explore-10', name: '海边公路', cover: '/images/13416469361531865.jpeg', onlineQuery: 'coastal indie road trip', onlineSource: 'Audius' },

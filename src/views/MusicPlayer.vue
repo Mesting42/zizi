@@ -18,7 +18,7 @@
     <button
       class="close-btn"
       type="button"
-      :aria-label="isMobileLyricsView ? '返回唱片页面' : '返回音乐页'"
+      :aria-label="isMobileLyricsView ? copy.backRecord : copy.backMusic"
       @click="goBack"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -32,6 +32,16 @@
         />
       </svg>
     </button>
+    <button
+      class="player-locale-toggle"
+      type="button"
+      :aria-label="copy.switchLanguage"
+      @click="toggleLocale"
+    >
+      <span :class="{ active: isChinese }">中</span>
+      <i aria-hidden="true"></i>
+      <span :class="{ active: !isChinese }">EN</span>
+    </button>
 
     <div class="mobile-player-heading">
       <strong>{{ currentSong.title }}</strong>
@@ -44,7 +54,7 @@
           class="vinyl-wrapper"
           role="button"
           tabindex="0"
-          aria-label="打开歌词页面"
+          :aria-label="copy.openLyrics"
           @click="openMobileLyrics"
           @keydown.enter.prevent="openMobileLyrics"
           @keydown.space.prevent="openMobileLyrics"
@@ -85,15 +95,15 @@
             class="mobile-record-favorite"
             :class="{ liked: isLiked }"
             type="button"
-            :aria-label="isLiked ? '取消收藏' : '收藏歌曲'"
-            :title="isLiked ? '取消收藏' : '收藏歌曲'"
+            :aria-label="isLiked ? copy.unlike : copy.like"
+            :title="isLiked ? copy.unlike : copy.like"
             @click.stop="toggleLike"
           >
             <svg viewBox="0 0 24 24" :fill="isLiked ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
           </button>
-          <span class="mobile-record-lyrics-hint">点击唱片查看歌词</span>
+          <span class="mobile-record-lyrics-hint">{{ copy.tapForLyrics }}</span>
         </div>
       </div>
 
@@ -116,7 +126,7 @@
           <div class="lyrics-scroll-inner">
             <template v-if="parsedLyrics.length > 0">
               <div v-if="hasUnsyncedLyrics" class="lyrics-plain-note">
-                已找到普通文本歌词（无逐句时间轴）
+                {{ copy.plainLyrics }}
               </div>
               <div
                 v-for="(line, index) in parsedLyrics"
@@ -130,7 +140,7 @@
               </div>
             </template>
             <div v-else-if="isLyricsLoading" class="lyrics-line lyrics-loading">
-              歌词加载中...
+              {{ copy.lyricsLoading }}
             </div>
             <div v-else class="lyrics-line" :class="{ active: currentTime > 0 }">
               {{ lyricsEmptyText }}
@@ -177,7 +187,7 @@
       </div>
 
       <div class="bar-controls">
-        <button class="ctrl-btn play-mode-btn" :class="playMode" :title="playMode === 'list' ? '顺序播放' : playMode === 'single' ? '单曲循环' : '随机播放'" @click="togglePlayMode">
+        <button class="ctrl-btn play-mode-btn" :class="playMode" :title="playMode === 'list' ? copy.listMode : playMode === 'single' ? copy.singleMode : copy.randomMode" @click="togglePlayMode">
           <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
           </svg>
@@ -189,12 +199,12 @@
           </svg>
         </button>
         <div class="control-btns">
-          <button class="ctrl-btn" title="上一首" @click="prevSong">
+          <button class="ctrl-btn" :title="copy.previous" @click="prevSong">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
             </svg>
           </button>
-          <button class="ctrl-btn play-btn" @click="togglePlay">
+          <button class="ctrl-btn play-btn" :title="isPlaying ? copy.pause : copy.play" @click="togglePlay">
             <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
             </svg>
@@ -202,12 +212,12 @@
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
           </button>
-          <button class="ctrl-btn" title="下一首" @click="nextSong">
+          <button class="ctrl-btn" :title="copy.next" @click="nextSong">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
             </svg>
           </button>
-          <button class="ctrl-btn list-btn" @click="handlePlaylistClick" title="播放列表">
+          <button class="ctrl-btn list-btn" @click="handlePlaylistClick" :title="copy.playlist">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
             </svg>
@@ -254,14 +264,14 @@
     </footer>
 
     <!-- 手机与 iPad 使用独立控制区，避免继承桌面播放器的白色底板和歌曲信息 -->
-    <nav v-else class="mobile-player-dock" aria-label="移动端播放器">
+    <nav v-else class="mobile-player-dock" :aria-label="copy.mobilePlayer">
       <button
         v-if="isMobileLyricsView"
         class="mobile-lyrics-favorite"
         :class="{ liked: isLiked }"
         type="button"
-        :aria-label="isLiked ? '取消收藏' : '收藏歌曲'"
-        :title="isLiked ? '取消收藏' : '收藏歌曲'"
+        :aria-label="isLiked ? copy.unlike : copy.like"
+        :title="isLiked ? copy.unlike : copy.like"
         @click.stop="toggleLike"
       >
         <svg viewBox="0 0 24 24" :fill="isLiked ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -286,13 +296,13 @@
         </div>
         <div class="mobile-player-timeline-meta">
           <span>{{ formatTime(isDragging ? dragCurrentTime : currentTime) }}</span>
-          <span>高音质</span>
+          <span>{{ copy.highQuality }}</span>
           <span>{{ formatTime(duration) }}</span>
         </div>
       </div>
 
-      <div class="mobile-transport-controls" aria-label="播放控制">
-        <button class="mobile-transport-btn" :class="playMode" :title="playMode === 'list' ? '顺序播放' : playMode === 'single' ? '单曲循环' : '随机播放'" @click="togglePlayMode">
+      <div class="mobile-transport-controls" :aria-label="copy.playbackControls">
+        <button class="mobile-transport-btn" :class="playMode" :title="playMode === 'list' ? copy.listMode : playMode === 'single' ? copy.singleMode : copy.randomMode" @click="togglePlayMode">
           <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
           </svg>
@@ -303,12 +313,12 @@
             <path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41ZM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5Zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13Z"/>
           </svg>
         </button>
-        <button class="mobile-transport-btn" type="button" title="上一首" @click="prevSong">
+        <button class="mobile-transport-btn" type="button" :title="copy.previous" @click="prevSong">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
           </svg>
         </button>
-        <button class="mobile-transport-btn mobile-transport-play" type="button" :title="isPlaying ? '暂停' : '播放'" @click="togglePlay">
+        <button class="mobile-transport-btn mobile-transport-play" type="button" :title="isPlaying ? copy.pause : copy.play" @click="togglePlay">
           <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z"/>
           </svg>
@@ -316,12 +326,12 @@
             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
           </svg>
         </button>
-        <button class="mobile-transport-btn" type="button" title="下一首" @click="nextSong">
+        <button class="mobile-transport-btn" type="button" :title="copy.next" @click="nextSong">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
           </svg>
         </button>
-        <button class="mobile-transport-btn" type="button" title="播放列表" @click="handlePlaylistClick">
+        <button class="mobile-transport-btn" type="button" :title="copy.playlist" @click="handlePlaylistClick">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
           </svg>
@@ -342,7 +352,7 @@
           :style="{ '--playlist-drawer-drag': `${playlistDrawerDragY}px` }"
           role="dialog"
           aria-modal="true"
-          aria-label="播放列表"
+          :aria-label="copy.playlist"
         >
           <div
             v-if="isCompactPlayer"
@@ -357,10 +367,10 @@
           </div>
           <div class="popup-header">
             <div>
-              <h3>播放列表</h3>
-              <span>{{ playlist.length }} 首歌曲</span>
+              <h3>{{ copy.playlist }}</h3>
+              <span>{{ copy.songCount(playlist.length) }}</span>
             </div>
-            <button class="close-btn" type="button" aria-label="关闭播放列表" @click="closePlaylist">
+            <button class="close-btn" type="button" :aria-label="copy.closePlaylist" @click="closePlaylist">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
@@ -382,7 +392,7 @@
                 <p>{{ song.artist }}</p>
               </div>
               <span class="item-time">{{ song.duration }}</span>
-              <button class="remove-btn" type="button" aria-label="从播放列表移除" @click.stop="removeFromPlaylist(index)">
+              <button class="remove-btn" type="button" :aria-label="copy.removeFromPlaylist" @click.stop="removeFromPlaylist(index)">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
@@ -390,8 +400,8 @@
             </div>
           </div>
           <div v-else class="playlist-empty-state">
-            <strong>播放列表还是空的</strong>
-            <span>下一首会继续从本地音乐中切换</span>
+            <strong>{{ copy.emptyPlaylist }}</strong>
+            <span>{{ copy.emptyPlaylistHint }}</span>
           </div>
         </section>
       </div>
@@ -412,9 +422,74 @@ import LyricsToggleButton from '../components/LyricsToggleButton.vue'
 import PlayerTitleMarquee from '../components/PlayerTitleMarquee.vue'
 import { useMusicBackground } from '../composables/useMusicBackground'
 import { getMusicThemeIp } from '../config/musicThemeCatalog'
+import { useLocale } from '../composables/useLocale'
 
 const router = useRouter()
 const route = useRoute()
+const { isChinese, toggleLocale } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      backRecord: '返回唱片页面',
+      backMusic: '返回音乐页',
+      switchLanguage: '切换语言',
+      openLyrics: '打开歌词页面',
+      unlike: '取消收藏',
+      like: '收藏歌曲',
+      tapForLyrics: '点击唱片查看歌词',
+      plainLyrics: '已找到普通文本歌词（无逐句时间轴）',
+      lyricsLoading: '歌词加载中...',
+      mobilePlayer: '移动端播放器',
+      highQuality: '高音质',
+      playbackControls: '播放控制',
+      listMode: '顺序播放',
+      singleMode: '单曲循环',
+      randomMode: '随机播放',
+      previous: '上一首',
+      pause: '暂停',
+      play: '播放',
+      next: '下一首',
+      playlist: '播放列表',
+      closePlaylist: '关闭播放列表',
+      removeFromPlaylist: '从播放列表移除',
+      songCount: (count) => `${count} 首歌曲`,
+      emptyPlaylist: '播放列表还是空的',
+      emptyPlaylistHint: '下一首会继续从本地音乐中切换',
+      previewLyricsUnavailable: '试听片段没有准确的完整版时间点，暂不显示同步歌词',
+      instrumental: '作者已标注这首在线歌曲为纯音乐',
+      onlineLyricsUnavailable: '该在线歌曲暂无匹配歌词，可能为纯音乐或歌词库尚未收录',
+      noLyrics: '暂无歌词'
+    }
+  : {
+      backRecord: 'Back to record',
+      backMusic: 'Back to Music',
+      switchLanguage: 'Switch language',
+      openLyrics: 'Open lyrics',
+      unlike: 'Remove from favorites',
+      like: 'Add to favorites',
+      tapForLyrics: 'Tap the record to view lyrics',
+      plainLyrics: 'Plain-text lyrics found (no line-by-line timeline)',
+      lyricsLoading: 'Loading lyrics...',
+      mobilePlayer: 'Mobile player',
+      highQuality: 'High Quality',
+      playbackControls: 'Playback controls',
+      listMode: 'Play in order',
+      singleMode: 'Repeat one',
+      randomMode: 'Shuffle',
+      previous: 'Previous',
+      pause: 'Pause',
+      play: 'Play',
+      next: 'Next',
+      playlist: 'Play Queue',
+      closePlaylist: 'Close play queue',
+      removeFromPlaylist: 'Remove from play queue',
+      songCount: (count) => `${count} songs`,
+      emptyPlaylist: 'Your play queue is empty',
+      emptyPlaylistHint: 'The next track will continue from your local library',
+      previewLyricsUnavailable: 'This preview does not include a reliable full-track timeline, so synced lyrics are unavailable.',
+      instrumental: 'The artist marked this online track as instrumental.',
+      onlineLyricsUnavailable: 'No matching lyrics were found for this online track.',
+      noLyrics: 'No lyrics available'
+    })
 
 const {
   currentSong: sharedCurrentSong,
@@ -687,15 +762,15 @@ const currentSong = sharedCurrentSong
 const hasUnsyncedLyrics = computed(() => parsedLyrics.value.some(line => line.unsynced))
 const lyricsEmptyText = computed(() => {
   if (currentSong.value?.isPreview || currentSong.value?.source === 'online') {
-    return '试听片段没有准确的完整版时间点，暂不显示同步歌词'
+    return copy.value.previewLyricsUnavailable
   }
   if (currentSong.value?.source === 'audius') {
     if (currentSong.value?.isInstrumental) {
-      return '作者已标注这首在线歌曲为纯音乐'
+      return copy.value.instrumental
     }
-    return '该在线歌曲暂无匹配歌词，可能为纯音乐或歌词库尚未收录'
+    return copy.value.onlineLyricsUnavailable
   }
-  return '暂无歌词'
+  return copy.value.noLyrics
 })
 const playlist = sharedPlaylist
 const currentIndex = sharedCurrentIndex
@@ -869,4 +944,46 @@ defineExpose({ setSong, setPlaying, currentSong, isPlaying })
 </script>
 <style scoped>
 @import '../css/MusicPlayer.css';
+
+.player-locale-toggle {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top, 0px));
+  right: max(18px, env(safe-area-inset-right, 0px));
+  z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 999px;
+  background: rgba(8, 11, 18, .72);
+  color: rgba(255, 255, 255, .48);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.player-locale-toggle i {
+  width: 1px;
+  height: 10px;
+  background: rgba(255, 255, 255, .2);
+}
+
+.player-locale-toggle span.active {
+  color: #fff;
+}
+
+@media (max-width: 767px) {
+  .player-locale-toggle {
+    top: max(10px, env(safe-area-inset-top, 0px));
+    right: max(10px, env(safe-area-inset-right, 0px));
+    min-height: 30px;
+    padding: 0 10px;
+  }
+}
 </style>

@@ -14,24 +14,48 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    // Only the local site may read development-server responses.
+    cors: {
+      origin: /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/
+    },
+    // Pre-transform the first route before Chrome opens. Home is also imported
+    // eagerly by the router so its request remains part of the initial load.
+    warmup: {
+      clientFiles: [
+        './src/main.js',
+        './src/App.vue',
+        './src/views/Home.vue',
+        './src/css/HomeOddy.css',
+        './src/components/PortfolioHeader.vue',
+        './src/components/AmbientSideFields.vue'
+      ]
+    },
     proxy: {
       '/api/lrclib': {
         target: 'https://lrclib.net',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/lrclib/, '/api'),
         headers: {
-          'Lrclib-Client': 'personal-blog/1.0',
-          'User-Agent': 'personal-blog/1.0'
+          'Lrclib-Client': 'personal-digital-space/1.0',
+          'User-Agent': 'personal-digital-space/1.0'
         }
       }
     }
   },
   build: {
+    // The site targets current browsers and Android WebView. ES2022 keeps the
+    // initial route's top-level await intact so the load indicator and the
+    // first visible frame finish together.
+    target: 'es2022',
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vue-vendor': ['vue', 'vue-router'],
-          gsap: ['gsap']
+        manualChunks(id) {
+          if (id.includes('/node_modules/@vue/') || id.includes('/node_modules/vue/') || id.includes('/node_modules/vue-router/')) {
+            return 'vue-vendor'
+          }
+          if (id.includes('/node_modules/gsap/')) {
+            return 'gsap'
+          }
         }
       }
     },

@@ -38,7 +38,7 @@
         class="like-btn"
         :class="{ liked: isLiked }"
         type="button"
-        :aria-label="isLiked ? '取消收藏' : '收藏歌曲'"
+        :aria-label="isLiked ? copy.unlike : copy.like"
         @click.stop="toggleLike"
       >
         <svg viewBox="0 0 24 24" :fill="isLiked ? '#e74c3c' : 'none'" stroke="currentColor" stroke-width="2">
@@ -61,20 +61,20 @@
       </button>
 
       <div class="control-btns">
-        <button class="ctrl-btn" type="button" title="上一首" @click="prev">
+        <button class="ctrl-btn" type="button" :title="copy.previous" @click="prev">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" /></svg>
         </button>
         <button
           class="ctrl-btn play-btn"
           type="button"
-          :title="isPlaying ? '暂停' : '播放'"
+          :title="isPlaying ? copy.pause : copy.play"
           :style="{ '--mobile-play-progress': `${Math.min(100, Math.max(0, progress))}%` }"
           @click="togglePlay"
         >
           <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
           <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14Zm8-14v14h4V5h-4Z" /></svg>
         </button>
-        <button class="ctrl-btn" type="button" title="下一首" @click="next">
+        <button class="ctrl-btn" type="button" :title="copy.next" @click="next">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="m6 18 8.5-6L6 6v12ZM16 6v12h2V6h-2Z" /></svg>
         </button>
         <button class="ctrl-btn list-btn" type="button" :title="queueButtonTitle" @click="openPlaylist">
@@ -87,7 +87,7 @@
     <div class="bar-extra">
       <LyricsToggleButton />
       <div class="volume-wrap">
-        <button class="vol-btn" type="button" :title="volume > 0 ? '静音' : '恢复音量'" @click="toggleMute">
+        <button class="vol-btn" type="button" :title="volume > 0 ? copy.mute : copy.unmute" @click="toggleMute">
           <svg v-if="volume > 0" viewBox="0 0 24 24" fill="currentColor">
             <path d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02Z" />
           </svg>
@@ -101,7 +101,7 @@
           :class="{ 'is-dragging': isVolumeDragging }"
           :style="{ '--volume-position': `${volume * 100}%` }"
           role="slider"
-          aria-label="音量"
+          :aria-label="copy.volume"
           aria-valuemin="0"
           aria-valuemax="100"
           :aria-valuenow="Math.round(volume * 100)"
@@ -126,15 +126,15 @@
         class="playlists-player-backdrop"
         @click.self="showPlaylist = false"
       >
-        <section class="playlists-player-popup" role="dialog" aria-modal="true" aria-label="播放列表">
+        <section class="playlists-player-popup" role="dialog" aria-modal="true" :aria-label="copy.playlist">
           <div class="playlists-popup-handle" aria-hidden="true"></div>
           <div class="playlists-popup-header">
             <div>
-              <span>当前播放</span>
-              <h3>播放列表</h3>
+              <span>{{ copy.nowPlaying }}</span>
+              <h3>{{ copy.playlist }}</h3>
             </div>
-            <strong class="playlists-popup-count">{{ playlist.length }} 首</strong>
-            <button type="button" aria-label="关闭播放列表" @click="showPlaylist = false">×</button>
+            <strong class="playlists-popup-count">{{ copy.songCount(playlist.length) }}</strong>
+            <button type="button" :aria-label="copy.closePlaylist" @click="showPlaylist = false">×</button>
           </div>
           <div class="playlists-popup-list">
             <button
@@ -153,7 +153,7 @@
               </span>
               <span class="playlists-popup-duration">{{ song.duration }}</span>
             </button>
-            <p v-if="!playlist.length" class="playlists-popup-empty">接下来没有待播放的歌曲</p>
+            <p v-if="!playlist.length" class="playlists-popup-empty">{{ copy.emptyQueue }}</p>
           </div>
         </section>
       </div>
@@ -171,6 +171,7 @@ import LyricsToggleButton from './LyricsToggleButton.vue'
 import ProgressWalker from './ProgressWalker.vue'
 import PlayerShinchanDecor from './PlayerShinchanDecor.vue'
 import PlayerTitleMarquee from './PlayerTitleMarquee.vue'
+import { useLocale } from '../composables/useLocale'
 
 const props = defineProps({
   variant: {
@@ -188,6 +189,50 @@ const router = useRouter()
 const route = useRoute()
 const showPlaylist = ref(false)
 const isCompactViewport = ref(false)
+const { isChinese } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      unlike: '取消收藏',
+      like: '收藏歌曲',
+      previous: '上一首',
+      pause: '暂停',
+      play: '播放',
+      next: '下一首',
+      mute: '静音',
+      unmute: '恢复音量',
+      volume: '音量',
+      playlist: '播放列表',
+      nowPlaying: '当前播放',
+      closePlaylist: '关闭播放列表',
+      emptyQueue: '接下来没有待播放的歌曲',
+      songCount: (count) => `${count} 首`,
+      backMusic: '返回音乐页面',
+      listMode: '顺序播放',
+      singleMode: '单曲循环',
+      randomMode: '随机播放',
+      playMode: '播放模式'
+    }
+  : {
+      unlike: 'Remove from favorites',
+      like: 'Add to favorites',
+      previous: 'Previous',
+      pause: 'Pause',
+      play: 'Play',
+      next: 'Next',
+      mute: 'Mute',
+      unmute: 'Restore volume',
+      volume: 'Volume',
+      playlist: 'Play Queue',
+      nowPlaying: 'Now Playing',
+      closePlaylist: 'Close play queue',
+      emptyQueue: 'Nothing else is queued',
+      songCount: (count) => `${count} songs`,
+      backMusic: 'Back to music',
+      listMode: 'Play in order',
+      singleMode: 'Repeat one',
+      randomMode: 'Shuffle',
+      playMode: 'Playback mode'
+    })
 let compactViewportQuery = null
 
 const syncCompactViewport = () => {
@@ -195,7 +240,7 @@ const syncCompactViewport = () => {
 }
 
 const queueButtonTitle = computed(() => (
-  route.name === 'MusicQueue' ? '返回音乐页面' : '播放列表'
+  route.name === 'MusicQueue' ? copy.value.backMusic : copy.value.playlist
 ))
 
 const openPlaylist = () => {
@@ -274,10 +319,10 @@ const {
 })
 
 const playModeTitle = computed(() => ({
-  list: '顺序播放',
-  single: '单曲循环',
-  random: '随机播放'
-}[playMode.value] || '播放模式'))
+  list: copy.value.listMode,
+  single: copy.value.singleMode,
+  random: copy.value.randomMode
+}[playMode.value] || copy.value.playMode))
 
 const togglePlayMode = () => cyclePlayMode()
 

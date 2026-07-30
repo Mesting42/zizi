@@ -1,7 +1,11 @@
 <template>
   <div :class="['app-shell', `page-${currentPage}`, { 'is-native-app': isNativeApp }]">
-    <AuroraBackground v-if="showAurora" />
-    <Header v-if="!isLyricsPlayerPage && !isNativeApp" />
+    <PortfolioHeader
+      v-if="!isLyricsPlayerPage && !isNativeApp && currentPage === 'music'"
+    />
+    <Header
+      v-if="!isLyricsPlayerPage && !isNativeApp && currentPage !== 'home' && currentPage !== 'case' && currentPage !== 'article' && currentPage !== 'article-archive' && currentPage !== 'music'"
+    />
     <main class="app-main">
       <router-view v-slot="{ Component }">
         <transition :name="routeTransitionName" @after-enter="scheduleModuleEntrance">
@@ -9,7 +13,7 @@
         </transition>
       </router-view>
     </main>
-    <Footer v-if="!isMusicPage" />
+    <Footer v-if="!isMusicPage && currentPage !== 'home' && currentPage !== 'case' && currentPage !== 'article' && currentPage !== 'article-archive'" />
 
     <GlobalLyricsPanel />
     <NativeLyricsSettings :show-trigger="false" listen-for-native-open />
@@ -47,16 +51,17 @@ import { computed, ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Capacitor } from '@capacitor/core'
 import { preloadMusicRoutes } from './router'
-import AuroraBackground from './components/AuroraBackground.vue'
 import GlobalLyricsPanel from './components/GlobalLyricsPanel.vue'
 import NativeLyricsSettings from './components/NativeLyricsSettings.vue'
 import PlayerModeToast from './components/PlayerModeToast.vue'
 import Header from './components/Header.vue'
+import PortfolioHeader from './components/PortfolioHeader.vue'
 import Footer from './components/Footer.vue'
 import { usePlayer } from './composables/usePlayer'
 import { useMusicBackground } from './composables/useMusicBackground'
 import { getMusicThemeIp, MUSIC_THEME_PRESETS } from './config/musicThemeCatalog'
 import { devicePerformanceProfile } from './utils/devicePerformance'
+import { syncLocaleForPath } from './composables/useLocale'
 
 const route = useRoute()
 const router = useRouter()
@@ -82,15 +87,22 @@ const currentPage = computed(() => {
   const path = route.path
   if (path === '/') return 'home'
   if (path === '/about') return 'about'
-  if (path.startsWith('/articles') || path.startsWith('/category')) return 'articles'
+  if (path === '/articles') return 'article-archive'
+  if (path.startsWith('/category')) return 'articles'
   if (path.startsWith('/article')) return 'article'
   if (path.startsWith('/music') || path === '/music-player') return 'music'
-  if (path.startsWith('/vivo-case') || path.startsWith('/foreign-case')) return 'case'
+  if (path.startsWith('/vivo-case') || path.startsWith('/foreign-case') || path.startsWith('/flutter-music-case')) return 'case'
   return 'home'
 })
 
 const isLyricsPlayerPage = computed(() => route.path === '/music-player')
 const isMusicPage = computed(() => route.path.startsWith('/music') || isLyricsPlayerPage.value)
+
+watch(
+  () => route.path,
+  (path) => syncLocaleForPath(path),
+  { immediate: true }
+)
 const edgeSwipeBack = ref({
   visible: false,
   progress: 0,
@@ -282,7 +294,6 @@ const routeTransitionName = computed(() => (
     ? 'music-route-seamless'
     : (isMobilePerformance ? 'mobile-route-fast' : 'page-fade')
 ))
-const showAurora = computed(() => !isMusicPage.value && !isMobilePerformance)
 const MUSIC_DARK_PRESETS = new Set(['midnight-cinema', 'hello-kitty-midnight', 'kuromi-midnight'])
 const MUSIC_THEME_BODY_CLASSES = [
   'music-ip-classic',
@@ -387,10 +398,9 @@ const syncMusicColorMode = () => {
     return
   }
 
-  const useSiteDarkMode = localStorage.getItem('darkMode') === 'true'
-  document.body.classList.remove('music-theme-dark')
-  document.body.classList.toggle('dark-mode', useSiteDarkMode)
-  document.documentElement.style.colorScheme = useSiteDarkMode ? 'dark' : 'light'
+  document.body.classList.remove('music-theme-dark', 'dark-mode', 'theme-transitioning')
+  document.documentElement.style.colorScheme = 'light'
+  localStorage.removeItem('darkMode')
   wasMusicPage = false
 }
 
@@ -427,7 +437,7 @@ const handleMusicSpaceShortcut = (event) => {
   togglePlay()
 }
 
-const pageClassNames = ['page-home', 'page-about', 'page-articles', 'page-article', 'page-music', 'page-case']
+const pageClassNames = ['page-home', 'page-about', 'page-articles', 'page-article', 'page-article-archive', 'page-music', 'page-case']
 
 const syncPageClass = (page) => {
   const pageClass = `page-${page}`
@@ -450,6 +460,7 @@ let entranceFrame = 0
 let entranceSettleTimer = 0
 let entranceOrder = 0
 let entranceScheduled = false
+let observedEntranceModules = new WeakSet()
 
 const moduleSelectors = [
   '.nav',
@@ -527,26 +538,6 @@ const getEntranceModules = () => {
   return [...new Set(modules)]
 }
 
-const isElementInEntranceViewport = (element) => {
-  const rect = element.getBoundingClientRect()
-  const viewportHeight = window.innerHeight || document.documentElement.clientHeight
-  const viewportWidth = window.innerWidth || document.documentElement.clientWidth
-
-  return rect.width > 0
-    && rect.height > 0
-    && rect.bottom > 0
-    && rect.right > 0
-    && rect.top < viewportHeight
-    && rect.left < viewportWidth
-}
-
-const revealVisibleEntranceModule = (element) => {
-  if (element.classList.contains('module-entered')) return
-  if (!isElementInEntranceViewport(element)) return
-
-  element.classList.add('module-entered')
-}
-
 const applyModuleEntrance = () => {
   if (isMobilePerformance) return
 
@@ -558,11 +549,11 @@ const applyModuleEntrance = () => {
     ? new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('module-entered')
-            } else if (!isElementInEntranceViewport(entry.target)) {
-              entry.target.classList.remove('module-entered')
-            }
+            // Keep each module observed. Removing the entered state after it
+            // leaves the viewport lets the same transition play again in
+            // either scroll direction instead of only on the first pass.
+            const shouldEnter = entry.isIntersecting && entry.intersectionRatio >= 0.04
+            entry.target.classList.toggle('module-entered', shouldEnter)
           })
         },
         { threshold: 0.04, rootMargin: '0px 0px -4% 0px' }
@@ -578,12 +569,9 @@ const applyModuleEntrance = () => {
 
     if (!moduleObserver) {
       element.classList.add('module-entered')
-    } else {
+    } else if (!observedEntranceModules.has(element)) {
+      observedEntranceModules.add(element)
       moduleObserver.observe(element)
-    }
-
-    if (isElementInEntranceViewport(element)) {
-      revealVisibleEntranceModule(element)
     }
   })
 
@@ -592,7 +580,7 @@ const applyModuleEntrance = () => {
 
 const shouldReactToMutation = (mutations) => mutations.some((mutation) => {
   if (mutation.type === 'childList') {
-    return mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0
+    return mutation.addedNodes.length > 0
   }
 
   if (mutation.type !== 'attributes') return false
@@ -674,6 +662,10 @@ watch(
 watch(
   () => route.fullPath,
   () => {
+    moduleObserver?.disconnect()
+    moduleObserver = null
+    observedEntranceModules = new WeakSet()
+    entranceOrder = 0
     scheduleModuleEntrance()
   }
 )

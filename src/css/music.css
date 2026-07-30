@@ -6268,19 +6268,30 @@ body:not(.dark-mode) .music-page .playlist-card:hover {
     box-shadow: 0 22px 46px rgba(70, 82, 120, 0.14) !important;
 }
 
-/* 动态主题：允许小新从卡片背后爬上边缘，同时保持封面本身的圆角裁切。 */
-.music-page .playlist-card.has-card-climber {
+/* 动态主题：角色使用卡片外的独立合成层。
+   不再把动画节点插入、移出封面卡片，避免 Chrome 在循环动画后留下空白纹理。 */
+.music-page .playlist-card-slot {
+    position: relative;
+    min-width: 0;
+}
+
+.music-page .playlist-card-slot > .playlist-card {
+    width: 100%;
+    height: 100%;
+}
+
+.music-page .playlist-card-slot.has-card-climber {
     z-index: 8;
     overflow: visible;
 }
 
-.music-page .playlist-card.has-card-climber .card-image {
+.music-page .playlist-card-slot.has-card-climber > .playlist-card {
     z-index: 1;
     overflow: hidden;
 }
 
 @media (max-width: 768px), (prefers-reduced-motion: reduce) {
-    .music-page .playlist-card.has-card-climber {
+    .music-page .playlist-card-slot.has-card-climber {
         overflow: hidden;
     }
 }
@@ -10509,4 +10520,100 @@ body.page-music #app .music-page .music-bottom-nav .nav-item:focus,
 body.page-music #app .music-page .music-bottom-nav .nav-item:focus-visible {
     background: transparent !important;
     outline: none;
+}
+/* ===== Performance pass: preserve the glass look without live-blurring every card ===== */
+.music-page .playlist-card,
+.music-page .song-card,
+.music-page .song-item,
+.music-page .add-to-playlist-btn,
+.music-page .card-overlay {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+.music-page .playlist-card,
+.music-page .song-card,
+.music-page .song-item {
+    contain: layout paint style;
+}
+
+/* 精选歌单外层承载角色动画，卡片只做布局隔离，不再创建可被动画
+   销毁的 paint containment 纹理。 */
+.music-page .playlist-card-slot > .playlist-card {
+    contain: layout style;
+}
+
+.music-page .playlist-card::after,
+.music-page .song-card::after,
+.music-page .song-item::after {
+    animation: none !important;
+}
+
+.music-page .card-overlay {
+    background:
+        linear-gradient(180deg, rgba(7, 18, 24, 0.02), rgba(7, 18, 24, 0.2)) !important;
+}
+
+.music-page .add-to-playlist-btn {
+    background: rgba(255, 255, 255, 0.92) !important;
+}
+
+.music-page .music-tabs {
+    -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
+    backdrop-filter: blur(12px) saturate(135%) !important;
+}
+
+.music-page .search-box,
+.music-page .music-settings-trigger {
+    -webkit-backdrop-filter: blur(10px) saturate(130%) !important;
+    backdrop-filter: blur(10px) saturate(130%) !important;
+}
+
+.music-page .player-bar {
+    background: rgba(255, 255, 255, 0.94) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(130%) !important;
+    backdrop-filter: blur(12px) saturate(130%) !important;
+}
+
+.music-main .playlist-grid,
+.music-main .song-grid,
+.music-main .song-list,
+.music-main .daily-recommend-panel {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 340px;
+}
+
+/* 首屏只有六张精选卡片，保持持续绘制比跳过渲染更可靠。
+   动态角色会在这里循环经过，不能让浏览器把整组卡片判定为离屏内容。 */
+.music-main .featured-playlist-grid {
+    content-visibility: visible;
+    contain-intrinsic-size: none;
+}
+
+body.is-user-scrolling .music-page .playlist-card,
+body.is-user-scrolling .music-page .song-card,
+body.is-user-scrolling .music-page .song-item,
+body.is-user-scrolling .music-page .music-tabs,
+body.is-user-scrolling .music-page .search-box,
+body.is-user-scrolling .music-page .player-bar {
+    transition: none !important;
+}
+
+.music-page:not(.is-playing) .player-bar *,
+.music-page:not(.is-playing) .player-bar *::before,
+.music-page:not(.is-playing) .player-bar *::after,
+body.is-user-scrolling .music-page .player-bar *,
+body.is-user-scrolling .music-page .player-bar *::before,
+body.is-user-scrolling .music-page .player-bar *::after {
+    animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .music-page *,
+    .music-page *::before,
+    .music-page *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
 }

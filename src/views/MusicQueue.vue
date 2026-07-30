@@ -4,11 +4,11 @@
 
     <main class="mobile-queue-content">
       <header class="mobile-queue-header">
-        <button class="mobile-queue-back" type="button" aria-label="返回音乐页面" @click="goBack">
+        <button class="mobile-queue-back" type="button" :aria-label="copy.backAria" @click="goBack">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="m14 6-6 6 6 6" />
           </svg>
-          <span>返回音乐</span>
+          <span>{{ copy.back }}</span>
         </button>
         <span class="mobile-queue-eyebrow">NOW PLAYING</span>
       </header>
@@ -16,10 +16,10 @@
       <section class="mobile-queue-card" aria-labelledby="mobile-queue-title">
         <div class="mobile-queue-title-row">
           <div>
-            <p>播放队列</p>
-            <h1 id="mobile-queue-title">播放列表</h1>
+            <p>{{ copy.queue }}</p>
+            <h1 id="mobile-queue-title">{{ copy.playlist }}</h1>
           </div>
-          <span class="mobile-queue-count">{{ playlist.length }} 首</span>
+          <span class="mobile-queue-count">{{ copy.songCount(playlist.length) }}</span>
         </div>
 
         <div v-if="playlist.length" class="mobile-queue-list">
@@ -43,8 +43,8 @@
 
         <div v-else class="mobile-queue-empty">
           <span aria-hidden="true">♫</span>
-          <h2>接下来没有待播放的歌曲</h2>
-          <p>歌曲开始播放后会自动从这里移除。</p>
+          <h2>{{ copy.emptyTitle }}</h2>
+          <p>{{ copy.emptyText }}</p>
         </div>
       </section>
     </main>
@@ -61,9 +61,30 @@ import MusicPageBackground from '../components/MusicPageBackground.vue'
 import { useMusicBackground } from '../composables/useMusicBackground'
 import { usePlayer } from '../composables/usePlayer'
 import { getMusicThemeIp } from '../config/musicThemeCatalog'
+import { useLocale } from '../composables/useLocale'
 
 const route = useRoute()
 const router = useRouter()
+const { isChinese } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      backAria: '返回音乐页面',
+      back: '返回音乐',
+      queue: '播放队列',
+      playlist: '播放列表',
+      songCount: (count) => `${count} 首`,
+      emptyTitle: '接下来没有待播放的歌曲',
+      emptyText: '歌曲开始播放后会自动从这里移除。'
+    }
+  : {
+      backAria: 'Back to music',
+      back: 'Back to Music',
+      queue: 'Up Next',
+      playlist: 'Play Queue',
+      songCount: (count) => `${count} songs`,
+      emptyTitle: 'Nothing else is queued',
+      emptyText: 'Songs leave this list automatically after they start playing.'
+    })
 const { settings: musicBackgroundSettings } = useMusicBackground()
 const { playlist, currentIndex, isPlaying, playByIndex } = usePlayer()
 

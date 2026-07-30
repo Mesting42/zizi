@@ -3,7 +3,7 @@
     <Transition name="music-settings-fade">
       <div v-if="visible" class="music-settings-overlay" @click.self="closePanel">
         <section :class="['music-settings-panel', `active-ip-${activeIp}`, `active-preset-${settings.preset}`]" role="dialog" aria-modal="true" aria-labelledby="music-settings-title">
-          <button class="music-settings-close music-settings-close-fixed" type="button" aria-label="关闭音乐设置" @click="closePanel">
+          <button class="music-settings-close music-settings-close-fixed" type="button" :aria-label="copy.close" @click="closePanel">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
               <path d="m7 7 10 10M17 7 7 17" />
             </svg>
@@ -12,8 +12,8 @@
           <header class="music-settings-header">
             <div>
               <span class="music-settings-kicker">MUSIC SPACE</span>
-              <h2 id="music-settings-title">音乐设置</h2>
-              <p>换一张背景，或者让喜欢的视频在音乐首页静音循环。</p>
+              <h2 id="music-settings-title">{{ copy.title }}</h2>
+              <p>{{ copy.subtitle }}</p>
             </div>
           </header>
 
@@ -25,15 +25,15 @@
             <div class="music-settings-preview-meta">
               <span>{{ previewDescription }}</span>
               <button v-if="hasCustomMedia && settings.mode === 'default'" type="button" @click="useCustomBackground">
-                重新使用
+                {{ copy.reuse }}
               </button>
             </div>
           </div>
 
           <div class="music-settings-section">
             <div class="music-settings-section-title">
-              <strong>主题背景</strong>
-              <span>先选 IP，再选择静态或动态场景</span>
+              <strong>{{ copy.themeBackground }}</strong>
+              <span>{{ copy.themeBackgroundHint }}</span>
             </div>
             <nav class="music-ip-tabs" aria-label="音乐主题 IP 分类">
               <button
@@ -70,7 +70,7 @@
                   >
                     <span class="music-preset-check">✓</span>
                     <span v-if="preset.type === 'motion'" class="music-preset-motion-badge">
-                      <i></i>动态
+                      <i></i>{{ copy.animated }}
                     </span>
                     <strong>{{ preset.name }}</strong>
                     <small>{{ preset.caption }}</small>
@@ -82,22 +82,22 @@
 
           <div class="music-settings-section">
             <div class="music-settings-section-title">
-              <strong>自定义主题</strong>
-              <span>背景、进度条与角色可自由搭配；文件只保存在你的浏览器里</span>
+              <strong>{{ copy.customTheme }}</strong>
+              <span>{{ copy.customThemeHint }}</span>
             </div>
             <div class="music-settings-actions">
               <button type="button" :class="{ active: settings.mode === 'default' }" @click="useDefaultBackground">
                 <span class="action-icon">↺</span>
-                恢复主题
+                {{ copy.restoreTheme }}
               </button>
               <label class="music-upload-action">
                 <span class="action-icon">▧</span>
-                选择图片
+                {{ copy.chooseImage }}
                 <input type="file" accept="image/*" @change="event => selectFile(event, 'image')" />
               </label>
               <label class="music-upload-action">
                 <span class="action-icon">▶</span>
-                选择视频
+                {{ copy.chooseVideo }}
                 <input type="file" accept="video/mp4,video/webm,video/ogg,video/*" @change="event => selectFile(event, 'video')" />
               </label>
             </div>
@@ -106,70 +106,70 @@
 
           <div class="music-settings-section music-custom-theme-options">
             <div class="music-settings-section-title">
-              <strong>进度条样式</strong>
-              <span>不改变背景，单独选择进度条的配色与质感</span>
+              <strong>{{ copy.progressStyle }}</strong>
+              <span>{{ copy.progressStyleHint }}</span>
             </div>
             <div class="music-theme-choice-grid" aria-label="进度条样式">
               <button type="button" :class="{ active: settings.progressStyle === 'theme' }" @click="settings.progressStyle = 'theme'">
-                <i class="theme-choice-dot is-theme"></i><span>跟随主题</span>
+                <i class="theme-choice-dot is-theme"></i><span>{{ copy.followTheme }}</span>
               </button>
               <button type="button" :class="{ active: settings.progressStyle === 'classic' }" @click="settings.progressStyle = 'classic'">
-                <i class="theme-choice-dot is-classic"></i><span>经典</span>
+                <i class="theme-choice-dot is-classic"></i><span>{{ copy.classic }}</span>
               </button>
               <button type="button" :class="{ active: settings.progressStyle === 'shinchan' }" @click="settings.progressStyle = 'shinchan'">
-                <img class="theme-choice-avatar is-shinchan" src="/images/ip-themes/shinchan-progress-head.png" alt="" /><span>小新</span>
+                <img class="theme-choice-avatar is-shinchan" src="/images/ip-themes/shinchan-progress-head.png" alt="" /><span>{{ copy.shinchanShort }}</span>
               </button>
               <button type="button" :class="{ active: settings.progressStyle === 'hello-kitty' }" @click="settings.progressStyle = 'hello-kitty'">
                 <img class="theme-choice-avatar is-hello-kitty" src="/images/ip-themes/hello-kitty-progress-head.png" alt="" /><span>Hello Kitty</span>
               </button>
               <button type="button" :class="{ active: settings.progressStyle === 'kuromi' }" @click="settings.progressStyle = 'kuromi'">
-                <img class="theme-choice-avatar is-kuromi" src="/images/ip-themes/kuromi-progress-head.png" alt="" /><span>库洛米</span>
+                <img class="theme-choice-avatar is-kuromi" src="/images/ip-themes/kuromi-progress-head.png" alt="" /><span>Kuromi</span>
               </button>
             </div>
 
             <div class="music-settings-section-title music-character-choice-title">
-              <strong>跟随进度条的角色</strong>
-              <span>可以与当前背景和进度条样式任意搭配</span>
+              <strong>{{ copy.progressCharacter }}</strong>
+              <span>{{ copy.progressCharacterHint }}</span>
             </div>
             <div class="music-theme-choice-grid" aria-label="进度条角色">
               <button type="button" :class="{ active: settings.progressCharacter === 'theme' }" @click="settings.progressCharacter = 'theme'">
-                <i class="theme-choice-character is-theme">随</i><span>跟随主题</span>
+                <i class="theme-choice-character is-theme">{{ copy.followMark }}</i><span>{{ copy.followTheme }}</span>
               </button>
               <button type="button" :class="{ active: settings.progressCharacter === 'classic' }" @click="settings.progressCharacter = 'classic'">
-                <i class="theme-choice-character is-classic"></i><span>经典圆点</span>
+                <i class="theme-choice-character is-classic"></i><span>{{ copy.classicDot }}</span>
               </button>
               <button type="button" :class="{ active: settings.progressCharacter === 'shinchan' }" @click="settings.progressCharacter = 'shinchan'">
-                <img class="theme-choice-avatar is-shinchan" src="/images/ip-themes/shinchan-progress-head.png" alt="" /><span>蜡笔小新</span>
+                <img class="theme-choice-avatar is-shinchan" src="/images/ip-themes/shinchan-progress-head.png" alt="" /><span>{{ copy.shinchan }}</span>
               </button>
               <button type="button" :class="{ active: settings.progressCharacter === 'hello-kitty' }" @click="settings.progressCharacter = 'hello-kitty'">
                 <img class="theme-choice-avatar is-hello-kitty" src="/images/ip-themes/hello-kitty-progress-head.png" alt="" /><span>Hello Kitty</span>
               </button>
               <button type="button" :class="{ active: settings.progressCharacter === 'kuromi' }" @click="settings.progressCharacter = 'kuromi'">
-                <img class="theme-choice-avatar is-kuromi" src="/images/ip-themes/kuromi-progress-head.png" alt="" /><span>库洛米</span>
+                <img class="theme-choice-avatar is-kuromi" src="/images/ip-themes/kuromi-progress-head.png" alt="" /><span>Kuromi</span>
               </button>
             </div>
           </div>
 
           <div class="music-settings-section music-settings-controls">
             <div v-if="isClassicTheme" class="music-settings-section-title">
-              <strong>界面配色</strong>
-              <span>视频上传后会按画面明暗自动适配，也可手动切换</span>
+              <strong>{{ copy.appearance }}</strong>
+              <span>{{ copy.appearanceHint }}</span>
             </div>
             <div v-if="isClassicTheme" class="music-theme-choice-grid music-appearance-choice-grid" aria-label="界面配色">
               <button type="button" :class="{ active: settings.customAppearance === 'auto' }" @click="settings.customAppearance = 'auto'">
-                <i class="theme-choice-character is-theme">自</i><span>自动适配</span>
+                <i class="theme-choice-character is-theme">{{ copy.autoMark }}</i><span>{{ copy.auto }}</span>
               </button>
               <button type="button" :class="{ active: settings.customAppearance === 'sunny' }" @click="settings.customAppearance = 'sunny'">
-                <i class="theme-choice-character is-sunny">☀</i><span>阳光模式</span>
+                <i class="theme-choice-character is-sunny">☀</i><span>{{ copy.sunny }}</span>
               </button>
               <button type="button" :class="{ active: settings.customAppearance === 'dark' }" @click="settings.customAppearance = 'dark'">
-                <i class="theme-choice-character is-night">☾</i><span>暗色模式</span>
+                <i class="theme-choice-character is-night">☾</i><span>{{ copy.dark }}</span>
               </button>
             </div>
             <label class="music-setting-row">
               <span>
-                <strong>背景显示强度</strong>
-                <small>内容看不清时可以调低一点</small>
+                <strong>{{ copy.intensity }}</strong>
+                <small>{{ copy.intensityHint }}</small>
               </span>
               <span class="music-range-wrap">
                 <input v-model.number="settings.intensity" type="range" min="20" max="85" step="1" />
@@ -179,8 +179,8 @@
 
             <label v-if="!isClassicTheme" class="music-setting-row">
               <span>
-                <strong>IP 角色装饰</strong>
-                <small>根据当前主题显示对应角色、贴纸与场景元素</small>
+                <strong>{{ copy.ipDecor }}</strong>
+                <small>{{ copy.ipDecorHint }}</small>
               </span>
               <span class="music-switch">
                 <input v-model="settings.showShinchan" type="checkbox" />
@@ -191,9 +191,9 @@
 
           <footer class="music-settings-footer">
             <button v-if="hasCustomMedia" class="music-settings-reset" type="button" @click="removeCustomBackground">
-              删除自定义背景
+              {{ copy.deleteCustom }}
             </button>
-            <span>视频会自动静音，不会盖住正在播放的音乐。</span>
+            <span>{{ copy.videoMuted }}</span>
           </footer>
           </div>
         </section>
@@ -206,12 +206,115 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useMusicBackground } from '../composables/useMusicBackground'
 import { MUSIC_IPS, MUSIC_THEME_PRESETS, getMusicIp, getMusicThemeIp } from '../config/musicThemeCatalog'
+import { useLocale } from '../composables/useLocale'
 
 const props = defineProps({
   visible: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['close'])
+const { isChinese } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      close: '关闭音乐设置',
+      title: '音乐设置',
+      subtitle: '换一张背景，或者让喜欢的视频在音乐首页静音循环。',
+      reuse: '重新使用',
+      themeBackground: '主题背景',
+      themeBackgroundHint: '先选 IP，再选择静态或动态场景',
+      animated: '动态',
+      customTheme: '自定义主题',
+      customThemeHint: '背景、进度条与角色可自由搭配；文件只保存在你的浏览器里',
+      restoreTheme: '恢复主题',
+      chooseImage: '选择图片',
+      chooseVideo: '选择视频',
+      progressStyle: '进度条样式',
+      progressStyleHint: '不改变背景，单独选择进度条的配色与质感',
+      followTheme: '跟随主题',
+      classic: '经典',
+      shinchanShort: '小新',
+      progressCharacter: '跟随进度条的角色',
+      progressCharacterHint: '可以与当前背景和进度条样式任意搭配',
+      followMark: '随',
+      classicDot: '经典圆点',
+      shinchan: '蜡笔小新',
+      appearance: '界面配色',
+      appearanceHint: '视频上传后会按画面明暗自动适配，也可手动切换',
+      autoMark: '自',
+      auto: '自动适配',
+      sunny: '阳光模式',
+      dark: '暗色模式',
+      intensity: '背景显示强度',
+      intensityHint: '内容看不清时可以调低一点',
+      ipDecor: 'IP 角色装饰',
+      ipDecorHint: '根据当前主题显示对应角色、贴纸与场景元素',
+      deleteCustom: '删除自定义背景',
+      videoMuted: '视频会自动静音，不会盖住正在播放的音乐。',
+      staticThemes: '静态主题',
+      staticHint: '安静耐看的固定画面',
+      motionThemes: '动态主题',
+      motionHint: '角色与场景持续运动',
+      customVideo: '自定义视频',
+      customImage: '自定义图片',
+      localVideo: '已应用本地视频背景',
+      localImage: '已应用本地图片背景',
+      saving: '正在保存背景...',
+      videoApplied: '视频背景已生效',
+      imageApplied: '图片背景已生效',
+      saveFailed: '背景保存失败，请换一个文件重试',
+      restored: '已恢复默认背景',
+      switched: '已切换为'
+    }
+  : {
+      close: 'Close music settings',
+      title: 'Music Settings',
+      subtitle: 'Choose a new background or loop a favorite video silently on the music homepage.',
+      reuse: 'Use Again',
+      themeBackground: 'Theme Background',
+      themeBackgroundHint: 'Choose an IP, then select a static or animated scene',
+      animated: 'Motion',
+      customTheme: 'Custom Theme',
+      customThemeHint: 'Mix backgrounds, progress styles, and characters. Files stay in your browser.',
+      restoreTheme: 'Restore Theme',
+      chooseImage: 'Choose Image',
+      chooseVideo: 'Choose Video',
+      progressStyle: 'Progress Style',
+      progressStyleHint: 'Change the progress texture without replacing the background',
+      followTheme: 'Follow Theme',
+      classic: 'Classic',
+      shinchanShort: 'Shin-chan',
+      progressCharacter: 'Progress Character',
+      progressCharacterHint: 'Mix freely with the current background and progress style',
+      followMark: 'T',
+      classicDot: 'Classic Dot',
+      shinchan: 'Crayon Shin-chan',
+      appearance: 'Interface Color',
+      appearanceHint: 'Video backgrounds adapt automatically, with manual options available',
+      autoMark: 'A',
+      auto: 'Auto',
+      sunny: 'Light',
+      dark: 'Dark',
+      intensity: 'Background Intensity',
+      intensityHint: 'Lower it when content becomes difficult to read',
+      ipDecor: 'IP Character Decor',
+      ipDecorHint: 'Show characters, stickers, and scene elements for the active theme',
+      deleteCustom: 'Delete Custom Background',
+      videoMuted: 'Background video is always muted and never interrupts the music.',
+      staticThemes: 'Static Themes',
+      staticHint: 'Calm, still scenes',
+      motionThemes: 'Motion Themes',
+      motionHint: 'Characters and scenes in motion',
+      customVideo: 'Custom Video',
+      customImage: 'Custom Image',
+      localVideo: 'Local video background applied',
+      localImage: 'Local image background applied',
+      saving: 'Saving background...',
+      videoApplied: 'Video background applied',
+      imageApplied: 'Image background applied',
+      saveFailed: 'Could not save this background. Please try another file.',
+      restored: 'Default background restored',
+      switched: 'Switched to'
+    })
 
 const {
   settings,
@@ -233,14 +336,14 @@ const isClassicTheme = computed(() => settings.mode === 'custom' || settings.pre
 const presetGroups = computed(() => [
   {
     id: 'static',
-    name: '静态主题',
-    description: '安静耐看的固定画面',
+    name: copy.value.staticThemes,
+    description: copy.value.staticHint,
     presets: backgroundPresets.filter(preset => preset.ip === activeIp.value && preset.type === 'static')
   },
   {
     id: 'motion',
-    name: '动态主题',
-    description: '角色与场景持续运动',
+    name: copy.value.motionThemes,
+    description: copy.value.motionHint,
     presets: backgroundPresets.filter(preset => preset.ip === activeIp.value && preset.type === 'motion')
   }
 ].filter(group => group.presets.length))
@@ -252,13 +355,13 @@ const activeIpMeta = computed(() => getMusicIp(activePreset.value.ip))
 
 const modeLabel = computed(() => {
   if (settings.mode !== 'custom') return activePreset.value.name
-  return settings.mediaKind === 'video' ? '自定义视频' : '自定义图片'
+  return settings.mediaKind === 'video' ? copy.value.customVideo : copy.value.customImage
 })
 
 // 本地文件名属于设备信息，不作为音乐设置界面的展示文案。
 const previewDescription = computed(() => {
   if (settings.mode !== 'custom') return activePreset.value.description
-  return settings.mediaKind === 'video' ? '已应用本地视频背景' : '已应用本地图片背景'
+  return settings.mediaKind === 'video' ? copy.value.localVideo : copy.value.localImage
 })
 
 let themeSwitchTimer = 0
@@ -281,7 +384,7 @@ const selectPreset = (preset) => {
   playThemeSwitchTransition()
   usePresetBackground(preset)
   hasError.value = false
-  statusMessage.value = `已切换为「${activePreset.value.name}」`
+  statusMessage.value = `${copy.value.switched} “${activePreset.value.name}”`
 }
 
 const selectThemeIp = (ipId) => {
@@ -308,24 +411,24 @@ const selectFile = async (event, expectedKind) => {
   if (!file) return
 
   hasError.value = false
-  statusMessage.value = '正在保存背景...'
+  statusMessage.value = copy.value.saving
   try {
     const kind = await setCustomBackground(file)
     if (kind !== expectedKind) {
-      statusMessage.value = kind === 'video' ? '已识别为视频背景' : '已识别为图片背景'
+      statusMessage.value = kind === 'video' ? copy.value.videoApplied : copy.value.imageApplied
     } else {
-      statusMessage.value = kind === 'video' ? '视频背景已生效' : '图片背景已生效'
+      statusMessage.value = kind === 'video' ? copy.value.videoApplied : copy.value.imageApplied
     }
   } catch (error) {
     hasError.value = true
-    statusMessage.value = error?.message || '背景保存失败，请换一个文件重试'
+    statusMessage.value = error?.message || copy.value.saveFailed
   }
 }
 
 const removeCustomBackground = async () => {
   await clearCustomBackground()
   hasError.value = false
-  statusMessage.value = '已恢复默认背景'
+  statusMessage.value = copy.value.restored
 }
 
 const onKeydown = (event) => {

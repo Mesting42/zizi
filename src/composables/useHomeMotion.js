@@ -81,17 +81,22 @@ export function useHomeMotion(rootRef) {
       const heroTitle = root.querySelector('.hero-title-inner')
       const heroReveals = root.querySelectorAll('[data-hero-reveal]')
       const heroVisual = root.querySelector('.hero-visual')
+      const heroAtmosphere = root.querySelector('.hero-atmosphere')
+      const usesCinematicHero = root.classList.contains('home-cinematic')
 
-      if (curtain) {
+      if (curtain && !usesCinematicHero) {
         gsap.set(curtain, { scaleY: 1, transformOrigin: '50% 0%' })
       }
-      gsap.set(heroTitle, {
-        autoAlpha: 0,
-        yPercent: 118,
-        transformOrigin: '50% 100%'
-      })
-      gsap.set(heroReveals, { autoAlpha: 0, y: 32 })
-      gsap.set(heroVisual, { autoAlpha: 0, scale: 0.82, rotate: -8 })
+
+      if (!usesCinematicHero) {
+        gsap.set(heroTitle, {
+          autoAlpha: 0,
+          yPercent: 118,
+          transformOrigin: '50% 100%'
+        })
+        gsap.set(heroReveals, { autoAlpha: 0, y: 32 })
+        gsap.set(heroVisual, { autoAlpha: 0, scale: 0.82, rotate: -8 })
+      }
 
       const opening = gsap.timeline({
         defaults: { ease: 'expo.out' },
@@ -103,32 +108,37 @@ export function useHomeMotion(rootRef) {
         }
       })
 
-      if (curtain) {
+      if (curtain && !usesCinematicHero) {
         opening.to(curtain, { scaleY: 0, duration: 1.05, ease: 'power4.inOut' })
       }
 
-      opening
-        .to(heroTitle, {
-          autoAlpha: 1,
-          yPercent: 0,
-          duration: 1.35,
-          ease: 'power4.out'
-        }, curtain ? '-=0.62' : 0)
-        .to(heroReveals, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.92,
-          stagger: 0.1
-        }, '-=1.02')
-        .to(heroVisual, {
-          autoAlpha: 1,
-          scale: 1,
-          rotate: 0,
-          duration: 1.5,
-          ease: 'expo.out'
-        }, '-=1.14')
+      if (!usesCinematicHero) {
+        opening
+          .to(heroTitle, {
+            autoAlpha: 1,
+            yPercent: 0,
+            duration: 1.35,
+            ease: 'power4.out'
+          }, curtain ? '-=0.62' : 0)
+          .to(heroReveals, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.92,
+            stagger: 0.1
+          }, '-=1.02')
+          .to(heroVisual, {
+            autoAlpha: 1,
+            scale: 1,
+            rotate: 0,
+            duration: 1.5,
+            ease: 'expo.out'
+          }, '-=1.14')
+      } else {
+        root.classList.add('motion-ready')
+        curtain?.remove()
+      }
 
-      if (heroVisual) {
+      if (heroVisual && !usesCinematicHero) {
         gsap.to(heroVisual, {
           yPercent: 14,
           rotate: 4,
@@ -142,6 +152,20 @@ export function useHomeMotion(rootRef) {
         })
       }
 
+      if (heroAtmosphere && !usesCinematicHero) {
+        gsap.to(heroAtmosphere, {
+          yPercent: -8,
+          scale: 1.08,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: root.querySelector('.home-hero'),
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.4
+          }
+        })
+      }
+
       root.querySelectorAll('.motion-section').forEach((section) => {
         const eyebrow = section.querySelector('.motion-section-eyebrow')
         const title = section.querySelector('.motion-section-title')
@@ -149,50 +173,105 @@ export function useHomeMotion(rootRef) {
         const items = section.querySelectorAll('.motion-stagger-item')
         const images = section.querySelectorAll('.motion-image-reveal')
 
-        const timeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 88%',
-            once: true
-          }
-        })
+        const headingTargets = [eyebrow, title, link].filter(Boolean)
 
-        timeline
-          .fromTo([eyebrow, title, link].filter(Boolean), {
-            autoAlpha: 0.82,
-            y: 24
+        // 标题在区块刚进入视野时作为一个整体出现；下面的内容则单独监听。
+        // 这样文章列表、档案卡片和个人资料不会在区块标题出现时就提前播放完动画。
+        if (headingTargets.length) {
+          gsap.fromTo(headingTargets, {
+            autoAlpha: 0,
+            y: 30,
+            filter: 'blur(9px)'
           }, {
             autoAlpha: 1,
             y: 0,
-            duration: 0.72,
+            filter: 'blur(0px)',
+            duration: 0.78,
             stagger: 0.1,
             ease: 'power3.out',
-            immediateRender: false
+            immediateRender: false,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 88%',
+              once: true
+            }
           })
-          .fromTo(items, {
-            autoAlpha: 0.88,
-            y: 30,
-            scale: 0.99
+        }
+
+        // 参考原关于页的滚动入场方式：每个尚未出现的内容在真正进入视野时再渐显，
+        // 并带一点上移与柔焦退场，避免长内容区块一次性失去节奏。
+        items.forEach((item) => {
+          const compactItem = item.classList.contains('ledger-row')
+
+          gsap.fromTo(item, {
+            autoAlpha: 0,
+            y: compactItem ? 24 : 42,
+            scale: compactItem ? 0.995 : 0.985,
+            filter: compactItem ? 'blur(6px)' : 'blur(12px)'
           }, {
             autoAlpha: 1,
             y: 0,
             scale: 1,
-            duration: 0.76,
-            stagger: 0.09,
+            filter: 'blur(0px)',
+            duration: compactItem ? 0.62 : 0.9,
             ease: 'power3.out',
-            immediateRender: false
-          }, '-=0.42')
-          .fromTo(images, {
-            clipPath: 'inset(2% 2% 2% 2%)',
-            scale: 1.025
+            immediateRender: false,
+            scrollTrigger: {
+              trigger: item,
+              start: 'top 90%',
+              once: true
+            }
+          })
+        })
+
+        images.forEach((image) => {
+          gsap.fromTo(image, {
+            clipPath: 'inset(4% 3% 4% 3%)',
+            scale: 1.045
           }, {
             clipPath: 'inset(0% 0% 0% 0%)',
             scale: 1,
-            duration: 0.9,
-            stagger: 0.08,
+            duration: 1.05,
             ease: 'power3.inOut',
-            immediateRender: false
-          }, '-=0.72')
+            immediateRender: false,
+            scrollTrigger: {
+              trigger: image,
+              start: 'top 88%',
+              once: true
+            }
+          })
+        })
+
+        const watermark = section.querySelector('.section-watermark')
+        if (watermark) {
+          const watermarkOpacity = watermark.classList.contains('section-watermark-light') ? 0.035 : 0.025
+          gsap.fromTo(watermark, {
+            opacity: 0,
+            xPercent: 12,
+            rotate: 4
+          }, {
+            opacity: watermarkOpacity,
+            xPercent: 0,
+            rotate: 0,
+            duration: 1.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 80%',
+              once: true
+            }
+          })
+          gsap.to(watermark, {
+            yPercent: -18,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.1
+            }
+          })
+        }
       })
 
       root.classList.remove('motion-scroll-pending')

@@ -4,7 +4,7 @@
 
     <main class="all-playlists-content">
       <header class="all-playlists-header">
-        <button class="back-to-music" type="button" aria-label="返回音乐" @click="returnToMusic">
+        <button class="back-to-music" type="button" :aria-label="copy.back" @click="returnToMusic">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="m15 18-6-6 6-6" />
           </svg>
@@ -12,13 +12,13 @@
 
         <div class="all-playlists-heading">
           <span class="all-playlists-eyebrow">PLAYLIST COLLECTION</span>
-          <h1>全部歌单</h1>
-          <p>{{ allPlaylists.length }} 张歌单，其中 {{ explorePlaylists.length }} 张来自在线发现</p>
+          <h1>{{ copy.title }}</h1>
+          <p>{{ copy.summary(allPlaylists.length, explorePlaylists.length) }}</p>
         </div>
 
       </header>
 
-      <nav class="playlist-category-tabs" aria-label="歌单分类">
+      <nav class="playlist-category-tabs" :aria-label="copy.categories">
         <button
           v-for="category in categories"
           :key="category.id"
@@ -51,12 +51,12 @@
             ]"
           >
             <img :class="!playlist.isPersonal && activeThemeIp !== 'shinchan' ? ['ip-cover', `ip-cover--${activeThemeIp}`] : ''" :src="getPlaylistCover(playlist)" :alt="playlist.name" loading="lazy" decoding="async" />
-            <span class="playlist-type">{{ playlist.categoryName }}</span>
+            <span class="playlist-type">{{ categoryLabel(playlist.category) }}</span>
             <span class="playlist-play-icon" aria-hidden="true">▶</span>
           </div>
           <div class="all-playlist-info">
             <h2>{{ playlist.name }}</h2>
-            <p>{{ playlist.isPersonal ? '我的本地歌单' : '在线完整歌单' }}</p>
+            <p>{{ playlist.isPersonal ? copy.localPlaylist : copy.onlinePlaylist }}</p>
           </div>
         </article>
       </section>
@@ -67,7 +67,7 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        查看部分歌单封面的图片来源与授权
+        {{ copy.credits }}
       </a>
     </main>
 
@@ -87,6 +87,7 @@ import { useMusicBackground } from '../composables/useMusicBackground'
 import { getMusicThemeIp, getThemedPlaylistCover } from '../config/musicThemeCatalog'
 import { featuredPlaylists, treasurePlaylists, editorPlaylists, explorePlaylists } from '../data/songs.js'
 import { devicePerformanceProfile } from '../utils/devicePerformance'
+import { useLocale } from '../composables/useLocale'
 
 const router = useRouter()
 const { isPlaying } = usePlayer()
@@ -95,13 +96,41 @@ const { settings: musicBackgroundSettings } = useMusicBackground()
 const activeCategory = ref('all')
 const isReturning = ref(false)
 const activeThemeIp = computed(() => getMusicThemeIp(musicBackgroundSettings.preset))
+const { isChinese } = useLocale()
+
+const copy = computed(() => isChinese.value
+  ? {
+      back: '返回音乐',
+      title: '全部歌单',
+      summary: (total, online) => `${total} 张歌单，其中 ${online} 张来自在线发现`,
+      categories: '歌单分类',
+      localPlaylist: '我的本地歌单',
+      onlinePlaylist: '在线完整歌单',
+      credits: '查看部分歌单封面的图片来源与授权'
+    }
+  : {
+      back: 'Back to Music',
+      title: 'All Playlists',
+      summary: (total, online) => `${total} playlists, including ${online} discovered online`,
+      categories: 'Playlist categories',
+      localPlaylist: 'My local playlist',
+      onlinePlaylist: 'Full online playlist',
+      credits: 'View image sources and licenses for selected covers'
+    })
 
 const playlistGroups = [
-  { id: 'explore', name: '在线发现', playlists: explorePlaylists },
-  { id: 'featured', name: '精选歌单', playlists: featuredPlaylists },
-  { id: 'treasure', name: '宝藏歌单', playlists: treasurePlaylists },
-  { id: 'editor', name: '编辑推荐', playlists: editorPlaylists }
+  { id: 'explore', playlists: explorePlaylists },
+  { id: 'featured', playlists: featuredPlaylists },
+  { id: 'treasure', playlists: treasurePlaylists },
+  { id: 'editor', playlists: editorPlaylists }
 ]
+
+const categoryLabel = (id) => {
+  const labels = isChinese.value
+    ? { all: '全部', explore: '在线发现', featured: '精选歌单', treasure: '宝藏歌单', editor: '编辑推荐', personal: '我的歌单' }
+    : { all: 'All', explore: 'Discover', featured: 'Featured', treasure: 'Hidden Gems', editor: 'Editor Picks', personal: 'My Playlists' }
+  return labels[id] || id
+}
 
 let themedCoverCursor = 0
 const onlinePlaylists = playlistGroups.flatMap((group) => (
@@ -109,7 +138,7 @@ const onlinePlaylists = playlistGroups.flatMap((group) => (
     ...playlist,
     themeCoverIndex: themedCoverCursor++,
     category: group.id,
-    categoryName: group.name,
+    categoryName: categoryLabel(group.id),
     isPersonal: false
   }))
 ))
@@ -119,19 +148,19 @@ const allPlaylists = computed(() => [
   ...userPlaylists.value.map((playlist) => ({
     ...playlist,
     category: 'personal',
-    categoryName: '我的歌单',
+    categoryName: categoryLabel('personal'),
     isPersonal: true
   }))
 ])
 
 const categories = computed(() => [
-  { id: 'all', name: '全部', count: allPlaylists.value.length },
+  { id: 'all', name: categoryLabel('all'), count: allPlaylists.value.length },
   ...playlistGroups.map((group) => ({
     id: group.id,
-    name: group.name,
+    name: categoryLabel(group.id),
     count: group.playlists.length
   })),
-  { id: 'personal', name: '我的歌单', count: userPlaylists.value.length }
+  { id: 'personal', name: categoryLabel('personal'), count: userPlaylists.value.length }
 ])
 
 const filteredPlaylists = computed(() => {

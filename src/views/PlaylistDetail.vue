@@ -14,19 +14,19 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
             </svg>
-            更换封面
+            {{ copy.changeCover }}
           </label>
         </div>
       </div>
       <div class="info">
-        <div class="label">{{ isHomePlaylist ? '在线完整歌单 · Audius' : '歌单' }}</div>
+        <div class="label">{{ isHomePlaylist ? copy.onlinePlaylist : copy.playlist }}</div>
         <h1 v-if="isHomePlaylist" class="playlist-display-title">{{ editableName }}</h1>
         <input
           v-else
           v-model="editableName"
           class="name-input"
           @blur="saveName"
-          placeholder="歌单名称"
+          :placeholder="copy.playlistName"
           :disabled="isHomePlaylist"
         />
         <p v-if="isHomePlaylist" class="playlist-display-description">{{ editableDescription }}</p>
@@ -35,7 +35,7 @@
           v-model="editableDescription"
           class="desc-input"
           @blur="saveDescription"
-          placeholder="为歌单写一句描述..."
+          :placeholder="copy.descriptionPlaceholder"
           rows="2"
           :disabled="isHomePlaylist"
         />
@@ -50,51 +50,51 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
             </svg>
-            播放全部
+            {{ copy.playAll }}
           </button>
-          <button class="danger-btn" @click="handleDelete" v-if="!isHomePlaylist">删除歌单</button>
+          <button class="danger-btn" @click="handleDelete" v-if="!isHomePlaylist">{{ copy.deletePlaylist }}</button>
         </div>
       </div>
     </header>
 
     <main class="detail-main" v-if="playlist">
       <div class="songs-header">
-        <h2>歌曲列表</h2>
+        <h2>{{ copy.songList }}</h2>
         <button class="add-btn" @click="showAdd = !showAdd" v-if="!isHomePlaylist">
-          {{ showAdd ? '取消添加' : '添加歌曲' }}
+          {{ showAdd ? copy.cancelAdd : copy.addSongs }}
         </button>
       </div>
 
       <div v-if="isOnlinePlaylistLoading" class="online-playlist-state loading">
-        正在获取可完整播放的在线歌曲...
+        {{ copy.loadingOnline }}
       </div>
       <div v-else-if="onlinePlaylistError" class="online-playlist-state error">
-        {{ onlinePlaylistError }}，当前显示本地歌曲作为备用。
+        {{ onlinePlaylistError }}{{ copy.localFallback }}
       </div>
 
       <!-- 默认从“我的收藏”中添加歌曲 -->
       <section v-if="showAdd && !isHomePlaylist" class="add-form">
         <div class="add-form-header">
-          <h3>从收藏中添加歌曲</h3>
+          <h3>{{ copy.addFromFavorites }}</h3>
           <div class="add-form-actions">
             <button 
               class="secondary-btn" 
               @click="selectAllSongs"
               :disabled="!favorites.length"
             >
-              {{ selectedSongs.length === favorites.length ? '取消全选' : '全选' }}
+              {{ selectedSongs.length === favorites.length ? copy.deselectAll : copy.selectAll }}
             </button>
             <button 
               class="primary-btn add-selected-btn"
               @click="addSelectedSongs"
               :disabled="selectedSongs.length === 0"
             >
-              添加选中歌曲 ({{ selectedSongs.length }})
+              {{ copy.addSelected }} ({{ selectedSongs.length }})
             </button>
           </div>
         </div>
         <div v-if="!favorites.length" class="empty">
-          你的收藏列表为空，请先在音乐首页收藏几首歌～
+          {{ copy.noFavorites }}
         </div>
         <div v-else class="favorite-add-list">
           <div
@@ -120,7 +120,7 @@
               <div class="fav-artist">{{ song.artist }}</div>
             </div>
             <button class="primary-btn small" @click="addFavoriteSong(song)">
-              添加
+              {{ copy.add }}
             </button>
           </div>
         </div>
@@ -129,11 +129,11 @@
       <section v-if="playlist.songs.length" class="song-table">
         <div class="song-table-header">
           <span class="col-index">#</span>
-          <span class="col-cover">封面</span>
-          <span class="col-title">标题</span>
-          <span class="col-artist">歌手</span>
-          <span class="col-duration">时长</span>
-          <span class="col-actions">操作</span>
+          <span class="col-cover">{{ copy.cover }}</span>
+          <span class="col-title">{{ copy.title }}</span>
+          <span class="col-artist">{{ copy.artist }}</span>
+          <span class="col-duration">{{ copy.duration }}</span>
+          <span class="col-actions">{{ copy.actions }}</span>
         </div>
         <div
           class="song-row"
@@ -150,14 +150,14 @@
           <span class="col-artist">{{ song.artist }}</span>
           <span class="col-duration">{{ song.duration || '--:--' }}</span>
           <span class="col-actions">
-            <button class="link-btn" @click.stop="play(song)">播放</button>
-            <button class="link-btn" @click.stop="addToGlobalPlaylist(song)">添加</button>
-            <button class="link-btn danger" @click.stop="removeSong(index)" v-if="!isHomePlaylist">移除</button>
+            <button class="link-btn" @click.stop="play(song)">{{ copy.play }}</button>
+            <button class="link-btn" @click.stop="addToGlobalPlaylist(song)">{{ copy.add }}</button>
+            <button class="link-btn danger" @click.stop="removeSong(index)" v-if="!isHomePlaylist">{{ copy.remove }}</button>
           </span>
           <button
             class="song-more-btn"
             type="button"
-            :aria-label="`打开${song.title}的更多操作`"
+            :aria-label="copy.moreActions(song.title)"
             @pointerdown.stop
             @click.stop="openSongActions(song, index)"
           >
@@ -170,7 +170,7 @@
         </div>
       </section>
       <div v-else-if="!isOnlinePlaylistLoading" class="empty">
-        {{ isHomePlaylist ? '在线曲库暂时没有返回歌曲，请稍后重试～' : '该歌单暂无歌曲，点击上方“添加歌曲”开始创建吧～' }}
+        {{ isHomePlaylist ? copy.noOnlineSongs : copy.emptyPlaylist }}
       </div>
     </main>
 
@@ -218,7 +218,7 @@
       </div>
 
       <div class="bar-controls">
-        <button class="ctrl-btn play-mode-btn" :class="playMode" :title="playMode === 'list' ? '顺序播放' : playMode === 'single' ? '单曲循环' : '随机播放'" @click="togglePlayMode">
+        <button class="ctrl-btn play-mode-btn" :class="playMode" :title="playMode === 'list' ? copy.listMode : playMode === 'single' ? copy.singleMode : copy.randomMode" @click="togglePlayMode">
           <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
           </svg>
@@ -230,12 +230,12 @@
           </svg>
         </button>
         <div class="control-btns">
-          <button class="ctrl-btn" title="上一首" @click="prevSong">
+          <button class="ctrl-btn" :title="copy.previous" @click="prevSong">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
             </svg>
           </button>
-          <button class="ctrl-btn play-btn" @click="togglePlay">
+          <button class="ctrl-btn play-btn" :title="isPlaying ? copy.pause : copy.play" @click="togglePlay">
             <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
             </svg>
@@ -243,12 +243,12 @@
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
           </button>
-          <button class="ctrl-btn" title="下一首" @click="nextSong">
+          <button class="ctrl-btn" :title="copy.next" @click="nextSong">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
             </svg>
           </button>
-          <button class="ctrl-btn list-btn" @click="handlePlaylistClick" title="播放列表">
+          <button class="ctrl-btn list-btn" @click="handlePlaylistClick" :title="copy.playQueue">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
             </svg>
@@ -302,7 +302,7 @@
     <!-- 播放列表弹窗 -->
     <div class="playlist-popup" v-if="showPlaylist">
       <div class="popup-header">
-        <h3>播放列表</h3>
+        <h3>{{ copy.playQueue }}</h3>
         <button class="close-btn" @click="showPlaylist = false">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -327,7 +327,7 @@
           <span class="item-time">{{ song.duration }}</span>
         </div>
         <div v-if="globalPlaylist.length === 0" class="empty-playlist">
-          接下来没有待播放的歌曲
+          {{ copy.queueEmpty }}
         </div>
       </div>
     </div>
@@ -340,7 +340,7 @@
           @click.self="closeSongActions"
           @keydown.esc="closeSongActions"
         >
-          <section class="song-actions-sheet" role="dialog" aria-modal="true" aria-label="歌曲操作">
+          <section class="song-actions-sheet" role="dialog" aria-modal="true" :aria-label="copy.songActions">
             <div class="song-actions-handle" aria-hidden="true"></div>
             <div class="song-actions-current">
               <img :src="songActionTarget.song.cover || 'https://neeko-copilot.bytedance.net/api/text2image?prompt=music%20note%20icon%20minimal%20style&size=512x512'" alt="" />
@@ -353,18 +353,18 @@
             <div class="song-actions-list">
               <button type="button" @click="playFromSongActions">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-                播放此歌曲
+                {{ copy.playThisSong }}
               </button>
               <button type="button" @click="addFromSongActions">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-                加入播放列表
+                {{ copy.addToQueue }}
               </button>
               <button v-if="!isHomePlaylist" class="is-danger" type="button" @click="removeFromSongActions">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M9 7l1-2h4l1 2M6 7l1 13h10l1-13" /></svg>
-                从当前歌单移除
+                {{ copy.removeFromPlaylist }}
               </button>
             </div>
-            <button class="song-actions-cancel" type="button" @click="closeSongActions">取消</button>
+            <button class="song-actions-cancel" type="button" @click="closeSongActions">{{ copy.cancel }}</button>
           </section>
         </div>
       </Transition>
@@ -387,7 +387,7 @@
             tabindex="-1"
             @keydown.esc="closeDeleteConfirm"
           >
-            <button class="playlist-delete-close" type="button" aria-label="关闭" @click="closeDeleteConfirm">
+            <button class="playlist-delete-close" type="button" :aria-label="copy.close" @click="closeDeleteConfirm">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 6l12 12M18 6L6 18" />
               </svg>
@@ -405,27 +405,27 @@
             </div>
 
             <div class="playlist-delete-copy">
-              <span class="playlist-delete-eyebrow">PLAYLIST · 整理歌单</span>
-              <h2 id="playlist-delete-title">删除“{{ playlist?.name || editableName || '这个歌单' }}”？</h2>
+              <span class="playlist-delete-eyebrow">{{ copy.organizePlaylist }}</span>
+              <h2 id="playlist-delete-title">{{ copy.deleteQuestion(playlist?.name || editableName) }}</h2>
               <p id="playlist-delete-description">
-                删除后，这张歌单将从你的歌单列表中消失。
+                {{ copy.deleteDescription }}
               </p>
               <div class="playlist-delete-keep-note">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M9 12l2 2 4-4" />
                   <circle cx="12" cy="12" r="9" />
                 </svg>
-                歌曲文件与收藏记录都会保留
+                {{ copy.keepSongs }}
               </div>
             </div>
 
             <div class="playlist-delete-actions">
-              <button class="playlist-delete-cancel" type="button" @click="closeDeleteConfirm">先保留</button>
+              <button class="playlist-delete-cancel" type="button" @click="closeDeleteConfirm">{{ copy.keepPlaylist }}</button>
               <button class="playlist-delete-confirm" type="button" @click="confirmDeletePlaylist">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
                 </svg>
-                删除歌单
+                {{ copy.deletePlaylist }}
               </button>
             </div>
           </section>
@@ -450,9 +450,116 @@ import MusicBottomPlayer from '../components/MusicBottomPlayer.vue'
 import { loadAudiusPlaylist } from '../services/audius.js'
 import { useMusicBackground } from '../composables/useMusicBackground'
 import { getMusicThemeIp, getThemedPlaylistCover } from '../config/musicThemeCatalog'
+import { useLocale } from '../composables/useLocale'
 
 const route = useRoute()
 const router = useRouter()
+const { isChinese } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      changeCover: '更换封面',
+      onlinePlaylist: '在线完整歌单 · Audius',
+      playlist: '歌单',
+      playlistName: '歌单名称',
+      descriptionPlaceholder: '为歌单写一句描述...',
+      playAll: '播放全部',
+      deletePlaylist: '删除歌单',
+      songList: '歌曲列表',
+      cancelAdd: '取消添加',
+      addSongs: '添加歌曲',
+      loadingOnline: '正在获取可完整播放的在线歌曲...',
+      localFallback: '，当前显示本地歌曲作为备用。',
+      addFromFavorites: '从收藏中添加歌曲',
+      deselectAll: '取消全选',
+      selectAll: '全选',
+      addSelected: '添加选中歌曲',
+      noFavorites: '你的收藏列表为空，请先在音乐首页收藏几首歌～',
+      add: '添加',
+      cover: '封面',
+      title: '标题',
+      artist: '歌手',
+      duration: '时长',
+      actions: '操作',
+      play: '播放',
+      pause: '暂停',
+      previous: '上一首',
+      next: '下一首',
+      listMode: '顺序播放',
+      singleMode: '单曲循环',
+      randomMode: '随机播放',
+      remove: '移除',
+      moreActions: (title) => `打开${title}的更多操作`,
+      noOnlineSongs: '在线曲库暂时没有返回歌曲，请稍后重试～',
+      emptyPlaylist: '该歌单暂无歌曲，点击上方“添加歌曲”开始创建吧～',
+      playQueue: '播放列表',
+      queueEmpty: '接下来没有待播放的歌曲',
+      songActions: '歌曲操作',
+      playThisSong: '播放此歌曲',
+      addToQueue: '加入播放列表',
+      removeFromPlaylist: '从当前歌单移除',
+      cancel: '取消',
+      close: '关闭',
+      organizePlaylist: 'PLAYLIST · 整理歌单',
+      deleteQuestion: (name) => `删除“${name || '这个歌单'}”？`,
+      deleteDescription: '删除后，这张歌单将从你的歌单列表中消失。',
+      keepSongs: '歌曲文件与收藏记录都会保留',
+      keepPlaylist: '先保留',
+      backAll: '返回全部歌单',
+      backMusic: '返回音乐首页',
+      onlineUnavailable: '在线完整曲库暂时不可用'
+    }
+  : {
+      changeCover: 'Change Cover',
+      onlinePlaylist: 'Full Online Playlist · Audius',
+      playlist: 'Playlist',
+      playlistName: 'Playlist name',
+      descriptionPlaceholder: 'Write a short description...',
+      playAll: 'Play All',
+      deletePlaylist: 'Delete Playlist',
+      songList: 'Track List',
+      cancelAdd: 'Cancel',
+      addSongs: 'Add Songs',
+      loadingOnline: 'Loading full-length online tracks...',
+      localFallback: '. Local tracks are shown as a fallback.',
+      addFromFavorites: 'Add from Favorites',
+      deselectAll: 'Deselect All',
+      selectAll: 'Select All',
+      addSelected: 'Add Selected',
+      noFavorites: 'Your favorites are empty. Save a few tracks first.',
+      add: 'Add',
+      cover: 'Cover',
+      title: 'Title',
+      artist: 'Artist',
+      duration: 'Duration',
+      actions: 'Actions',
+      play: 'Play',
+      pause: 'Pause',
+      previous: 'Previous',
+      next: 'Next',
+      listMode: 'Play in order',
+      singleMode: 'Repeat one',
+      randomMode: 'Shuffle',
+      remove: 'Remove',
+      moreActions: (title) => `More actions for ${title}`,
+      noOnlineSongs: 'No online tracks are available right now. Please try again later.',
+      emptyPlaylist: 'This playlist is empty. Use “Add Songs” to begin.',
+      playQueue: 'Play Queue',
+      queueEmpty: 'Nothing else is queued',
+      songActions: 'Song actions',
+      playThisSong: 'Play This Song',
+      addToQueue: 'Add to Queue',
+      removeFromPlaylist: 'Remove from This Playlist',
+      cancel: 'Cancel',
+      close: 'Close',
+      organizePlaylist: 'PLAYLIST · ORGANIZE',
+      deleteQuestion: (name) => `Delete “${name || 'this playlist'}”?`,
+      deleteDescription: 'This playlist will disappear from your library.',
+      keepSongs: 'Song files and favorites will be kept',
+      keepPlaylist: 'Keep Playlist',
+      backAll: 'Back to All Playlists',
+      backMusic: 'Back to Music',
+      onlineUnavailable: 'The full online catalog is temporarily unavailable'
+    })
 const { settings: musicBackgroundSettings } = useMusicBackground()
 const activeThemeIp = computed(() => getMusicThemeIp(musicBackgroundSettings.preset))
 
@@ -511,7 +618,7 @@ const {
 const playlistId = computed(() => route.params.id)
 const isHomePlaylist = computed(() => playlistId.value.startsWith('featured-') || playlistId.value.startsWith('treasure-') || playlistId.value.startsWith('editor-') || playlistId.value.startsWith('explore-'))
 const enteredFromAllPlaylists = computed(() => route.query.from === 'all')
-const backButtonText = computed(() => enteredFromAllPlaylists.value ? '返回全部歌单' : '返回音乐首页')
+const backButtonText = computed(() => enteredFromAllPlaylists.value ? copy.value.backAll : copy.value.backMusic)
 const basePlaylist = computed(() => getPlaylistById(playlistId.value))
 const onlineHomePlaylist = ref(null)
 const playlist = computed(() => onlineHomePlaylist.value || basePlaylist.value)
@@ -586,13 +693,18 @@ const loadOnlineHomeSongs = async () => {
     }
     applyPlaylistMeta(onlineHomePlaylist.value)
   } catch (error) {
-    onlinePlaylistError.value = '在线完整曲库暂时不可用'
+    onlinePlaylistError.value = copy.value.onlineUnavailable
   } finally {
     isOnlinePlaylistLoading.value = false
   }
 }
 
 onMounted(() => {
+  if (!basePlaylist.value) {
+    router.replace('/music/playlists')
+    return
+  }
+
   initAudio()
   applyPlaylistMeta(playlist.value)
   loadOnlineHomeSongs()

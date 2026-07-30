@@ -149,21 +149,13 @@ const isElementInViewport = (element) => {
 };
 
 const revealVisibleCard = (element) => {
-  if (!element || element.classList.contains('animate-in')) {
+  if (!element) {
     return false;
   }
 
-  if (isElementInViewport(element)) {
-    element.classList.add('animate-in');
-    requestAnimationFrame(() => {
-      if (isElementInViewport(element)) {
-        element.classList.add('animate-in');
-      }
-    });
-    return true;
-  }
-
-  return false;
+  const shouldReveal = isElementInViewport(element);
+  element.classList.toggle('animate-in', shouldReveal);
+  return shouldReveal;
 };
 
 export function setupScrollAnimation(cards) {
@@ -183,10 +175,9 @@ export function setupScrollAnimation(cards) {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting || isElementInViewport(entry.target)) {
-          entry.target.classList.add('animate-in');
-          observer.unobserve(entry.target);
-        }
+        const shouldReveal = entry.isIntersecting
+          && entry.intersectionRatio >= 0.02;
+        entry.target.classList.toggle('animate-in', shouldReveal);
       });
     },
     {
@@ -196,16 +187,13 @@ export function setupScrollAnimation(cards) {
   );
 
   elements.forEach((element) => {
-    if (!revealVisibleCard(element)) {
-      observer.observe(element);
-    }
+    revealVisibleCard(element);
+    observer.observe(element);
   });
 
   setTimeout(() => {
     elements.forEach((element) => {
-      if (revealVisibleCard(element)) {
-        observer.unobserve(element);
-      }
+      revealVisibleCard(element);
     });
   }, 180);
 

@@ -23,14 +23,14 @@
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
             <polyline points="9 22 9 12 15 12 15 22"/>
           </svg>
-          首页
+          {{ copy.home }}
         </router-link>
         <span class="breadcrumb-separator">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </span>
-        <span class="breadcrumb-current">{{ categoryName }}</span>
+        <span class="breadcrumb-current">{{ displayCategoryName }}</span>
       </nav>
 
       <!-- 分类标题 - 全新设计 -->
@@ -43,23 +43,23 @@
         <div class="header-content">
           <div class="category-badge">
             <span class="badge-icon">{{ categoryIcon }}</span>
-            <span class="badge-text">{{ filteredArticles.length }} 篇记录</span>
+            <span class="badge-text">{{ copy.recordCount(filteredArticles.length) }}</span>
           </div>
-          <h1 class="category-title">{{ categoryName }}</h1>
+          <h1 class="category-title">{{ displayCategoryName }}</h1>
           <p class="category-description">{{ categoryDescription }}</p>
           <div class="header-stats">
             <div class="stat-item">
               <div class="stat-icon">📖</div>
               <div class="stat-info">
                 <span class="stat-value">{{ totalReadTime }}</span>
-                <span class="stat-label">总阅读时长</span>
+                <span class="stat-label">{{ copy.totalReadTime }}</span>
               </div>
             </div>
             <div class="stat-item">
               <div class="stat-icon">🎯</div>
               <div class="stat-info">
                 <span class="stat-value">{{ thisMonthCount }}</span>
-                <span class="stat-label">本月新增</span>
+                <span class="stat-label">{{ copy.addedThisMonth }}</span>
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          <span>新建记录</span>
+          <span>{{ copy.newRecord }}</span>
         </button>
       </header>
 
@@ -80,8 +80,8 @@
             <div class="form-header-left">
               <div class="form-icon">✨</div>
               <div>
-                <h2 class="form-title">创建学习记录</h2>
-                <p class="form-subtitle">记录你的学习历程和心得</p>
+                <h2 class="form-title">{{ copy.createRecord }}</h2>
+                <p class="form-subtitle">{{ copy.createRecordSubtitle }}</p>
               </div>
             </div>
             <button @click="showAddForm = false" class="btn-close-form">
@@ -96,20 +96,20 @@
               <div class="form-group">
                 <label for="title">
                   <span class="label-icon">📝</span>
-                  标题
+                  {{ copy.title }}
                 </label>
                 <input
                   id="title"
                   v-model="formData.title"
                   type="text"
-                  placeholder="输入学习记录标题..."
+                  :placeholder="copy.titlePlaceholder"
                   required
                 >
               </div>
               <div class="form-group">
                 <label>
                   <span class="label-icon">📎</span>
-                  上传文件
+                  {{ copy.uploadFile }}
                 </label>
                 <div class="file-upload-area" @click="$refs.fileInput.click()" @dragover.prevent @drop.prevent="handleFileDrop">
                   <input
@@ -125,8 +125,8 @@
                       <polyline points="17 8 12 3 7 8"/>
                       <line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
-                    <p class="upload-text">点击或拖拽文件</p>
-                    <p class="upload-hint">支持 .md .docx .doc</p>
+                    <p class="upload-text">{{ copy.dropFile }}</p>
+                    <p class="upload-hint">{{ copy.supportedFiles }}</p>
                   </div>
                   <div v-else class="uploaded-file">
                     <div class="file-type-icon">📄</div>
@@ -147,25 +147,25 @@
             <div class="form-group">
               <label for="excerpt">
                 <span class="label-icon">💡</span>
-                摘要
+                {{ copy.excerpt }}
               </label>
               <textarea
                 id="excerpt"
                 v-model="formData.excerpt"
-                placeholder="描述学习内容和心得体会..."
+                :placeholder="copy.excerptPlaceholder"
                 rows="4"
                 required
               ></textarea>
             </div>
             <div class="form-actions">
               <button type="button" @click="showAddForm = false" class="btn-cancel">
-                取消
+                {{ copy.cancel }}
               </button>
               <button type="submit" class="btn-submit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
-                保存记录
+                {{ copy.saveRecord }}
               </button>
             </div>
           </form>
@@ -209,7 +209,7 @@
                       <circle cx="12" cy="12" r="10"/>
                       <polyline points="12 6 12 12 16 14"/>
                     </svg>
-                    {{ article.readTime }} 分钟
+                    {{ copy.readMinutes(article.readTime) }}
                   </span>
                   <span class="meta-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -221,13 +221,13 @@
                 </div>
                 
                 <div class="card-actions">
-                  <button @click="showDeleteDialog(article)" class="btn-card-action delete-action" title="删除">
+                  <button @click="showDeleteDialog(article)" class="btn-card-action delete-action" :title="copy.delete">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="3 6 5 6 21 6"/>
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
                   </button>
-                  <router-link :to="`/article/${article.id}?fromCategory=${categoryName}`" class="btn-card-action view-action" title="查看详情">
+                  <router-link :to="`/article/${article.id}?fromCategory=${categoryName}`" class="btn-card-action view-action" :title="copy.viewDetails">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
@@ -253,14 +253,14 @@
               <div class="deco-circle deco-3"></div>
             </div>
           </div>
-          <h3 class="empty-title">暂无学习记录</h3>
-          <p class="empty-description">开始记录你的学习旅程吧！</p>
+          <h3 class="empty-title">{{ copy.noRecords }}</h3>
+          <p class="empty-description">{{ copy.noRecordsDescription }}</p>
           <router-link to="/" class="btn-back-home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
               <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
-            返回首页
+            {{ copy.backHome }}
           </router-link>
         </div>
       </section>
@@ -277,13 +277,13 @@
           </svg>
         </div>
         <div class="delete-confirm-content">
-          <h3>确认删除</h3>
-          <p>确定要删除学习记录「{{ articleToDelete?.title }}」吗？</p>
-          <p class="delete-warning">此操作不可恢复</p>
+          <h3>{{ copy.confirmDeleteTitle }}</h3>
+          <p>{{ copy.confirmDeleteMessage(articleToDelete?.title) }}</p>
+          <p class="delete-warning">{{ copy.irreversible }}</p>
         </div>
         <div class="delete-confirm-actions">
-          <button @click="cancelDelete" class="btn-cancel-delete">取消</button>
-          <button @click="confirmDelete" class="btn-confirm-delete">确认删除</button>
+          <button @click="cancelDelete" class="btn-cancel-delete">{{ copy.cancel }}</button>
+          <button @click="confirmDelete" class="btn-confirm-delete">{{ copy.confirmDelete }}</button>
         </div>
       </div>
     </div>
@@ -294,8 +294,10 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticles } from '../utils/articlesStore'
+import { localizeArticle } from '../utils/articleTranslations'
 import { marked } from 'marked'
 import CustomAlert from '../components/CustomAlert.vue'
+import { useLocale } from '../composables/useLocale'
 
 // 配置marked以获得更好的渲染效果
 marked.setOptions({
@@ -307,6 +309,72 @@ marked.setOptions({
 
 const route = useRoute()
 const { articles, addArticle, deleteArticle } = useArticles()
+const { isChinese } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      home: '首页',
+      recordCount: (count) => `${count} 篇记录`,
+      totalReadTime: '总阅读时长',
+      addedThisMonth: '本月新增',
+      newRecord: '新建记录',
+      createRecord: '创建学习记录',
+      createRecordSubtitle: '记录你的学习历程和心得',
+      title: '标题',
+      titlePlaceholder: '输入学习记录标题...',
+      uploadFile: '上传文件',
+      dropFile: '点击或拖拽文件',
+      supportedFiles: '支持 .md .docx .doc',
+      excerpt: '摘要',
+      excerptPlaceholder: '描述学习内容和心得体会...',
+      cancel: '取消',
+      saveRecord: '保存记录',
+      readMinutes: (minutes) => `${minutes} 分钟`,
+      delete: '删除',
+      viewDetails: '查看详情',
+      noRecords: '暂无学习记录',
+      noRecordsDescription: '开始记录你的学习旅程吧！',
+      backHome: '返回首页',
+      confirmDeleteTitle: '确认删除',
+      confirmDeleteMessage: (title) => `确定要删除学习记录「${title || ''}」吗？`,
+      irreversible: '此操作不可恢复',
+      confirmDelete: '确认删除',
+      fallbackCategory: '未知分类',
+      fallbackDescription: '该分类的文章列表',
+      minutes: '分钟',
+      hours: '小时'
+    }
+  : {
+      home: 'Home',
+      recordCount: (count) => `${count} records`,
+      totalReadTime: 'Total reading time',
+      addedThisMonth: 'Added this month',
+      newRecord: 'New Record',
+      createRecord: 'Create a Learning Record',
+      createRecordSubtitle: 'Capture what you learned and what changed',
+      title: 'Title',
+      titlePlaceholder: 'Enter a title...',
+      uploadFile: 'Upload File',
+      dropFile: 'Click or drag a file here',
+      supportedFiles: 'Supports .md .docx .doc',
+      excerpt: 'Summary',
+      excerptPlaceholder: 'Describe the lesson and your takeaways...',
+      cancel: 'Cancel',
+      saveRecord: 'Save Record',
+      readMinutes: (minutes) => `${minutes} min`,
+      delete: 'Delete',
+      viewDetails: 'View details',
+      noRecords: 'No learning records yet',
+      noRecordsDescription: 'Start documenting your learning journey.',
+      backHome: 'Back Home',
+      confirmDeleteTitle: 'Delete Record?',
+      confirmDeleteMessage: (title) => `Delete “${title || 'this record'}”?`,
+      irreversible: 'This action cannot be undone',
+      confirmDelete: 'Delete',
+      fallbackCategory: 'Uncategorized',
+      fallbackDescription: 'Articles in this category',
+      minutes: 'min',
+      hours: 'hr'
+    })
 
 // 文件输入框引用
 const fileInput = ref(null)
@@ -656,8 +724,31 @@ const categoryInfo = {
 // 当前分类名称
 const categoryName = computed(() => {
   const name = route.params.name
-  return typeof name === 'string' ? name : '未知分类'
+  return typeof name === 'string' ? name : copy.value.fallbackCategory
 })
+
+const categoryLabelsEn = {
+  '前端开发': 'Frontend Development',
+  '后端开发': 'Backend Development',
+  '性能优化': 'Performance',
+  '工具': 'Tools',
+  '学习记录': 'Learning Notes'
+}
+
+const categoryDescriptionsEn = {
+  'Vue': 'A progressive framework for building modern web interfaces',
+  'JavaScript': 'The foundation of interactive web experiences and application logic',
+  'CSS': 'Visual systems, responsive layout, motion, and interface craft',
+  '前端开发': 'Notes and experiments from modern frontend development',
+  '后端开发': 'Services, data, APIs, and the systems behind an interface',
+  '性能优化': 'Making digital experiences faster, smoother, and more resilient',
+  '工具': 'Useful tools and workflows for building better products',
+  '学习记录': 'A living archive of lessons, experiments, and practical discoveries'
+}
+
+const displayCategoryName = computed(() => (
+  isChinese.value ? categoryName.value : (categoryLabelsEn[categoryName.value] || categoryName.value)
+))
 
 // 当前分类图标
 const categoryIcon = computed(() => {
@@ -666,7 +757,10 @@ const categoryIcon = computed(() => {
 
 // 当前分类描述
 const categoryDescription = computed(() => {
-  return categoryInfo[categoryName.value]?.description || '该分类的文章列表'
+  if (!isChinese.value) {
+    return categoryDescriptionsEn[categoryName.value] || copy.value.fallbackDescription
+  }
+  return categoryInfo[categoryName.value]?.description || copy.value.fallbackDescription
 })
 
 // 筛选当前分类的文章
@@ -674,6 +768,7 @@ const filteredArticles = computed(() => {
   return articles.value
     .filter(article => article.category === categoryName.value)
     .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map(article => localizeArticle(article, isChinese.value))
 })
 
 // 获取文章的编号（基于当前分类下的文章顺序）
@@ -698,14 +793,16 @@ const totalReadTime = computed(() => {
   const totalMinutes = filteredArticles.value.reduce((sum, article) => sum + (article.readTime || 0), 0)
   
   if (totalMinutes < 60) {
-    return `${totalMinutes}分钟`
+    return `${totalMinutes} ${copy.value.minutes}`
   } else {
     const hours = Math.floor(totalMinutes / 60)
     const minutes = totalMinutes % 60
     if (minutes > 0) {
-      return `${hours}小时${minutes}分钟`
+      return isChinese.value
+        ? `${hours}${copy.value.hours}${minutes}${copy.value.minutes}`
+        : `${hours} ${copy.value.hours} ${minutes} ${copy.value.minutes}`
     } else {
-      return `${hours}小时`
+      return `${hours} ${copy.value.hours}`
     }
   }
 })
@@ -786,4 +883,3 @@ onUnmounted(() => {
 <style scoped>
 @import '../css/Category.css';
 </style>
-

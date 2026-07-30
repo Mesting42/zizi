@@ -4,7 +4,8 @@
     :class="[
       `ip-${activeThemeIp}`,
       `preset-${musicBackgroundSettings.preset}`,
-      `appearance-${musicBackgroundSettings.customAppearance}`
+      `appearance-${musicBackgroundSettings.customAppearance}`,
+      { 'is-playing': isPlaying }
     ]"
   >
     <MusicPageBackground :playing="isPlaying" :climbing="activeClimbCardIndex >= 0" />
@@ -28,10 +29,10 @@
       <div class="hero-bg-glow"></div>
       <button class="music-settings-trigger" type="button" @click="showMusicSettings = true">
         <span aria-hidden="true">⚙</span>
-        音乐设置
+        {{ copy.musicSettings }}
       </button>
       <h1 class="hero-title">Music</h1>
-      <p class="hero-subtitle">发现属于你的旋律 · 随时聆听</p>
+      <p class="hero-subtitle">{{ copy.heroSubtitle }}</p>
       <div class="hero-search" :class="{ 'is-search-open': showSearchResults }" ref="heroSearchRef">
         <div class="search-box" ref="searchBoxRef">
           <svg viewBox="0 0 24 24" fill="currentColor">
@@ -45,7 +46,7 @@
             @focus="openSearchPanel"
             @compositionstart="isComposing = true"
             @compositionend="onCompositionEnd"
-            placeholder="搜索本地音乐，也可以在线找试听"
+            :placeholder="copy.searchPlaceholder"
           />
         </div>
       </div>
@@ -66,7 +67,7 @@
             @mousedown.stop
           >
             <div v-if="isMobileSearchPage" class="mobile-search-page-toolbar">
-              <button type="button" class="mobile-search-back" @click="closeSearch" aria-label="返回音乐首页">
+              <button type="button" class="mobile-search-back" @click="closeSearch" :aria-label="copy.backMusic">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m15 18-6-6 6-6"/>
                 </svg>
@@ -82,26 +83,26 @@
                   @input="onSearchInput"
                   @compositionstart="isComposing = true"
                   @compositionend="onCompositionEnd"
-                  placeholder="搜索本地音乐，也可以在线找试听"
+                  :placeholder="copy.searchPlaceholder"
                 />
-                <button type="button" class="mobile-search-cancel" @click="closeSearch">取消</button>
+                <button type="button" class="mobile-search-cancel" @click="closeSearch">{{ copy.cancel }}</button>
               </div>
             </div>
             <div class="search-dropdown-toolbar" v-else-if="searchQuery.trim()">
-              <span class="search-results-title">搜索「{{ searchQuery }}」</span>
+              <span class="search-results-title">{{ copy.searchFor(searchQuery) }}</span>
               <div class="search-panel-meta inline">
-                <span>{{ localSearchResults.length }} 首本地</span>
-                <span>{{ onlineSearchResults.length }} 首在线</span>
+                <span>{{ copy.localCount(localSearchResults.length) }}</span>
+                <span>{{ copy.onlineCount(onlineSearchResults.length) }}</span>
               </div>
-              <button type="button" class="close-search" @click="closeSearch" aria-label="关闭搜索">
+              <button type="button" class="close-search" @click="closeSearch" :aria-label="copy.closeSearch">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
               </button>
             </div>
             <div class="search-empty-panel netease-search-panel" v-if="!searchQuery.trim()">
               <div class="search-suggestion-section" v-if="recentSearches.length">
                 <div class="suggestion-title">
-                  <span>搜索历史</span>
-                  <button type="button" class="suggestion-clear-btn" @click="clearRecentSearches">清空</button>
+                  <span>{{ copy.searchHistory }}</span>
+                  <button type="button" class="suggestion-clear-btn" @click="clearRecentSearches">{{ copy.clear }}</button>
                 </div>
                 <div class="search-chip-row">
                   <button
@@ -116,7 +117,7 @@
               </div>
               <div class="search-suggestion-section">
                 <div class="suggestion-title">
-                  <span>猜你喜欢</span>
+                  <span>{{ copy.youMayLike }}</span>
                 </div>
                 <div class="search-chip-row">
                   <button
@@ -292,17 +293,17 @@
             </div>
             <div class="search-loading" v-else-if="isOnlineSearching">
               <span class="search-spinner"></span>
-              <p>正在连接在线试听库...</p>
+              <p>{{ copy.connecting }}</p>
             </div>
             <div class="search-no-result" v-else-if="searchError">
               <p>{{ searchError }}</p>
-              <span>本地搜索仍然可用，稍后可以再试在线结果</span>
+              <span>{{ copy.localStillWorks }}</span>
             </div>
             <div class="search-no-result" v-else>
-              <p>未找到与 "{{ searchQuery }}" 相关的音乐</p>
-              <span>可以换歌手、歌名或英文关键词试试</span>
+              <p>{{ copy.noResults(searchQuery) }}</p>
+              <span>{{ copy.tryAnotherKeyword }}</span>
             </div>
-            <div v-if="isMobileSearchPage" class="mobile-search-mini-player" aria-label="迷你播放控制">
+            <div v-if="isMobileSearchPage" class="mobile-search-mini-player" :aria-label="copy.miniPlayer">
               <button type="button" class="mobile-search-mini-song" @click="goToPlayer">
                 <span class="mobile-search-mini-record" :class="{ 'is-spinning': isPlaying }" aria-hidden="true">
                   <img :src="currentSong.cover" :alt="currentSong.title" />
@@ -318,7 +319,7 @@
                   type="button"
                   class="mobile-search-mini-play"
                   :style="{ '--mobile-play-progress': `${Math.min(100, Math.max(0, progress))}%` }"
-                  :aria-label="isPlaying ? '暂停播放' : '继续播放'"
+                  :aria-label="isPlaying ? copy.pause : copy.resume"
                   @click="togglePlay"
                 >
                   <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -331,7 +332,7 @@
                 <button
                   type="button"
                   class="mobile-search-mini-queue"
-                  aria-label="打开播放列表"
+                  :aria-label="copy.openQueue"
                   @click="openMobileSearchQueue"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -348,14 +349,14 @@
                 :class="[`ip-${activeThemeIp}`, `preset-${musicBackgroundSettings.preset}`]"
                 @click.self="closeMobileSearchQueue"
               >
-                <section class="mobile-search-queue-sheet" role="dialog" aria-modal="true" aria-label="播放列表">
+                <section class="mobile-search-queue-sheet" role="dialog" aria-modal="true" :aria-label="copy.playQueue">
                   <div class="mobile-search-queue-handle" aria-hidden="true"></div>
                   <header class="mobile-search-queue-header">
                     <div>
-                      <span>当前播放</span>
-                      <strong>{{ playlist.length }} 首</strong>
+                      <span>{{ copy.nowPlaying }}</span>
+                      <strong>{{ copy.songCount(playlist.length) }}</strong>
                     </div>
-                    <button type="button" class="mobile-search-queue-close" aria-label="关闭播放列表" @click="closeMobileSearchQueue">
+                    <button type="button" class="mobile-search-queue-close" :aria-label="copy.closeQueue" @click="closeMobileSearchQueue">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
                     </button>
                   </header>
@@ -370,7 +371,7 @@
                       <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="m14.5 4 2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm-9.09.59L4 6l5.17 5.17 1.41-1.41L5.41 4.59zm8 9.65-1.41 1.41L16.54 20 14.5 22H20v-5.5l-2.04 2.04-4.55-4.3z"/>
                       </svg>
-                      {{ playMode === 'list' ? '顺序播放' : playMode === 'single' ? '单曲循环' : '随机播放' }}
+                      {{ playMode === 'list' ? copy.listMode : playMode === 'single' ? copy.singleMode : copy.randomMode }}
                     </button>
                   </div>
                   <div v-if="playlist.length" class="mobile-search-queue-list">
@@ -421,25 +422,25 @@
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
           </svg>
-          <span>发现</span>
+          <span>{{ copy.discover }}</span>
         </button>
         <button class="music-tab" :class="{ active: activeTab === 'recommend' }" @click="activeTab = 'recommend'">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
           </svg>
-          <span>每日推荐</span>
+          <span>{{ copy.daily }}</span>
         </button>
         <button class="music-tab" :class="{ active: activeTab === 'favorite' }" @click="activeTab = 'favorite'">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>
-          <span>我的喜欢</span>
+          <span>{{ copy.favorites }}</span>
         </button>
         <button class="music-tab" :class="{ active: activeTab === 'playlist' }" @click="activeTab = 'playlist'">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
           </svg>
-          <span>歌单</span>
+          <span>{{ copy.playlists }}</span>
         </button>
       </nav>
 
@@ -449,41 +450,45 @@
         <div class="content-section" v-if="activeTab === 'discover'">
           <!-- 精选歌单 -->
           <div class="section-header">
-            <h2>精选歌单</h2>
-            <button class="more-btn" type="button" @click="goToAllPlaylists">更多 ></button>
+            <h2>{{ copy.featuredPlaylists }}</h2>
+            <button class="more-btn" type="button" @click="goToAllPlaylists">{{ copy.more }} ></button>
           </div>
-          <div class="playlist-grid">
+          <div class="playlist-grid featured-playlist-grid">
             <div 
-              class="playlist-card"
+              class="playlist-card-slot"
               :class="{ 'has-card-climber': activeClimbCardIndex === index }"
               v-for="(pl, index) in featuredPlaylistsList" 
-              :key="index" 
-              @click="playPlaylist(pl)"
+              :key="pl.id || index"
             >
+              <div
+                class="playlist-card"
+                @click="playPlaylist(pl)"
+              >
+                <div class="card-image">
+                  <img :class="activeThemeIp !== 'shinchan' ? ['ip-cover', `ip-cover--${activeThemeIp}`] : ''" :src="getActivePlaylistCover(index, pl.cover)" :alt="`${pl.name} · ${activeThemeIpLabel}主题封面`" loading="eager" decoding="async" />
+                  <div class="card-overlay">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="card-info">
+                  <h4>{{ pl.name }}</h4>
+                  <span class="play-count">{{ copy.fullPlaylist }}</span>
+                </div>
+              </div>
               <PlaylistCardClimber
                 v-if="activeClimbCardIndex === index"
                 :key="playlistClimbCycle"
                 :character="activeClimbCharacter"
               />
-              <div class="card-image">
-                <img :class="activeThemeIp !== 'shinchan' ? ['ip-cover', `ip-cover--${activeThemeIp}`] : ''" :src="getActivePlaylistCover(index, pl.cover)" :alt="`${pl.name} · ${activeThemeIpLabel}主题封面`" loading="lazy" decoding="async" />
-                <div class="card-overlay">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </div>
-              </div>
-              <div class="card-info">
-                <h4>{{ pl.name }}</h4>
-                <span class="play-count">在线完整歌单</span>
-              </div>
             </div>
           </div>
 
           <!-- 最新音乐 -->
           <div class="section-header">
-            <h2>最新音乐</h2>
-            <button class="more-btn" type="button" @click="goToAllPlaylists">更多 ></button>
+            <h2>{{ copy.latestMusic }}</h2>
+            <button class="more-btn" type="button" @click="goToAllPlaylists">{{ copy.more }} ></button>
           </div>
           <div class="song-grid">
             <div 
@@ -507,8 +512,8 @@
               <button
                 class="add-to-playlist-btn"
                 type="button"
-                title="加入播放列表"
-                aria-label="加入播放列表"
+                :title="copy.addToQueue"
+                :aria-label="copy.addToQueue"
                 @pointerdown.stop
                 @click.stop="addRecommendedToQueue(song)"
               >
@@ -521,8 +526,8 @@
 
           <!-- 宝藏歌单 -->
           <div class="section-header">
-            <h2>宝藏歌单</h2>
-            <button class="more-btn" type="button" @click="goToAllPlaylists">更多 ></button>
+            <h2>{{ copy.treasurePlaylists }}</h2>
+            <button class="more-btn" type="button" @click="goToAllPlaylists">{{ copy.more }} ></button>
           </div>
           <div class="playlist-grid">
             <div 
@@ -541,15 +546,15 @@
               </div>
               <div class="card-info">
                 <h4>{{ pl.name }}</h4>
-                <span class="play-count">在线完整歌单</span>
+                <span class="play-count">{{ copy.fullPlaylist }}</span>
               </div>
             </div>
           </div>
 
           <!-- 今日编辑推荐 -->
           <div class="section-header">
-            <h2>今日编辑推荐</h2>
-            <button class="more-btn" type="button" @click="goToAllPlaylists">更多 ></button>
+            <h2>{{ copy.editorPicks }}</h2>
+            <button class="more-btn" type="button" @click="goToAllPlaylists">{{ copy.more }} ></button>
           </div>
           <div class="playlist-grid">
             <div 
@@ -568,7 +573,7 @@
               </div>
               <div class="card-info">
                 <h4>{{ pl.name }}</h4>
-                <span class="play-count">在线完整歌单</span>
+                <span class="play-count">{{ copy.fullPlaylist }}</span>
               </div>
             </div>
           </div>
@@ -581,17 +586,17 @@
               <div class="daily-showcase-top">
                 <div class="date-info daily-date-card">
                   <span class="day">{{ currentDate }}</span>
-                  <span class="month">{{ currentMonth }}月</span>
+                  <span class="month">{{ copy.month(currentMonth) }}</span>
                 </div>
                 <div class="daily-top-actions">
-                  <div class="daily-history-switch" role="group" aria-label="选择推荐日期">
+                  <div class="daily-history-switch" role="group" :aria-label="copy.pickDate">
                     <button
                       type="button"
                       :class="{ active: dailyViewMode === 'today' }"
                       :aria-pressed="dailyViewMode === 'today'"
                       @click="showDailyRecommendations('today')"
                     >
-                      今日推荐
+                      {{ copy.todayPicks }}
                     </button>
                     <button
                       type="button"
@@ -599,10 +604,10 @@
                       :aria-pressed="dailyViewMode === 'yesterday'"
                       @click="showDailyRecommendations('yesterday')"
                     >
-                      昨日推荐
+                      {{ copy.yesterdayPicks }}
                     </button>
                   </div>
-                  <span class="daily-live-pill">{{ dailyViewMode === 'today' ? '今日更新' : '昨日回顾' }}</span>
+                  <span class="daily-live-pill">{{ dailyViewMode === 'today' ? copy.updatedToday : copy.yesterdayReplay }}</span>
                 </div>
               </div>
 
@@ -618,18 +623,18 @@
 
               <div class="daily-showcase-copy">
                 <span class="daily-kicker">{{ dailyViewMode === 'today' ? 'Daily Mix' : 'Yesterday Replay' }}</span>
-                <h2>{{ dailyViewMode === 'today' ? '每日推荐' : '昨日推荐' }}</h2>
-                <p>{{ dailyViewMode === 'today' ? '根据你的口味挑选今天适合循环播放的旋律，把熟悉和惊喜放在同一个队列里。' : '回看昨天为你挑选的歌曲，错过的旋律现在还可以继续听。' }}</p>
+                <h2>{{ dailyViewMode === 'today' ? copy.daily : copy.yesterdayPicks }}</h2>
+                <p>{{ dailyViewMode === 'today' ? copy.todayDescription : copy.yesterdayDescription }}</p>
                 <div class="daily-meta-row">
                   <span>{{ recommendedSongsList.length }} 首</span>
-                  <span>为你精选</span>
-                  <span>私人歌单</span>
+                  <span>{{ copy.curatedForYou }}</span>
+                  <span>{{ copy.privatePlaylist }}</span>
                 </div>
                 <button class="section-play-all daily-play-all" @click="playAllRecommended">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
-                  播放全部
+                  {{ copy.playAll }}
                 </button>
               </div>
             </div>
@@ -638,15 +643,15 @@
               <div class="daily-queue-head">
                 <div>
                   <span class="daily-kicker">{{ dailyViewMode === 'today' ? "Today's Queue" : "Yesterday's Queue" }}</span>
-                  <h3>精选队列</h3>
+                  <h3>{{ copy.curatedQueue }}</h3>
                 </div>
-                <span>{{ isDailyOnlineLoading ? '正在加入在线推荐...' : `${recommendedSongsList.length} 首歌曲` }}</span>
+                <span>{{ isDailyOnlineLoading ? copy.loadingRecommendations : copy.songCount(recommendedSongsList.length) }}</span>
               </div>
 
               <div class="daily-list-labels">
                 <span>#</span>
-                <span>歌曲</span>
-                <span>时长</span>
+                <span>{{ copy.song }}</span>
+                <span>{{ copy.duration }}</span>
               </div>
 
               <div class="song-list daily-song-list">
@@ -670,7 +675,7 @@
                       <h4>{{ song.title }}</h4>
                       <p>
                         {{ song.artist }}
-                        <span v-if="song.isOnlineFull" class="daily-online-badge">在线完整</span>
+                        <span v-if="song.isOnlineFull" class="daily-online-badge">{{ copy.fullOnline }}</span>
                       </p>
                     </div>
                   </div>
@@ -679,8 +684,8 @@
                     <button
                       class="add-to-playlist-btn"
                       type="button"
-                      title="加入播放列表"
-                      aria-label="加入播放列表"
+                      :title="copy.addToQueue"
+                      :aria-label="copy.addToQueue"
                       @pointerdown.stop
                       @click.stop="addRecommendedToQueue(song)"
                     >
@@ -706,25 +711,25 @@
             </div>
             <div class="favorite-hero-copy">
               <span>MY LIKES</span>
-              <h2>我的喜欢</h2>
-              <p>收藏每一段让你心动的旋律</p>
-              <small>{{ favorites.length }} 首喜欢的歌曲</small>
+              <h2>{{ copy.favorites }}</h2>
+              <p>{{ copy.favoriteDescription }}</p>
+              <small>{{ copy.favoriteCount(favorites.length) }}</small>
             </div>
             <button
               v-if="favorites.length"
               class="favorite-hero-play"
               type="button"
-              aria-label="播放全部喜欢的歌曲"
+              :aria-label="copy.playAllFavorites"
               @click="playAllFavorites"
             >
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <span>播放全部</span>
+              <span>{{ copy.playAll }}</span>
             </button>
           </section>
 
           <div v-if="favorites.length" class="favorite-list-title">
-            <h3>喜欢的歌曲</h3>
-            <span>{{ favorites.length }} 首</span>
+            <h3>{{ copy.favoriteSongs }}</h3>
+            <span>{{ copy.songCount(favorites.length) }}</span>
           </div>
           <div class="song-list" v-if="favorites.length > 0">
             <div 
@@ -758,8 +763,8 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-            <p>还没有喜欢的歌曲</p>
-            <button class="empty-action" @click="activeTab = 'discover'">去发现音乐</button>
+            <p>{{ copy.noFavorites }}</p>
+            <button class="empty-action" @click="activeTab = 'discover'">{{ copy.goDiscover }}</button>
           </div>
         </div>
 
@@ -771,18 +776,18 @@
             </div>
             <div>
               <span>MY PLAYLISTS</span>
-              <h2>我的歌单</h2>
-              <p>把每一段喜欢的声音，收进自己的音乐空间</p>
+              <h2>{{ copy.myPlaylists }}</h2>
+              <p>{{ copy.playlistDescription }}</p>
             </div>
-            <button class="playlist-library-create" type="button" aria-label="创建歌单" @click="createPlaylist">
+            <button class="playlist-library-create" type="button" :aria-label="copy.createPlaylist" @click="createPlaylist">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-              <span>创建</span>
+              <span>{{ copy.create }}</span>
             </button>
           </section>
 
           <div v-if="userPlaylists.length" class="playlist-library-title">
-            <h3>创建的歌单</h3>
-            <span>{{ userPlaylists.length }} 个</span>
+            <h3>{{ copy.createdPlaylists }}</h3>
+            <span>{{ copy.playlistCount(userPlaylists.length) }}</span>
           </div>
           <div class="playlist-grid playlist-library-grid" v-if="userPlaylists.length">
             <div
@@ -796,7 +801,7 @@
               </div>
               <div class="card-info">
                 <h4>{{ pl.name }}</h4>
-                <span>{{ (pl.songs || pl.songIds || []).length }} 首歌曲</span>
+                <span>{{ copy.songCount((pl.songs || pl.songIds || []).length) }}</span>
               </div>
             </div>
           </div>
@@ -806,8 +811,8 @@
                 d="M4 4h16a1 1 0 0 1 1 1v11.5a2.5 2.5 0 0 1-3.743 2.147L12 15.882l-5.257 2.765A2.5 2.5 0 0 1 3 16.5V5a1 1 0 0 1 1-1z"
               />
             </svg>
-            <p>还没有创建歌单，试着把喜欢的音乐整理成一个歌单吧～</p>
-            <button class="empty-action" @click="createPlaylist">创建第一个歌单</button>
+            <p>{{ copy.noPlaylists }}</p>
+            <button class="empty-action" @click="createPlaylist">{{ copy.createFirstPlaylist }}</button>
           </div>
         </div>
       </main>
@@ -826,8 +831,8 @@
       >
         <div class="modal-content">
         <div class="modal-header">
-          <h3 id="create-playlist-title">创建歌单</h3>
-          <button class="close-btn" aria-label="关闭创建歌单窗口" @click="cancelCreatePlaylist">
+          <h3 id="create-playlist-title">{{ copy.createPlaylist }}</h3>
+          <button class="close-btn" :aria-label="copy.closeCreatePlaylist" @click="cancelCreatePlaylist">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>
@@ -836,7 +841,7 @@
         <div class="modal-body">
           <div class="cover-upload-section">
             <div class="cover-preview">
-              <img :src="coverPreview" alt="封面预览" @error="handleCoverError" />
+              <img :src="coverPreview" :alt="copy.coverPreview" @error="handleCoverError" />
               <div class="upload-overlay">
                 <input 
                   type="file" 
@@ -848,33 +853,33 @@
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
                   </svg>
-                  上传封面
+                  {{ copy.uploadCover }}
                 </label>
               </div>
             </div>
           </div>
           <div class="form-section">
             <div class="form-group">
-              <label>歌单名称</label>
+              <label>{{ copy.playlistName }}</label>
               <input 
                 type="text" 
                 v-model="newPlaylistName"
-                placeholder="请输入歌单名称"
+                :placeholder="copy.playlistNamePlaceholder"
               />
             </div>
             <div class="form-group">
-              <label>歌单描述</label>
+              <label>{{ copy.playlistDescriptionLabel }}</label>
               <textarea 
                 v-model="newPlaylistDescription"
-                placeholder="为歌单写一句描述..."
+                :placeholder="copy.playlistDescriptionPlaceholder"
                 rows="3"
               ></textarea>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="cancel-btn" @click="cancelCreatePlaylist">取消</button>
-          <button class="confirm-btn" @click="confirmCreatePlaylist">创建</button>
+          <button class="cancel-btn" @click="cancelCreatePlaylist">{{ copy.cancel }}</button>
+          <button class="confirm-btn" @click="confirmCreatePlaylist">{{ copy.create }}</button>
         </div>
         </div>
       </div>
@@ -925,7 +930,7 @@
       </div>
 
       <div class="bar-controls">
-        <button class="ctrl-btn play-mode-btn" :class="playMode" :title="playMode === 'list' ? '顺序播放' : playMode === 'single' ? '单曲循环' : '随机播放'" @click="togglePlayMode">
+        <button class="ctrl-btn play-mode-btn" :class="playMode" :title="playMode === 'list' ? copy.listMode : playMode === 'single' ? copy.singleMode : copy.randomMode" @click="togglePlayMode">
           <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
           </svg>
@@ -937,12 +942,12 @@
           </svg>
         </button>
         <div class="control-btns">
-          <button class="ctrl-btn" title="上一首" @click="prevSong">
+          <button class="ctrl-btn" :title="copy.previous" @click="prevSong">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
             </svg>
           </button>
-          <button class="ctrl-btn play-btn" :style="{ '--mobile-play-progress': `${Math.min(100, Math.max(0, progress))}%` }" @click="togglePlay">
+          <button class="ctrl-btn play-btn" :title="isPlaying ? copy.pause : copy.play" :style="{ '--mobile-play-progress': `${Math.min(100, Math.max(0, progress))}%` }" @click="togglePlay">
             <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
             </svg>
@@ -950,12 +955,12 @@
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
           </button>
-          <button class="ctrl-btn" title="下一首" @click="nextSong">
+          <button class="ctrl-btn" :title="copy.next" @click="nextSong">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
             </svg>
           </button>
-          <button class="ctrl-btn list-btn" @click="handlePlaylistClick" title="播放列表">
+          <button class="ctrl-btn list-btn" @click="handlePlaylistClick" :title="copy.playQueue">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
             </svg>
@@ -1015,14 +1020,14 @@
         :class="[`ip-${activeThemeIp}`, `preset-${musicBackgroundSettings.preset}`]"
         @click.self="closeMobilePlayerQueue"
       >
-        <section class="mobile-search-queue-sheet" role="dialog" aria-modal="true" aria-label="播放列表">
+        <section class="mobile-search-queue-sheet" role="dialog" aria-modal="true" :aria-label="copy.playQueue">
           <div class="mobile-search-queue-handle" aria-hidden="true"></div>
           <header class="mobile-search-queue-header">
             <div>
-              <span>当前播放</span>
-              <strong>{{ playlist.length }} 首</strong>
+              <span>{{ copy.nowPlaying }}</span>
+              <strong>{{ playlist.length }} {{ copy.tracks }}</strong>
             </div>
-            <button type="button" class="mobile-search-queue-close" aria-label="关闭播放列表" @click="closeMobilePlayerQueue">
+            <button type="button" class="mobile-search-queue-close" :aria-label="copy.closeQueue" @click="closeMobilePlayerQueue">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
             </button>
           </header>
@@ -1031,7 +1036,7 @@
               <svg v-if="playMode === 'list'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               <svg v-else-if="playMode === 'single'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z"/></svg>
               <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m14.5 4 2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm-9.09.59L4 6l5.17 5.17 1.41-1.41L5.41 4.59zm8 9.65-1.41 1.41L16.54 20 14.5 22H20v-5.5l-2.04 2.04-4.55-4.3z"/></svg>
-              {{ playMode === 'list' ? '顺序播放' : playMode === 'single' ? '单曲循环' : '随机播放' }}
+              {{ playMode === 'list' ? copy.listMode : playMode === 'single' ? copy.singleMode : copy.randomMode }}
             </button>
           </div>
           <div v-if="playlist.length" class="mobile-search-queue-list">
@@ -1052,19 +1057,19 @@
               <img :src="song.cover" :alt="song.title" />
               <span class="mobile-search-queue-song-copy"><strong>{{ song.title }}</strong><small>{{ song.artist }}</small></span>
               <span class="mobile-search-queue-duration">{{ song.duration }}</span>
-              <button type="button" class="mobile-search-queue-remove" :aria-label="`从播放列表移除 ${song.title}`" @click.stop="removeFromPlaylist(index)">
+              <button type="button" class="mobile-search-queue-remove" :aria-label="copy.removeFromQueue(song.title)" @click.stop="removeFromPlaylist(index)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
               </button>
             </div>
           </div>
-          <div v-else class="mobile-search-queue-empty">接下来没有待播放的歌曲</div>
+          <div v-else class="mobile-search-queue-empty">{{ copy.queueEmpty }}</div>
         </section>
       </div>
     </Transition>
     <div class="playlist-popup" v-if="showPlaylist">
       <div class="popup-header">
-        <h3>播放列表</h3>
-        <button class="close-btn" aria-label="关闭播放列表" @click="showPlaylist = false">
+        <h3>{{ copy.playQueue }}</h3>
+        <button class="close-btn" :aria-label="copy.closeQueue" @click="showPlaylist = false">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
           </svg>
@@ -1102,25 +1107,25 @@
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
         </svg>
-        <span>发现音乐</span>
+        <span>{{ copy.discoverMusic }}</span>
       </div>
       <div class="nav-item" :class="{ active: activeTab === 'recommend' }" @click="activeTab = 'recommend'">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
         </svg>
-        <span>每日推荐</span>
+        <span>{{ copy.daily }}</span>
       </div>
       <div class="nav-item" :class="{ active: activeTab === 'favorite' }" @click="activeTab = 'favorite'">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
         </svg>
-        <span>我的喜欢</span>
+        <span>{{ copy.favorites }}</span>
       </div>
       <div class="nav-item" :class="{ active: activeTab === 'playlist' }" @click="activeTab = 'playlist'">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
         </svg>
-        <span>我的歌单</span>
+        <span>{{ copy.myPlaylists }}</span>
       </div>
     </nav>
 
@@ -1147,8 +1152,181 @@ import { allSongs, recommendedSongs, featuredPlaylists, treasurePlaylists, edito
 import { searchAudiusTracks } from '../services/audius.js'
 import { isJamendoConfigured, searchJamendoTracks } from '../services/jamendo.js'
 import { searchITunesPreviews } from '../services/itunes.js'
+import { useLocale } from '../composables/useLocale'
 
 const router = useRouter()
+const { isChinese } = useLocale()
+const copy = computed(() => isChinese.value
+  ? {
+      musicSettings: '音乐设置',
+      heroSubtitle: '发现属于你的旋律 · 随时聆听',
+      searchPlaceholder: '搜索本地音乐，也可以在线找试听',
+      backMusic: '返回音乐首页',
+      cancel: '取消',
+      discover: '发现',
+      discoverMusic: '发现音乐',
+      daily: '每日推荐',
+      favorites: '我的喜欢',
+      playlists: '歌单',
+      featuredPlaylists: '精选歌单',
+      more: '更多',
+      fullPlaylist: '在线完整歌单',
+      latestMusic: '最新音乐',
+      addToQueue: '加入播放列表',
+      treasurePlaylists: '宝藏歌单',
+      editorPicks: '今日编辑推荐',
+      yesterdayPicks: '昨日推荐',
+      curatedForYou: '为你精选',
+      privatePlaylist: '私人歌单',
+      curatedQueue: '精选队列',
+      song: '歌曲',
+      duration: '时长',
+      playAll: '播放全部',
+      favoriteSongs: '喜欢的歌曲',
+      myPlaylists: '我的歌单',
+      create: '创建',
+      createdPlaylists: '创建的歌单',
+      playlistNamePlaceholder: '请输入歌单名称',
+      playlistDescriptionPlaceholder: '为歌单写一句描述...',
+      playQueue: '播放列表',
+      nowPlaying: '当前播放',
+      tracks: '首',
+      queueEmpty: '接下来没有待播放的歌曲',
+      searchFor: (query) => `搜索「${query}」`,
+      localCount: (count) => `${count} 首本地`,
+      onlineCount: (count) => `${count} 首在线`,
+      closeSearch: '关闭搜索',
+      searchHistory: '搜索历史',
+      clear: '清空',
+      youMayLike: '猜你喜欢',
+      connecting: '正在连接在线试听库...',
+      localStillWorks: '本地搜索仍然可用，稍后可以再试在线结果',
+      noResults: (query) => `未找到与「${query}」相关的音乐`,
+      tryAnotherKeyword: '可以换歌手、歌名或英文关键词试试',
+      miniPlayer: '迷你播放控制',
+      pause: '暂停播放',
+      play: '播放',
+      resume: '继续播放',
+      previous: '上一首',
+      next: '下一首',
+      openQueue: '打开播放列表',
+      closeQueue: '关闭播放列表',
+      songCount: (count) => `${count} 首歌曲`,
+      listMode: '顺序播放',
+      singleMode: '单曲循环',
+      randomMode: '随机播放',
+      pickDate: '选择推荐日期',
+      todayPicks: '今日推荐',
+      updatedToday: '今日更新',
+      yesterdayReplay: '昨日回顾',
+      todayDescription: '根据你的口味挑选今天适合循环播放的旋律，把熟悉和惊喜放在同一个队列里。',
+      yesterdayDescription: '回看昨天为你挑选的歌曲，错过的旋律现在还可以继续听。',
+      loadingRecommendations: '正在加入在线推荐...',
+      fullOnline: '在线完整',
+      favoriteDescription: '收藏每一段让你心动的旋律',
+      favoriteCount: (count) => `${count} 首喜欢的歌曲`,
+      playAllFavorites: '播放全部喜欢的歌曲',
+      noFavorites: '还没有喜欢的歌曲',
+      goDiscover: '去发现音乐',
+      playlistDescription: '把每一段喜欢的声音，收进自己的音乐空间',
+      createPlaylist: '创建歌单',
+      playlistCount: (count) => `${count} 个`,
+      noPlaylists: '还没有创建歌单，试着把喜欢的音乐整理成一个歌单吧～',
+      createFirstPlaylist: '创建第一个歌单',
+      closeCreatePlaylist: '关闭创建歌单窗口',
+      coverPreview: '封面预览',
+      uploadCover: '上传封面',
+      playlistName: '歌单名称',
+      playlistDescriptionLabel: '歌单描述',
+      removeFromQueue: (title) => `从播放列表移除 ${title}`,
+      month: (month) => `${month}月`,
+      onlineSearchUnavailable: '在线搜索暂时不可用'
+    }
+  : {
+      musicSettings: 'Music Settings',
+      heroSubtitle: 'Find your sound · Listen anytime',
+      searchPlaceholder: 'Search local music or find an online preview',
+      backMusic: 'Back to Music',
+      cancel: 'Cancel',
+      discover: 'Discover',
+      discoverMusic: 'Discover',
+      daily: 'Daily Picks',
+      favorites: 'Favorites',
+      playlists: 'Playlists',
+      featuredPlaylists: 'Featured Playlists',
+      more: 'More',
+      fullPlaylist: 'Full online playlist',
+      latestMusic: 'Latest Music',
+      addToQueue: 'Add to queue',
+      treasurePlaylists: 'Hidden Gems',
+      editorPicks: 'Editor’s Picks',
+      yesterdayPicks: 'Yesterday’s Picks',
+      curatedForYou: 'Curated for you',
+      privatePlaylist: 'Private mix',
+      curatedQueue: 'Curated Queue',
+      song: 'Song',
+      duration: 'Duration',
+      playAll: 'Play All',
+      favoriteSongs: 'Favorite Songs',
+      myPlaylists: 'My Playlists',
+      create: 'Create',
+      createdPlaylists: 'Created Playlists',
+      playlistNamePlaceholder: 'Playlist name',
+      playlistDescriptionPlaceholder: 'Write a short description...',
+      playQueue: 'Play Queue',
+      nowPlaying: 'Now Playing',
+      tracks: 'tracks',
+      queueEmpty: 'Nothing is queued next',
+      searchFor: (query) => `Search for “${query}”`,
+      localCount: (count) => `${count} local`,
+      onlineCount: (count) => `${count} online`,
+      closeSearch: 'Close search',
+      searchHistory: 'Recent Searches',
+      clear: 'Clear',
+      youMayLike: 'You May Like',
+      connecting: 'Connecting to the online preview library...',
+      localStillWorks: 'Local search still works. Try online results again later.',
+      noResults: (query) => `No music found for “${query}”`,
+      tryAnotherKeyword: 'Try a different artist, title, or keyword',
+      miniPlayer: 'Mini player controls',
+      pause: 'Pause',
+      play: 'Play',
+      resume: 'Resume',
+      previous: 'Previous',
+      next: 'Next',
+      openQueue: 'Open play queue',
+      closeQueue: 'Close play queue',
+      songCount: (count) => `${count} songs`,
+      listMode: 'Play in order',
+      singleMode: 'Repeat one',
+      randomMode: 'Shuffle',
+      pickDate: 'Choose recommendation date',
+      todayPicks: 'Today’s Picks',
+      updatedToday: 'Updated Today',
+      yesterdayReplay: 'Yesterday Replay',
+      todayDescription: 'A daily mix shaped by your taste, placing familiar favorites and new discoveries in one queue.',
+      yesterdayDescription: 'Revisit yesterday’s selection and catch the tracks you may have missed.',
+      loadingRecommendations: 'Adding online recommendations...',
+      fullOnline: 'Full online track',
+      favoriteDescription: 'Keep every melody that moves you',
+      favoriteCount: (count) => `${count} favorite songs`,
+      playAllFavorites: 'Play all favorite songs',
+      noFavorites: 'No favorite songs yet',
+      goDiscover: 'Discover Music',
+      playlistDescription: 'Collect the sounds you love in your own music space',
+      createPlaylist: 'Create Playlist',
+      playlistCount: (count) => `${count} playlists`,
+      noPlaylists: 'No playlists yet. Start organizing the music you love.',
+      createFirstPlaylist: 'Create Your First Playlist',
+      closeCreatePlaylist: 'Close create playlist dialog',
+      coverPreview: 'Playlist cover preview',
+      uploadCover: 'Upload Cover',
+      playlistName: 'Playlist Name',
+      playlistDescriptionLabel: 'Description',
+      removeFromQueue: (title) => `Remove ${title} from queue`,
+      month: (month) => month,
+      onlineSearchUnavailable: 'Online search is temporarily unavailable'
+    })
 const showMusicSettings = ref(false)
 const queueToastMessage = ref('')
 let queueToastTimer = 0
@@ -1716,7 +1894,7 @@ const searchOnlineSongs = async (query) => {
   } catch (error) {
     if (requestId !== searchRequestId) return
     onlineSearchResults.value = []
-    searchError.value = localSearchResults.value.length ? '' : '在线搜索暂时不可用'
+    searchError.value = localSearchResults.value.length ? '' : copy.value.onlineSearchUnavailable
     mergeSearchResults()
   } finally {
     if (requestId === searchRequestId) {

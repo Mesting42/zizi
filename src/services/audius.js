@@ -3,7 +3,7 @@ import { ensureMusicId } from '../data/songs.js'
 // Audius 提供公开的独立音乐曲库与完整音频流，不需要后端或私密 API Key。
 // app_name 只是公开的客户端标识，不属于密钥。
 const AUDIUS_API_BASE = import.meta.env.VITE_AUDIUS_API_URL || 'https://api.audius.co/v1'
-const AUDIUS_APP_NAME = import.meta.env.VITE_AUDIUS_APP_NAME || 'mesting-personal-blog'
+const AUDIUS_APP_NAME = import.meta.env.VITE_AUDIUS_APP_NAME || 'mesting-personal-digital-space'
 const REQUEST_TIMEOUT = 9000
 const FALLBACK_COVER = '/images/playlist-default.jpg'
 

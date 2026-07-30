@@ -129,16 +129,16 @@ body.dark-mode .article-card:hover {
   border-color: rgba(167, 139, 250, 0.14);
 }
 
-body.dark-mode .markdown-content :deep(blockquote) {
+body.dark-mode .markdown-content blockquote {
   border-left-color: rgba(167, 139, 250, 0.4);
   background: rgba(109, 40, 217, 0.08);
 }
 
-body.dark-mode .markdown-content :deep(a) {
+body.dark-mode .markdown-content a {
   color: #c4b5fd;
 }
 
-body.dark-mode .markdown-content :deep(a:hover) {
+body.dark-mode .markdown-content a:hover {
   color: #ddd6fe;
 }
 

@@ -1,135 +1,50 @@
 <template>
-  <div class="foreign-case">
-    <div class="case-header">
-      <h1 class="case-title">响应式国外网站</h1>
-      <p class="case-desc">一个现代化的在线学习平台网站，展示了精美的UI设计和流畅的用户体验</p>
-      <div class="case-tech">
-        <span class="tech-badge">HTML5</span>
-        <span class="tech-badge">CSS3</span>
-        <span class="tech-badge">响应式设计</span>
-        <span class="tech-badge">Flexbox</span>
-        <span class="tech-badge">Grid</span>
-      </div>
-    </div>
-
-    <div class="case-content">
-      <div class="case-iframe-container">
-        <div class="iframe-header">
-          <span class="iframe-title">响应式国外网站</span>
-          <button @click="toggleFullscreen" class="fullscreen-btn" :title="isFullscreen ? '退出全屏' : '全屏查看'">
-            <svg v-if="!isFullscreen" class="fullscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-            </svg>
-            <svg v-else class="fullscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
-            </svg>
-          </button>
-        </div>
-        <iframe
-          ref="iframeRef"
-          :src="foreignUrl"
-          class="case-iframe"
-          :class="{ 'fullscreen': isFullscreen }"
-          title="响应式国外网站案例"
-          frameborder="0"
-        ></iframe>
-      </div>
-
-      <div class="case-info">
-        <h2>项目说明</h2>
-        <div class="info-item">
-          <h3>项目简介</h3>
-          <p>这是一个现代化的在线学习平台网站，采用响应式设计，适配各种设备尺寸。网站展示了精美的UI设计，包含课程展示、教程、直播流等功能模块。</p>
-        </div>
-        <div class="info-item">
-          <h3>技术特点</h3>
-          <ul>
-            <li>✓ 完全响应式布局，支持桌面、平板、手机</li>
-            <li>✓ 使用 Flexbox 和 Grid 布局技术</li>
-            <li>✓ 精美的动画效果和过渡动画</li>
-            <li>✓ 现代化的配色方案和视觉设计</li>
-            <li>✓ 清晰的信息层级和用户体验</li>
-          </ul>
-        </div>
-        <div class="info-item">
-          <h3>主要功能</h3>
-          <ul>
-            <li>课程展示卡片</li>
-            <li>多平台技术图标展示</li>
-            <li>搜索功能</li>
-            <li>移动端适配导航</li>
-            <li>评分系统</li>
-          </ul>
-        </div>
-        <div class="info-item">
-          <h3>适用场景</h3>
-          <p>适合在线教育平台、课程展示网站、学习资源分享平台等场景。</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="case-actions">
-      <button @click="goBack" class="btn btn-primary">
-        返回首页
-      </button>
-    </div>
-  </div>
+  <CaseStudyPage v-bind="caseData" />
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import CaseStudyPage from '../components/CaseStudyPage.vue'
+import { useLocale } from '../composables/useLocale'
 
-const router = useRouter()
-const foreignUrl = ref('/foreign/index.html')
-const isFullscreen = ref(false)
-const iframeRef = ref(null)
-
-const toggleFullscreen = () => {
-  isFullscreen.value = !isFullscreen.value
-
-  if (isFullscreen.value) {
-    // 进入全屏模式
-    if (iframeRef.value && iframeRef.value.requestFullscreen) {
-      iframeRef.value.requestFullscreen()
+const { isChinese } = useLocale()
+const caseData = computed(() => isChinese.value
+  ? {
+      eyebrow: '03 / 海外落地页',
+      title: '海外品牌实验',
+      description: '面向不同文化语境的用户，用更直接、更有辨识度的语言承载复杂内容，同时保持轻盈。',
+      tags: ['HTML5', 'CSS3', '响应式', 'FLEXBOX', 'GRID'],
+      previewLabel: '海外落地页 / 交互预览',
+      iframeSrc: '/foreign/index.html',
+      iframeTitle: '海外品牌响应式网站案例',
+      statement: '跨越语言与设备，让内容在每一种语境中都保持清晰。',
+      details: [
+        { title: '跨设备布局', text: '灵活网格将课程、教程与直播内容组织成自然的信息流，从桌面到手机都易于浏览。' },
+        { title: '信息层级', text: '清晰的标题、卡片与导航减少操作阻力，让用户快速抵达真正关心的内容。' },
+        { title: '品牌表达', text: '现代而克制的配色、轻微转场与有节奏的图像，形成更具国际感的视觉语气。' },
+        { title: '适用场景', text: '适合在线教育、课程展示与学习资源平台，也为后续扩展为完整内容产品保留空间。' }
+      ],
+      nextEyebrow: '返回 / 02',
+      nextTitle: 'Vivo 概念重构',
+      nextTo: '/vivo-case'
     }
-    // 监听全屏变化事件
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-  } else {
-    // 退出全屏模式
-    if (document.fullscreenElement) {
-      document.exitFullscreen()
-    }
-  }
-}
-
-const handleFullscreenChange = () => {
-  // 如果用户按ESC退出全屏，同步状态
-  if (!document.fullscreenElement && isFullscreen.value) {
-    isFullscreen.value = false
-  }
-}
-
-onMounted(() => {
-  // 不再设置body背景色，让App.vue统一管理背景样式
-})
-
-onUnmounted(() => {
-  // 不再清除body背景样式，让App.vue统一管理背景样式
-  // 清理全屏事件监听
-  document.removeEventListener('fullscreenchange', handleFullscreenChange)
-  // 如果处于全屏状态，退出全屏
-  if (document.fullscreenElement) {
-    document.exitFullscreen()
-  }
-})
-
-const goBack = () => {
-  router.push('/')
-}
+  : {
+      eyebrow: '03 / GLOBAL LANDING',
+      title: 'Global Brand Experiment',
+      description: 'A more direct and recognizable language for audiences across different cultural contexts, keeping complex content light.',
+      tags: ['HTML5', 'CSS3', 'RESPONSIVE', 'FLEXBOX', 'GRID'],
+      previewLabel: 'GLOBAL LANDING / INTERACTIVE PREVIEW',
+      iframeSrc: '/foreign/index.html',
+      iframeTitle: 'Global brand responsive website case study',
+      statement: 'Across languages and devices, the content remains clear in every context.',
+      details: [
+        { title: 'Cross-Device Layout', text: 'Flexible grids organize courses, tutorials, and live content into a natural flow from desktop to mobile.' },
+        { title: 'Information Hierarchy', text: 'Clear headings, cards, and navigation reduce friction so users can quickly reach what matters to them.' },
+        { title: 'Brand Expression', text: 'A modern restrained palette, subtle transitions, and paced imagery create an internationally minded visual tone.' },
+        { title: 'Use Cases', text: 'Designed for online education, course showcases, and learning-resource platforms, with room to grow into a complete content product.' }
+      ],
+      nextEyebrow: 'BACK TO / 02',
+      nextTitle: 'Vivo Concept Rebuild',
+      nextTo: '/vivo-case'
+    })
 </script>
-<style scoped>
-@import '../css/ForeignCase.css';
-</style>
-
-

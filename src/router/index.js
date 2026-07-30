@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { Capacitor } from '@capacitor/core'
+import Home from '../views/Home.vue'
 
-const loadHome = () => import('../views/Home.vue')
 const loadArticleList = () => import('../views/ArticleList.vue')
 const loadMusic = () => import('../views/Music.vue')
 const loadMusicPlaylists = () => import('../views/MusicPlaylists.vue')
@@ -13,6 +13,8 @@ const loadCategory = () => import('../views/Category.vue')
 const loadAbout = () => import('../views/About.vue')
 const loadVivoCase = () => import('../views/VivoCase.vue')
 const loadForeignCase = () => import('../views/ForeignCase.vue')
+const loadFlutterMusicCase = () => import('../views/FlutterMusicCase.vue')
+const loadAvatarLab = () => import('../views/AvatarLab.vue')
 
 const musicRouteLoaders = [
   loadMusic,
@@ -37,7 +39,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: loadHome
+    component: Home
   },
   {
     path: '/articles',
@@ -82,7 +84,7 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: loadAbout
+    redirect: { path: '/', hash: '#about-space' }
   },
   {
     path: '/vivo-case',
@@ -93,12 +95,103 @@ const routes = [
     path: '/foreign-case',
     name: 'ForeignCase',
     component: loadForeignCase
+  },
+  {
+    path: '/flutter-music-case',
+    name: 'FlutterMusicCase',
+    component: loadFlutterMusicCase
+  },
+  {
+    path: '/avatar-lab',
+    name: 'AvatarLab',
+    component: loadAvatarLab
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 
+const waitForScrollTarget = (selector, timeout = 2600) => new Promise((resolve) => {
+  const startedAt = performance.now()
+  const minimumSettleTime = 360
+  let previousTop = null
+  let previousHeight = null
+  let stableFrames = 0
+
+  const check = () => {
+    let target = null
+    try {
+      target = document.querySelector(selector)
+    } catch {
+      resolve(false)
+      return
+    }
+
+    if (target) {
+      const documentTop = target.getBoundingClientRect().top + window.scrollY
+      const documentHeight = document.documentElement.scrollHeight
+      const layoutStable = previousTop !== null
+        && Math.abs(documentTop - previousTop) < 0.5
+        && documentHeight === previousHeight
+
+      stableFrames = layoutStable ? stableFrames + 1 : 0
+      previousTop = documentTop
+      previousHeight = documentHeight
+
+      if (stableFrames >= 6 && performance.now() - startedAt >= minimumSettleTime) {
+        resolve(true)
+        return
+      }
+    }
+
+    if (performance.now() - startedAt >= timeout) {
+      resolve(Boolean(target))
+      return
+    }
+
+    requestAnimationFrame(check)
+  }
+
+  check()
+})
+
+const getAnchorOffset = (selector) => {
+  const target = selector.startsWith('#')
+    ? document.getElementById(selector.slice(1))
+    : document.querySelector(selector)
+  if (!target) return 96
+
+  const transform = window.getComputedStyle(target).transform
+  if (!transform || transform === 'none') return 96
+
+  try {
+    const translateY = new DOMMatrixReadOnly(transform).m42
+    return 96 + Math.max(0, translateY)
+  } catch {
+    return 96
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  async scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+
+    if (to.hash) {
+      const targetExists = await waitForScrollTarget(to.hash)
+      if (!targetExists) return { top: 0 }
+
+      return {
+        el: to.hash,
+        top: getAnchorOffset(to.hash),
+        behavior: from.path === to.path ? 'smooth' : 'auto'
+      }
+    }
+
+    return { top: 0 }
+  }
 })
 
 router.beforeEach((to) => {

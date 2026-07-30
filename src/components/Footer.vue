@@ -10,7 +10,7 @@
                 <span>Mesting</span>
               </router-link>
               <p class="footer-description">
-                记录前端学习、项目实践与日常灵感，把每一次成长沉淀成可复用的经验。
+                收纳作品、思考、声音与日常灵感，让每一次成长都留下可回看的痕迹。
               </p>
               <div class="footer-social-links">
                 <a href="https://github.com" target="_blank" rel="noreferrer" class="footer-social-link" title="GitHub">
@@ -31,7 +31,7 @@
               <h3 class="footer-title">导航</h3>
               <ul class="footer-links">
                 <li><router-link to="/">首页</router-link></li>
-                <li><router-link to="/articles">全部文章</router-link></li>
+                <li><router-link to="/articles">思考档案</router-link></li>
                 <li><router-link to="/music">音乐空间</router-link></li>
                 <li><router-link to="/about">关于我</router-link></li>
               </ul>
@@ -44,6 +44,7 @@
                 <li><router-link to="/category/CSS">CSS 实践</router-link></li>
                 <li><router-link to="/vivo-case">Vivo 案例</router-link></li>
                 <li><router-link to="/foreign-case">国外站案例</router-link></li>
+                <li><router-link to="/flutter-music-case">Mesting Music</router-link></li>
               </ul>
             </section>
 
@@ -59,7 +60,7 @@
           </div>
           <div class="footer-bottom">
             <p>© {{ currentYear }} Mesting. Crafted with Vue & curiosity.</p>
-            <p>持续学习，持续记录。</p>
+            <p>持续创作，持续记录。</p>
           </div>
         </div>
       </div>

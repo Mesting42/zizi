@@ -16,7 +16,14 @@ let dpr = 1
 let particles = []
 let lastTime = 0
 
-const pointer = { x: 0.5, y: 0.45, targetX: 0.5, targetY: 0.45 }
+const pointer = {
+  x: 0.5,
+  y: 0.45,
+  targetX: 0.5,
+  targetY: 0.45,
+  energy: 0,
+  isActive: false
+}
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const createParticles = () => {
@@ -152,12 +159,55 @@ const drawParticles = (delta) => {
   ctx.restore()
 }
 
+const drawPointerField = (time) => {
+  const ctx = context
+  const centerX = pointer.x * width
+  const centerY = pointer.y * height
+  const baseRadius = Math.min(width, height) * (0.09 + pointer.energy * 0.07)
+  const pulse = 0.82 + Math.sin(time * 0.0015) * 0.18
+
+  ctx.save()
+  ctx.globalCompositeOperation = 'screen'
+
+  const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, baseRadius * 2.3)
+  glow.addColorStop(0, `rgba(176, 228, 211, ${0.11 + pointer.energy * 0.09})`)
+  glow.addColorStop(0.36, `rgba(109, 181, 159, ${0.05 + pointer.energy * 0.06})`)
+  glow.addColorStop(1, 'rgba(34, 90, 79, 0)')
+  ctx.fillStyle = glow
+  ctx.beginPath()
+  ctx.arc(centerX, centerY, baseRadius * 2.3, 0, Math.PI * 2)
+  ctx.fill()
+
+  ctx.lineWidth = 0.8
+  for (let index = 0; index < 3; index += 1) {
+    const radius = baseRadius * (0.62 + index * 0.42) * pulse
+    ctx.strokeStyle = index === 1
+      ? `rgba(222, 174, 113, ${0.08 + pointer.energy * 0.14})`
+      : `rgba(179, 222, 212, ${0.05 + pointer.energy * 0.1})`
+    ctx.beginPath()
+    ctx.ellipse(
+      centerX,
+      centerY,
+      radius,
+      radius * 0.38,
+      time * 0.00008 * (index + 1),
+      Math.PI * (0.18 + index * 0.16),
+      Math.PI * (1.4 + index * 0.2)
+    )
+    ctx.stroke()
+  }
+
+  ctx.restore()
+}
+
 const draw = (time = 0) => {
   if (!context) return
   const delta = Math.min(40, Math.max(12, time - lastTime || 16))
   lastTime = time
   pointer.x += (pointer.targetX - pointer.x) * 0.035
   pointer.y += (pointer.targetY - pointer.y) * 0.035
+  const pointerDistance = Math.hypot(pointer.targetX - pointer.x, pointer.targetY - pointer.y)
+  pointer.energy += ((pointer.isActive ? Math.min(1, pointerDistance * 18 + 0.24) : 0.16) - pointer.energy) * 0.05
 
   context.clearRect(0, 0, width, height)
   const backdrop = context.createLinearGradient(0, 0, width, height)
@@ -179,6 +229,7 @@ const draw = (time = 0) => {
   drawGrid(time)
   drawOrbitalLines(time)
   drawParticles(delta)
+  drawPointerField(time)
 
   if (!reduceMotion()) animationFrame = requestAnimationFrame(draw)
 }
@@ -189,11 +240,13 @@ const onPointerMove = (event) => {
   const rect = canvas.getBoundingClientRect()
   pointer.targetX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width))
   pointer.targetY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
+  pointer.isActive = true
 }
 
 const onPointerLeave = () => {
   pointer.targetX = 0.5
   pointer.targetY = 0.45
+  pointer.isActive = false
 }
 
 onMounted(() => {

@@ -41,3 +41,9 @@ clear-data.*
 
 # Performance report (可选，如果不想提交)
 # performance-optimization-report.md
+
+# Local QA captures and generated audit artifacts
+tmp/
+tmp-*.png
+artifacts/
+.npm-cache/

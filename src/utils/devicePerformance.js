@@ -25,6 +25,16 @@ export const devicePerformanceProfile = Object.freeze({
 let viewportFrame = 0
 let scrollingFrame = 0
 let lastScrollTime = 0
+let scrollingActive = false
+
+const setScrollingActive = (active) => {
+  if (scrollingActive === active) return
+  scrollingActive = active
+  body.classList.toggle('is-user-scrolling', active)
+  document.dispatchEvent(new CustomEvent('mesting:scroll-state', {
+    detail: { scrolling: active }
+  }))
+}
 
 const toggleClass = (className, force) => {
   root.classList.toggle(className, force)
@@ -54,7 +64,7 @@ const scheduleViewportProfile = () => {
 const watchScrollIdle = (now) => {
   if (now - lastScrollTime > 96) {
     scrollingFrame = 0
-    body.classList.remove('is-user-scrolling')
+    setScrollingActive(false)
     return
   }
 
@@ -62,9 +72,8 @@ const watchScrollIdle = (now) => {
 }
 
 const markUserScrolling = () => {
-  if (!isMobilePerformance) return
   lastScrollTime = performance.now()
-  body.classList.add('is-user-scrolling')
+  setScrollingActive(true)
 
   if (!scrollingFrame) {
     scrollingFrame = requestAnimationFrame(watchScrollIdle)
@@ -87,7 +96,9 @@ export const initDevicePerformanceProfile = () => {
   document.addEventListener('touchmove', markUserScrolling, { passive: true, capture: true })
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      body.classList.remove('is-user-scrolling')
+      if (scrollingFrame) cancelAnimationFrame(scrollingFrame)
+      scrollingFrame = 0
+      setScrollingActive(false)
     } else {
       scheduleViewportProfile()
     }
