@@ -28,26 +28,29 @@ body.page-case::before { display: none; }
   font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
-/* Wide screens leave a generous amount of breathing room around the case
-   study. The signal field gives that space a quiet, product-like rhythm while
-   deliberately sitting behind every interactive page element. */
+/* Wide screens become an ambient product stage. The signal system is confined
+   to the side gutters, keeping the editorial content readable in the center. */
 .fm-side-signal-fields {
   position: fixed;
   z-index: 0;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  contain: paint;
 }
 
 .fm-signal-field {
   position: absolute;
-  top: clamp(132px, 13vw, 220px);
-  bottom: 6vh;
-  width: min(21vw, 410px);
-  opacity: .94;
+  inset-block: 0;
+  width: clamp(330px, 27vw, 520px);
+  overflow: hidden;
+  isolation: isolate;
+  opacity: .98;
+  will-change: transform, opacity;
   background:
-    radial-gradient(circle at 45% 25%, rgba(126, 219, 198, .19), transparent 29%),
-    linear-gradient(90deg, rgba(220, 233, 228, .36), transparent 82%);
+    radial-gradient(circle at 48% 21%, rgba(123, 232, 210, .27), transparent 23%),
+    radial-gradient(circle at 26% 75%, rgba(95, 192, 174, .13), transparent 30%),
+    linear-gradient(90deg, rgba(211, 236, 229, .5), rgba(236, 246, 242, .16) 58%, transparent 100%);
 }
 
 .fm-signal-field--left { left: 0; }
@@ -55,8 +58,9 @@ body.page-case::before { display: none; }
   right: 0;
   transform: scaleX(-1);
   background:
-    radial-gradient(circle at 45% 25%, rgba(234, 113, 105, .18), transparent 29%),
-    linear-gradient(90deg, rgba(242, 222, 222, .32), transparent 82%);
+    radial-gradient(circle at 48% 21%, rgba(244, 109, 98, .28), transparent 23%),
+    radial-gradient(circle at 26% 75%, rgba(235, 136, 118, .13), transparent 30%),
+    linear-gradient(90deg, rgba(249, 228, 226, .53), rgba(253, 241, 239, .15) 58%, transparent 100%);
 }
 
 .fm-signal-field::before,
@@ -68,63 +72,119 @@ body.page-case::before { display: none; }
 .fm-signal-field::before {
   top: 0;
   bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(6,26,36,.12) 10%, rgba(6,26,36,.08) 88%, transparent);
+  left: calc(100% - 52px);
+  width: 2px;
+  background: linear-gradient(180deg, transparent 2%, rgba(82, 174, 155, .03) 10%, rgba(82, 174, 155, .47) 42%, rgba(82, 174, 155, .18) 74%, transparent 98%);
+  box-shadow: 0 0 26px rgba(100, 223, 200, .34);
 }
 
 .fm-signal-field::after {
-  top: 24%;
-  left: -11%;
-  width: 126%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(6,26,36,.09) 12%, rgba(6,26,36,.09) 88%, transparent);
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(255,255,255,.18), transparent 14%, transparent 82%, rgba(255,255,255,.24));
+}
+
+.fm-signal-aurora {
+  position: absolute;
+  z-index: -1;
+  inset: -15% -65% -10% -24%;
+  opacity: .92;
+  background:
+    radial-gradient(ellipse at 42% 24%, rgba(80, 235, 206, .46), transparent 19%),
+    radial-gradient(ellipse at 70% 52%, rgba(122, 217, 195, .22), transparent 26%),
+    linear-gradient(118deg, transparent 22%, rgba(182, 249, 234, .27) 43%, transparent 69%);
+  transform: rotate(-8deg);
+  will-change: transform, opacity;
+}
+
+.fm-signal-field--right .fm-signal-aurora {
+  background:
+    radial-gradient(ellipse at 42% 24%, rgba(255, 116, 103, .44), transparent 19%),
+    radial-gradient(ellipse at 70% 52%, rgba(246, 166, 150, .23), transparent 26%),
+    linear-gradient(118deg, transparent 22%, rgba(255, 216, 210, .31) 43%, transparent 69%);
 }
 
 .fm-signal-grid {
   position: absolute;
-  inset: 4% -2%;
-  opacity: .72;
+  inset: 0;
+  opacity: .48;
   background-image:
-    linear-gradient(rgba(6,26,36,.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6,26,36,.1) 1px, transparent 1px);
-  background-size: 38px 38px;
-  mask-image: linear-gradient(180deg, transparent, #000 13%, #000 82%, transparent);
+    linear-gradient(rgba(6, 26, 36, .11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 26, 36, .11) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(90deg, #000, rgba(0, 0, 0, .78) 68%, transparent 100%);
 }
+
+.fm-signal-vector-map {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.fm-signal-vector-map path { fill: none; vector-effect: non-scaling-stroke; }
+
+.fm-vector-trace {
+  stroke: rgba(20, 144, 124, .72);
+  stroke-width: 1.25;
+  stroke-dasharray: 26 300;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 4px rgba(76, 222, 195, .46));
+}
+
+.fm-vector-trace--minor { stroke: rgba(35, 103, 94, .36); stroke-width: 1; stroke-dasharray: 12 220; }
+.fm-vector-pulse {
+  stroke: rgba(83, 242, 215, .95);
+  stroke-width: 2;
+  stroke-dasharray: 96 720;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 5px rgba(74, 226, 200, .7));
+}
+.fm-vector-pulse--secondary { stroke-width: 1.5; stroke-dasharray: 68 612; opacity: .64; }
+
+.fm-signal-field--right .fm-vector-trace { stroke: rgba(220, 80, 71, .73); filter: drop-shadow(0 0 4px rgba(238, 104, 91, .45)); }
+.fm-signal-field--right .fm-vector-trace--minor { stroke: rgba(172, 81, 73, .36); }
+.fm-signal-field--right .fm-vector-pulse { stroke: rgba(251, 101, 88, .94); filter: drop-shadow(0 0 5px rgba(239, 91, 78, .64)); }
 
 .fm-signal-orbit,
 .fm-signal-path,
 .fm-signal-node,
 .fm-signal-rail,
-.fm-signal-halo { position: absolute; display: block; }
+.fm-signal-halo,
+.fm-signal-sweep { position: absolute; display: block; }
 
 .fm-signal-halo {
-  top: 5%;
+  z-index: 1;
+  top: clamp(122px, 15vh, 278px);
   left: 50%;
-  width: min(34vw, 460px);
+  width: clamp(320px, 30vw, 540px);
   aspect-ratio: 1;
-  margin-left: -230px;
+  margin-left: calc(-1 * clamp(160px, 15vw, 270px));
   border-radius: 50%;
-  opacity: .72;
+  opacity: .85;
   background:
-    radial-gradient(circle, rgba(121, 229, 211, .28) 0 1%, rgba(121, 229, 211, .12) 17%, rgba(121, 229, 211, .025) 44%, transparent 69%),
-    repeating-radial-gradient(circle, transparent 0 47px, rgba(81, 135, 118, .18) 48px 49px, transparent 50px 78px);
+    radial-gradient(circle, rgba(121, 229, 211, .44) 0 1%, rgba(121, 229, 211, .17) 16%, rgba(121, 229, 211, .035) 43%, transparent 68%),
+    repeating-radial-gradient(circle, transparent 0 44px, rgba(52, 139, 121, .27) 45px 46px, transparent 47px 75px);
 }
 
 .fm-signal-field--right .fm-signal-halo {
   background:
-    radial-gradient(circle, rgba(235, 107, 97, .3) 0 1%, rgba(235, 107, 97, .12) 17%, rgba(235, 107, 97, .025) 44%, transparent 69%),
-    repeating-radial-gradient(circle, transparent 0 47px, rgba(220, 81, 73, .17) 48px 49px, transparent 50px 78px);
+    radial-gradient(circle, rgba(235, 107, 97, .45) 0 1%, rgba(235, 107, 97, .17) 16%, rgba(235, 107, 97, .035) 43%, transparent 68%),
+    repeating-radial-gradient(circle, transparent 0 44px, rgba(220, 81, 73, .26) 45px 46px, transparent 47px 75px);
 }
 
 .fm-signal-orbit {
+  z-index: 2;
   left: 50%;
   border: 1px solid rgba(6,26,36,.14);
   border-radius: 50%;
 }
 
-.fm-signal-orbit--outer { top: 14%; width: 288px; height: 288px; margin-left: -144px; border-color: rgba(81,135,118,.28); }
-.fm-signal-orbit--inner { top: calc(14% + 57px); width: 174px; height: 174px; margin-left: -87px; border-color: rgba(220,81,73,.3); }
+.fm-signal-orbit--outer { top: clamp(176px, 22vh, 350px); width: 310px; height: 310px; margin-left: -155px; border-color: rgba(81,135,118,.38); }
+.fm-signal-orbit--inner { top: clamp(238px, calc(22vh + 62px), 412px); width: 184px; height: 184px; margin-left: -92px; border-color: rgba(220,81,73,.38); }
 
 .fm-signal-orbit::before,
 .fm-signal-orbit::after {
@@ -139,19 +199,21 @@ body.page-case::before { display: none; }
 .fm-signal-orbit::after { width: 1px; height: 100%; background: rgba(6,26,36,.1); }
 
 .fm-signal-path {
+  z-index: 2;
   left: 13%;
   width: 86%;
   height: 24%;
-  border: 1px solid rgba(81,135,118,.26);
+  border: 1px solid rgba(81,135,118,.36);
   border-right: 0;
   border-bottom: 0;
   border-radius: 75% 0 0;
 }
 
-.fm-signal-path--a { top: 43%; transform: rotate(-18deg); }
-.fm-signal-path--b { top: 68%; width: 72%; height: 19%; border-color: rgba(220,81,73,.22); transform: rotate(24deg); }
+.fm-signal-path--a { top: 42%; transform: rotate(-18deg); }
+.fm-signal-path--b { top: 69%; width: 72%; height: 19%; border-color: rgba(220,81,73,.34); transform: rotate(24deg); }
 
 .fm-signal-rail {
+  z-index: 3;
   left: 9%;
   width: 86%;
   height: 2px;
@@ -165,15 +227,44 @@ body.page-case::before { display: none; }
   box-shadow: 0 0 20px rgba(228, 96, 83, .38);
 }
 
-.fm-signal-rail--a { top: 38%; transform: rotate(-16deg); }
-.fm-signal-rail--b { top: 58%; transform: rotate(10deg); opacity: .56; }
-.fm-signal-rail--c { top: 78%; width: 72%; transform: rotate(-7deg); opacity: .45; }
+.fm-signal-rail--a { top: 39%; transform: rotate(-16deg); }
+.fm-signal-rail--b { top: 59%; transform: rotate(10deg); opacity: .68; }
+.fm-signal-rail--c { top: 80%; width: 72%; transform: rotate(-7deg); opacity: .56; }
+
+.fm-signal-sweep {
+  z-index: 4;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 18%;
+  opacity: .88;
+  background: linear-gradient(180deg, transparent 0%, rgba(95, 246, 219, 0) 28%, rgba(95, 246, 219, .16) 46%, rgba(255, 255, 255, .88) 50%, rgba(95, 246, 219, .16) 54%, transparent 72%);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.fm-signal-field--right .fm-signal-sweep {
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 112, 98, 0) 28%, rgba(255, 112, 98, .16) 46%, rgba(255, 255, 255, .88) 50%, rgba(255, 112, 98, .16) 54%, transparent 72%);
+}
+
+.fm-signal-index {
+  position: absolute;
+  z-index: 4;
+  top: 7.2%;
+  right: 11%;
+  color: rgba(6, 26, 36, .17);
+  font-size: clamp(3.8rem, 7.4vw, 7.6rem);
+  font-weight: 300;
+  letter-spacing: -.09em;
+  line-height: .78;
+}
 
 .fm-signal-label {
   position: absolute;
+  z-index: 4;
   right: 11%;
-  bottom: 10%;
-  color: rgba(6,26,36,.54);
+  bottom: 7%;
+  color: rgba(6,26,36,.62);
   font-size: 8px;
   font-weight: 600;
   letter-spacing: .23em;
@@ -183,7 +274,7 @@ body.page-case::before { display: none; }
 .fm-signal-field--right .fm-signal-label { transform: scaleX(-1); }
 
 .fm-signal-node {
-  z-index: 2;
+  z-index: 5;
   width: 9px;
   height: 9px;
   border-radius: 50%;
@@ -192,11 +283,11 @@ body.page-case::before { display: none; }
 }
 
 .fm-signal-field--right .fm-signal-node { background: #f26a60; box-shadow: 0 0 0 7px rgba(220,81,73,.12), 0 0 26px rgba(220,81,73,.43); }
-.fm-signal-node:nth-of-type(1) { top: 16%; left: 23%; }
-.fm-signal-node:nth-of-type(2) { top: 29%; right: 14%; }
-.fm-signal-node:nth-of-type(3) { top: 47%; left: 42%; }
-.fm-signal-node:nth-of-type(4) { top: 66%; right: 26%; }
-.fm-signal-node:nth-of-type(5) { top: 82%; left: 18%; }
+.fm-signal-node:nth-of-type(1) { top: 15%; left: 23%; }
+.fm-signal-node:nth-of-type(2) { top: 33%; right: 14%; }
+.fm-signal-node:nth-of-type(3) { top: 51%; left: 42%; }
+.fm-signal-node:nth-of-type(4) { top: 70%; right: 26%; }
+.fm-signal-node:nth-of-type(5) { top: 89%; left: 18%; }
 
 .flutter-music-case > main,
 .flutter-music-case > .fm-footer { position: relative; z-index: 1; }
