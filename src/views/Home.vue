@@ -61,7 +61,7 @@
               <div class="oddy-marquee-card-inner">
                 <span class="oddy-marquee-poster" aria-hidden="true"></span>
                 <video
-                  v-if="!marqueeStaticPreviews"
+                  v-if="!marqueeStaticPreviews || marqueeActiveVideoIndexes.has(assetIndex)"
                   class="oddy-marquee-media"
                   :src="asset.src"
                   :aria-label="asset.alt"
@@ -368,6 +368,7 @@ const marqueeMounted = ref(false)
 const marqueeStaticPreviews = ref(
   typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
 )
+const marqueeActiveVideoIndexes = ref(new Set())
 const avatarVisible = ref(false)
 const avatarReady = ref(false)
 const avatarFailed = ref(false)
@@ -613,6 +614,7 @@ const projects = computed(() => [
 let revealObserver = null
 let heroVideoObserver = null
 let marqueeObserver = null
+let marqueeMediaObserver = null
 let noteCarouselObserver = null
 let projectImageObserver = null
 let marqueeFrame = 0
@@ -687,6 +689,7 @@ const syncMarqueePreviewMode = () => {
   nextTick(() => {
     measureMarquee()
     setupMarqueeCardMotion()
+    setupMarqueeMobileVideos()
     if (!usesNativeMarqueeScroll()) startMarqueeAnimation()
   })
 }
@@ -888,6 +891,48 @@ const destroyMarqueeCardMotion = () => {
   marqueeCardMotionCleanup = null
   resetMarqueeCardMotion = null
   marqueeHovering = false
+}
+
+const destroyMarqueeMobileVideos = () => {
+  marqueeMediaObserver?.disconnect()
+  marqueeMediaObserver = null
+  marqueeActiveVideoIndexes.value = new Set()
+}
+
+const setupMarqueeMobileVideos = () => {
+  destroyMarqueeMobileVideos()
+
+  // Desktop keeps the complete looping reel. On phones, the poster remains
+  // visible until a card is close to the scroll viewport, then only those
+  // nearby cards receive a real video element to decode and play.
+  if (!usesNativeMarqueeScroll() || !marqueeTrack.value) return
+
+  const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card')]
+  if (!('IntersectionObserver' in window)) {
+    marqueeActiveVideoIndexes.value = new Set(
+      cards.map(card => Number(card.dataset.cardIndex))
+    )
+    return
+  }
+
+  marqueeMediaObserver = new IntersectionObserver(entries => {
+    const nextActiveIndexes = new Set(marqueeActiveVideoIndexes.value)
+
+    entries.forEach(entry => {
+      const assetIndex = Number(entry.target.dataset.cardIndex)
+      if (!Number.isInteger(assetIndex)) return
+      if (entry.isIntersecting) nextActiveIndexes.add(assetIndex)
+      else nextActiveIndexes.delete(assetIndex)
+    })
+
+    marqueeActiveVideoIndexes.value = nextActiveIndexes
+  }, {
+    root: marqueeSection.value,
+    rootMargin: '0px 128px',
+    threshold: 0.01
+  })
+
+  cards.forEach(card => marqueeMediaObserver.observe(card))
 }
 
 const setupMarqueeCardMotion = () => {
@@ -1244,11 +1289,13 @@ onMounted(() => {
         nextTick(() => {
           measureMarquee()
           setupMarqueeCardMotion()
+          setupMarqueeMobileVideos()
           startMarqueeAnimation()
         })
       } else {
         stopMarqueeAnimation()
         destroyMarqueeCardMotion()
+        destroyMarqueeMobileVideos()
         marqueeMounted.value = false
       }
     }, { rootMargin: '420px 0px' })
@@ -1296,6 +1343,7 @@ onMounted(() => {
     nextTick(() => {
       measureMarquee()
       setupMarqueeCardMotion()
+      setupMarqueeMobileVideos()
       startMarqueeAnimation()
     })
   }
@@ -1333,6 +1381,7 @@ onUnmounted(() => {
   revealObserver?.disconnect()
   heroVideoObserver?.disconnect()
   marqueeObserver?.disconnect()
+  destroyMarqueeMobileVideos()
   noteCarouselObserver?.disconnect()
   projectImageObserver?.disconnect()
   window.removeEventListener('resize', measureMarquee)
