@@ -21,6 +21,14 @@
             >
               {{ caseCopy.download }} <span>↓</span>
             </a>
+            <a
+              class="fm-button fm-button-secondary"
+              href="https://github.com/Mesting42/mesting-music-flutter"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {{ caseCopy.sourceCode }} ↗
+            </a>
             <a class="fm-button fm-button-secondary" href="#capabilities">{{ caseCopy.exploreFeatures }}</a>
           </div>
         </div>
@@ -208,6 +216,7 @@ const caseCopy = computed(() => isChinese.value
       heroEyebrow: '01 / 原生音乐产品',
       heroLead: '一款从网页体验持续生长为 Flutter 原生应用的音乐产品。播放、视觉装扮、云端资料与社交关系，被放进同一个会呼吸的声音空间。',
       download: '下载 Android 版',
+      sourceCode: '查看 Flutter 源码',
       exploreFeatures: '查看完整功能',
       snapshot: '产品概览',
       nativeAndroid: '原生 Android',
@@ -244,6 +253,7 @@ const caseCopy = computed(() => isChinese.value
       heroEyebrow: '01 / NATIVE MUSIC PRODUCT',
       heroLead: 'A music product that grew from a web experience into a native Flutter application. Playback, visual identity, cloud data, and social connection now live in one breathing sound space.',
       download: 'Download for Android',
+      sourceCode: 'View Flutter Source',
       exploreFeatures: 'Explore All Features',
       snapshot: 'PRODUCT SNAPSHOT',
       nativeAndroid: 'Native Android',

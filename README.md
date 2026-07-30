@@ -6,6 +6,8 @@
 
 Mesting Music 最初是个人数字空间中的音乐模块，后来使用 **Flutter / Dart** 重新构建为独立 Android 应用。Flutter 版本不使用 WebView 包裹旧页面，而是重新搭建持续运行的播放内核、数据层与原生系统能力。
 
+Flutter 源码现已独立维护：**[Mesting42/mesting-music-flutter](https://github.com/Mesting42/mesting-music-flutter)**。本仓库继续保留个人数字空间、网页版音乐体验和 Flutter 项目案例展示。
+
 - 推荐、发现音乐、本地与在线搜索
 - 完整播放器、同步歌词、播放队列、循环与随机模式
 - 收藏、个人歌单、最近播放与听歌排行
