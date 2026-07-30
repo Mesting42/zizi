@@ -17,9 +17,9 @@ Flutter 源码现已独立维护：**[Mesting42/mesting-music-flutter](https://g
 
 ### 下载 Flutter 最新版 APK
 
-**[⬇️ 直接下载 Mesting Music Flutter v1.0.37 APK](https://github.com/Mesting42/zizi/releases/download/flutter-music-v1.0.37/Mesting-Music-Flutter-v1.0.37.apk)**
+**[⬇️ 直接下载 Mesting Music Flutter v1.0.37 APK](https://github.com/Mesting42/mesting-music-flutter/releases/download/flutter-music-v1.0.37/Mesting-Music-Flutter-v1.0.37.apk)**
 
-[查看 Flutter v1.0.37 版本说明与安装步骤](https://github.com/Mesting42/zizi/releases/tag/flutter-music-v1.0.37)
+[查看 Flutter v1.0.37 版本说明与安装步骤](https://github.com/Mesting42/mesting-music-flutter/releases/tag/flutter-music-v1.0.37)
 
 - 版本：`1.0.37`（build `38`）
 - 文件大小：约 75.3 MB

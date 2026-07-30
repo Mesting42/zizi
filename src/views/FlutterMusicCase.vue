@@ -15,7 +15,7 @@
           <div class="fm-hero-actions">
             <a
               class="fm-button fm-button-primary"
-              href="https://mesting-d5gm7tuhxacddccfb-1331507389.tcloudbaseapp.com/releases/android/mesting-music-1.0.37-38.apk"
+              href="https://github.com/Mesting42/mesting-music-flutter/releases/download/flutter-music-v1.0.37/Mesting-Music-Flutter-v1.0.37.apk"
               target="_blank"
               rel="noreferrer"
             >
