@@ -1,6 +1,27 @@
 # Mesting · 个人数字空间
 
-一个以个人表达为核心的 Vue 3 数字空间，收纳作品案例、思考档案与音乐体验；同一套音乐页面可同步打包为 Android App。
+一个以个人表达为核心的 Vue 3 数字空间，收纳作品案例、思考档案与音乐体验，并展示使用 Flutter 原生重构的 Mesting Music Android 应用。
+
+## Flutter Music · Mesting Music
+
+Mesting Music 最初是个人数字空间中的音乐模块，后来使用 **Flutter / Dart** 重新构建为独立 Android 应用。Flutter 版本不使用 WebView 包裹旧页面，而是重新搭建持续运行的播放内核、数据层与原生系统能力。
+
+- 推荐、发现音乐、本地与在线搜索
+- 完整播放器、同步歌词、播放队列、循环与随机模式
+- 收藏、个人歌单、最近播放与听歌排行
+- 25 套静态/动态主题、三种播放器与角色进度条
+- 后台播放、通知栏、锁屏和耳机媒体控制
+- 账号资料、好友、聊天、一起听与跨设备恢复
+
+### 下载 Android APK
+
+**[⬇️ 直接下载 Mesting Music v1.5.0 APK](https://github.com/Mesting42/zizi/releases/download/music-v1.5.0/Mesting-Music-v1.5.0.apk)**
+
+[查看版本说明与安装步骤](https://github.com/Mesting42/zizi/releases/tag/music-v1.5.0)
+
+- 文件大小：约 104 MB
+- SHA-256：`7C8B0E2A761EAFD1569522F26770E9E959F4E30D7417CBB708636E347B00374B`
+- 当前提供的是可直接安装的 Android 调试构建；首次安装时，系统可能要求允许浏览器或文件管理器“安装未知应用”。
 
 ## 亮点
 
@@ -20,7 +41,7 @@
 - 经典、小新、Hello Kitty、库洛米等主题；动态主题包含场景素材与角色动画
 - 自适应手机竖屏、平板与桌面端的不同背景构图
 
-### Android App
+### Vue / Capacitor Android App
 
 - 使用 Capacitor 将 Vue 音乐空间打包为 Android 应用
 - 原生通知栏媒体控制、后台播放、桌面歌词悬浮层与启动页
@@ -34,7 +55,8 @@
 | 构建工具 | Vite |
 | 动画与交互 | CSS Animation、GSAP |
 | 音乐能力 | HTML Audio、Media Session、歌词同步与播放队列 |
-| Android App | Capacitor 8、Android / Java 原生服务 |
+| Flutter Music | Flutter / Dart、Riverpod、just_audio、audio_service、Drift / SQLite |
+| Vue Android App | Capacitor 8、Android / Java 原生服务 |
 
 ## 项目结构
 
@@ -87,7 +109,7 @@ npm run build
 npm run verify:player
 ```
 
-## 打包 Android APK
+## 自行打包 Vue / Capacitor Android APK
 
 需要先安装 Android Studio、Android SDK 与 JDK。
 
