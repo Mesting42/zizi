@@ -6,19 +6,29 @@
   >
     <div ref="sideSignalFields" class="fm-side-signal-fields" aria-hidden="true">
       <div class="fm-signal-field fm-signal-field--left">
+        <span class="fm-signal-halo"></span>
         <span class="fm-signal-grid"></span>
         <span class="fm-signal-orbit fm-signal-orbit--outer"></span>
         <span class="fm-signal-orbit fm-signal-orbit--inner"></span>
         <span class="fm-signal-path fm-signal-path--a"></span>
         <span class="fm-signal-path fm-signal-path--b"></span>
+        <span class="fm-signal-rail fm-signal-rail--a"></span>
+        <span class="fm-signal-rail fm-signal-rail--b"></span>
+        <span class="fm-signal-rail fm-signal-rail--c"></span>
+        <small class="fm-signal-label">NATIVE / SIGNAL 01</small>
         <i v-for="node in 5" :key="`left-${node}`" class="fm-signal-node"></i>
       </div>
       <div class="fm-signal-field fm-signal-field--right">
+        <span class="fm-signal-halo"></span>
         <span class="fm-signal-grid"></span>
         <span class="fm-signal-orbit fm-signal-orbit--outer"></span>
         <span class="fm-signal-orbit fm-signal-orbit--inner"></span>
         <span class="fm-signal-path fm-signal-path--a"></span>
         <span class="fm-signal-path fm-signal-path--b"></span>
+        <span class="fm-signal-rail fm-signal-rail--a"></span>
+        <span class="fm-signal-rail fm-signal-rail--b"></span>
+        <span class="fm-signal-rail fm-signal-rail--c"></span>
+        <small class="fm-signal-label">MUSIC / SYSTEM 02</small>
         <i v-for="node in 5" :key="`right-${node}`" class="fm-signal-node"></i>
       </div>
     </div>
@@ -545,6 +555,20 @@ const setupSideSignalMotion = () => {
     const orbits = gsap.utils.toArray('.fm-signal-orbit--outer', scope)
     const innerOrbits = gsap.utils.toArray('.fm-signal-orbit--inner', scope)
     const paths = gsap.utils.toArray('.fm-signal-path', scope)
+    const halos = gsap.utils.toArray('.fm-signal-halo', scope)
+    const rails = gsap.utils.toArray('.fm-signal-rail', scope)
+    const labels = gsap.utils.toArray('.fm-signal-label', scope)
+    const fields = gsap.utils.toArray('.fm-signal-field', scope)
+
+    const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
+    intro
+      .fromTo(fields, { autoAlpha: 0 }, { autoAlpha: 1, duration: .38, stagger: .1 }, 0)
+      .fromTo(halos, { autoAlpha: 0, scale: .52 }, { autoAlpha: 1, scale: 1, duration: 1.05, stagger: .12 }, .04)
+      .fromTo([...orbits, ...innerOrbits], { autoAlpha: 0, scale: .58 }, { autoAlpha: 1, scale: 1, duration: 1.15, stagger: .08 }, .16)
+      .fromTo(paths, { autoAlpha: 0, xPercent: -36 }, { autoAlpha: 1, xPercent: 0, duration: .92, stagger: .1 }, .3)
+      .fromTo(rails, { autoAlpha: 0, yPercent: 42 }, { autoAlpha: 1, yPercent: 0, duration: .82, stagger: .08 }, .36)
+      .fromTo([...leftNodes, ...rightNodes], { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: .54, stagger: .07 }, .54)
+      .fromTo(labels, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: .52, stagger: .08 }, .68)
 
     const drift = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: 'sine.inOut' } })
     drift
@@ -575,12 +599,32 @@ const setupSideSignalMotion = () => {
       yoyo: true,
       ease: 'sine.inOut'
     })
+    const haloPulse = gsap.to(halos, {
+      scale: 1.14,
+      opacity: .8,
+      duration: 5.2,
+      stagger: .45,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    })
+    const railDrift = gsap.to(rails, {
+      yPercent: -22,
+      duration: 6.8,
+      stagger: .16,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    })
 
     return () => {
+      intro.kill()
       drift.kill()
       rotation.kill()
       counterRotation.kill()
       pulse.kill()
+      haloPulse.kill()
+      railDrift.kill()
     }
   })
 }
