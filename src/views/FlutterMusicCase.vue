@@ -4,6 +4,25 @@
     class="flutter-music-case"
     :class="{ 'is-english': !isChinese }"
   >
+    <div ref="sideSignalFields" class="fm-side-signal-fields" aria-hidden="true">
+      <div class="fm-signal-field fm-signal-field--left">
+        <span class="fm-signal-grid"></span>
+        <span class="fm-signal-orbit fm-signal-orbit--outer"></span>
+        <span class="fm-signal-orbit fm-signal-orbit--inner"></span>
+        <span class="fm-signal-path fm-signal-path--a"></span>
+        <span class="fm-signal-path fm-signal-path--b"></span>
+        <i v-for="node in 5" :key="`left-${node}`" class="fm-signal-node"></i>
+      </div>
+      <div class="fm-signal-field fm-signal-field--right">
+        <span class="fm-signal-grid"></span>
+        <span class="fm-signal-orbit fm-signal-orbit--outer"></span>
+        <span class="fm-signal-orbit fm-signal-orbit--inner"></span>
+        <span class="fm-signal-path fm-signal-path--a"></span>
+        <span class="fm-signal-path fm-signal-path--b"></span>
+        <i v-for="node in 5" :key="`right-${node}`" class="fm-signal-node"></i>
+      </div>
+    </div>
+
     <PortfolioHeader />
 
     <main>
@@ -202,14 +221,17 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { gsap } from 'gsap'
 import { useRoute } from 'vue-router'
 import PortfolioHeader from '../components/PortfolioHeader.vue'
 import { useLocale } from '../composables/useLocale'
 
 const caseRoot = ref(null)
+const sideSignalFields = ref(null)
 const { isChinese } = useLocale()
 const route = useRoute()
 let revealObserver = null
+let sideSignalMedia = null
 
 const caseCopy = computed(() => isChinese.value
   ? {
@@ -507,7 +529,64 @@ const resetStagePointer = (event) => {
   event.currentTarget?.style.setProperty('--stage-y', '0px')
 }
 
+const setupSideSignalMotion = () => {
+  if (!sideSignalFields.value) return
+
+  sideSignalMedia = gsap.matchMedia()
+  sideSignalMedia.add({
+    desktop: '(min-width: 1500px)',
+    reducedMotion: '(prefers-reduced-motion: reduce)'
+  }, context => {
+    if (!context.conditions.desktop || context.conditions.reducedMotion) return undefined
+
+    const scope = sideSignalFields.value
+    const leftNodes = gsap.utils.toArray('.fm-signal-field--left .fm-signal-node', scope)
+    const rightNodes = gsap.utils.toArray('.fm-signal-field--right .fm-signal-node', scope)
+    const orbits = gsap.utils.toArray('.fm-signal-orbit--outer', scope)
+    const innerOrbits = gsap.utils.toArray('.fm-signal-orbit--inner', scope)
+    const paths = gsap.utils.toArray('.fm-signal-path', scope)
+
+    const drift = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: 'sine.inOut' } })
+    drift
+      .to(leftNodes, { x: 13, y: -22, duration: 7.5, stagger: .24 }, 0)
+      .to(rightNodes, { x: -13, y: 20, duration: 8.5, stagger: .21 }, .55)
+      .to(paths, { y: -14, duration: 9, stagger: .3 }, 0)
+
+    const rotation = gsap.to(orbits, {
+      rotation: 360,
+      duration: 34,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%'
+    })
+    const counterRotation = gsap.to(innerOrbits, {
+      rotation: -360,
+      duration: 24,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%'
+    })
+    const pulse = gsap.to([...leftNodes, ...rightNodes], {
+      opacity: .95,
+      scale: 1.55,
+      duration: 2.8,
+      stagger: .18,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    })
+
+    return () => {
+      drift.kill()
+      rotation.kill()
+      counterRotation.kill()
+      pulse.kill()
+    }
+  })
+}
+
 onMounted(() => {
+  setupSideSignalMotion()
   const nodes = caseRoot.value?.querySelectorAll('.fm-reveal')
   if (!nodes?.length || !('IntersectionObserver' in window)) {
     nodes?.forEach(node => node.classList.add('is-visible'))
@@ -530,7 +609,10 @@ onMounted(() => {
   nodes.forEach(node => revealObserver.observe(node))
 })
 
-onUnmounted(() => revealObserver?.disconnect())
+onUnmounted(() => {
+  revealObserver?.disconnect()
+  sideSignalMedia?.revert()
+})
 </script>
 
 <style>

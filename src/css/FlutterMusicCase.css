@@ -28,6 +28,122 @@ body.page-case::before { display: none; }
   font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
+/* Wide screens leave a generous amount of breathing room around the case
+   study. The signal field gives that space a quiet, product-like rhythm while
+   deliberately sitting behind every interactive page element. */
+.fm-side-signal-fields {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fm-signal-field {
+  position: absolute;
+  top: clamp(132px, 13vw, 220px);
+  bottom: 6vh;
+  width: min(15.5vw, 274px);
+  opacity: .76;
+}
+
+.fm-signal-field--left { left: 0; }
+.fm-signal-field--right { right: 0; transform: scaleX(-1); }
+
+.fm-signal-field::before,
+.fm-signal-field::after {
+  position: absolute;
+  content: '';
+}
+
+.fm-signal-field::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(6,26,36,.12) 10%, rgba(6,26,36,.08) 88%, transparent);
+}
+
+.fm-signal-field::after {
+  top: 24%;
+  left: -11%;
+  width: 126%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6,26,36,.09) 12%, rgba(6,26,36,.09) 88%, transparent);
+}
+
+.fm-signal-grid {
+  position: absolute;
+  inset: 7% -4%;
+  opacity: .48;
+  background-image:
+    linear-gradient(rgba(6,26,36,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,26,36,.07) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(180deg, transparent, #000 13%, #000 82%, transparent);
+}
+
+.fm-signal-orbit,
+.fm-signal-path,
+.fm-signal-node { position: absolute; display: block; }
+
+.fm-signal-orbit {
+  left: 50%;
+  border: 1px solid rgba(6,26,36,.14);
+  border-radius: 50%;
+}
+
+.fm-signal-orbit--outer { top: 13%; width: 214px; height: 214px; margin-left: -107px; }
+.fm-signal-orbit--inner { top: calc(13% + 43px); width: 128px; height: 128px; margin-left: -64px; border-color: rgba(220,81,73,.22); }
+
+.fm-signal-orbit::before,
+.fm-signal-orbit::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  content: '';
+  transform: translate(-50%, -50%);
+}
+
+.fm-signal-orbit::before { width: 9px; height: 9px; border: 1px solid rgba(6,26,36,.2); border-radius: 50%; }
+.fm-signal-orbit::after { width: 1px; height: 100%; background: rgba(6,26,36,.1); }
+
+.fm-signal-path {
+  left: 13%;
+  width: 86%;
+  height: 24%;
+  border: 1px solid rgba(81,135,118,.26);
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 75% 0 0;
+}
+
+.fm-signal-path--a { top: 43%; transform: rotate(-18deg); }
+.fm-signal-path--b { top: 68%; width: 72%; height: 19%; border-color: rgba(220,81,73,.22); transform: rotate(24deg); }
+
+.fm-signal-node {
+  z-index: 2;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5e9c8b;
+  box-shadow: 0 0 0 6px rgba(94,156,139,.09), 0 0 20px rgba(94,156,139,.26);
+}
+
+.fm-signal-field--right .fm-signal-node { background: var(--fm-coral); box-shadow: 0 0 0 6px rgba(220,81,73,.08), 0 0 20px rgba(220,81,73,.2); }
+.fm-signal-node:nth-of-type(1) { top: 16%; left: 23%; }
+.fm-signal-node:nth-of-type(2) { top: 29%; right: 14%; }
+.fm-signal-node:nth-of-type(3) { top: 47%; left: 42%; }
+.fm-signal-node:nth-of-type(4) { top: 66%; right: 26%; }
+.fm-signal-node:nth-of-type(5) { top: 82%; left: 18%; }
+
+.flutter-music-case > main,
+.flutter-music-case > .fm-footer { position: relative; z-index: 1; }
+
+@media (max-width: 1499px) {
+  .fm-side-signal-fields { display: none; }
+}
+
 .flutter-music-case *,
 .flutter-music-case *::before,
 .flutter-music-case *::after { box-sizing: border-box; }
