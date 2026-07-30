@@ -86,6 +86,32 @@ const { allSongs } = await import('../src/data/songs.js')
 const { usePlayer } = await import('../src/composables/usePlayer.js')
 
 const player = usePlayer()
+
+// The deployable public build intentionally has no bundled local music. Keep
+// a focused regression check for that mode while retaining the fuller local
+// media checks below for the private desktop build.
+if (allSongs.length === 0) {
+  assert.equal(player.currentSong.value.title, '在线音乐探索', '公开版应给播放器提供在线探索提示')
+  assert.equal(player.playlist.value.length, 0, '公开版初始化时播放列表必须为空')
+
+  const onlineSong = {
+    id: 'public-online-test',
+    title: 'Online Test Track',
+    artist: 'Demo Artist',
+    url: 'https://example.com/online-test.mp3',
+    cover: '/images/playlist-default.jpg',
+    duration: '1:00',
+    source: 'online'
+  }
+
+  player.playCollection([onlineSong])
+  assert.equal(player.currentSong.value.title, 'Online Test Track', '公开版应继续支持在线歌曲播放')
+  player.next()
+  assert.equal(String(player.currentSong.value.url).startsWith('/music/'), false, '在线播放结束后不得回退到私有本地音乐')
+  console.log('播放器逻辑验证通过：公开版不携带本地音乐，在线播放与安全回退均正常。')
+  process.exit(0)
+}
+
 const getSong = (title) => {
   const song = allSongs.find(item => item.title === title)
   assert.ok(song, `本地曲库缺少测试歌曲：${title}`)

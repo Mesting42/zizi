@@ -483,4 +483,29 @@ const getPlaylistCover = (playlist) => {
     height: 35px !important;
   }
 }
+
+/* Online-playlist pages use the same compact player as the local library.
+   Keep its artwork as a clean circle: older vinyl layers could leave a square
+   compositing background visible around the record on mobile browsers. */
+@media (max-width: 767px) {
+  body.page-music #app .all-playlists-page footer.playlist-detail-capsule-player .bar-song-record,
+  body.page-music #app .all-playlists-page footer.playlist-detail-capsule-player .bar-song-record::before,
+  body.page-music #app .all-playlists-page footer.playlist-detail-capsule-player .bar-song-record::after {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body.page-music #app .all-playlists-page footer.playlist-detail-capsule-player .bar-song-record::before,
+  body.page-music #app .all-playlists-page footer.playlist-detail-capsule-player .bar-song-record::after {
+    content: none !important;
+  }
+
+  body.page-music #app .all-playlists-page footer.playlist-detail-capsule-player .bar-song-record .song-cover {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    clip-path: circle(50% at 50% 50%);
+    box-shadow: 0 3px 10px rgba(5, 26, 36, .18) !important;
+  }
+}
 </style>

@@ -1087,21 +1087,38 @@ body.dark-mode.page-article .editorial-article .markdown-content pre code {
   .flutter-retro-visual--reverse .flutter-retro-phone-stage,
   .flutter-retro-visual--triple .flutter-retro-phone-stage {
     order: 2;
-    justify-content: flex-start;
-    padding: 22px 24px 40px;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-
-  .flutter-retro-phone-stage::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    justify-content: stretch;
+    gap: 14px;
+    padding: 26px 18px 30px;
+    overflow: visible;
   }
 
   .flutter-retro-phone,
   .flutter-retro-visual--triple .flutter-retro-phone {
-    width: min(58vw, 210px);
-    scroll-snap-align: center;
+    width: 100%;
+    max-width: 170px;
+    justify-self: center;
+    border-width: 5px;
+    border-radius: 23px;
+    transform: rotate(-1.5deg) translateY(5px);
+  }
+
+  .flutter-retro-phone:nth-child(even) {
+    transform: rotate(1.5deg) translateY(-5px);
+  }
+
+  .flutter-retro-visual--triple .flutter-retro-phone-stage {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .flutter-retro-visual--triple .flutter-retro-phone {
+    max-width: 118px;
+    border-width: 4px;
+    border-radius: 18px;
   }
 
   .flutter-retro-principles,

@@ -399,6 +399,28 @@ const getFlutterMotionType = (element) => {
   return 'text'
 }
 
+const getFlutterViewportOverlap = (element) => {
+  const bounds = element.getBoundingClientRect()
+  return Math.max(0, Math.min(bounds.bottom, window.innerHeight) - Math.max(bounds.top, 0))
+}
+
+const updateFlutterRevealVisibility = (element) => {
+  const bounds = element.getBoundingClientRect()
+  const overlap = getFlutterViewportOverlap(element)
+  const enterOverlap = Math.min(72, Math.max(26, bounds.height * 0.1))
+  const exitOverlap = Math.min(16, Math.max(5, bounds.height * 0.025))
+  const isVisible = element.classList.contains('is-flutter-visible')
+
+  // Use separate entry and exit distances. Transforming a partly visible card
+  // changes its own bounds; a single zero-threshold observer can otherwise
+  // immediately toggle it back and forth while the reader is standing still.
+  if (!isVisible && overlap >= enterOverlap) {
+    element.classList.add('is-flutter-visible')
+  } else if (isVisible && overlap <= exitOverlap) {
+    element.classList.remove('is-flutter-visible')
+  }
+}
+
 const setupFlutterArticleMotion = () => {
   clearFlutterArticleMotion()
 
@@ -438,24 +460,19 @@ const setupFlutterArticleMotion = () => {
       entries.forEach(entry => {
         // Keep observing every block so leaving and re-entering the viewport
         // replays the transition without requiring a page refresh.
-        entry.target.classList.toggle('is-flutter-visible', entry.isIntersecting)
+        updateFlutterRevealVisibility(entry.target)
       })
     },
     {
-      threshold: [0, 0.01, 0.08],
-      rootMargin: '0px 0px -2% 0px'
+      threshold: [0, 0.04, 0.12],
+      rootMargin: '0px 0px -6% 0px'
     }
   )
 
   flutterRevealFrame = requestAnimationFrame(() => {
     flutterRevealFrame = 0
     nodes.forEach(element => {
-      const bounds = element.getBoundingClientRect()
-      const isInViewport = bounds.height > 0
-        && bounds.bottom > 0
-        && bounds.top < window.innerHeight
-
-      element.classList.toggle('is-flutter-visible', isInViewport)
+      updateFlutterRevealVisibility(element)
       flutterRevealObserver?.observe(element)
     })
   })

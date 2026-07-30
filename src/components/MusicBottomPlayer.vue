@@ -28,7 +28,6 @@
     <div class="bar-song" role="button" tabindex="0" @click="goToPlayer" @keydown.enter="goToPlayer">
       <span class="bar-song-record" :class="{ 'is-spinning': isPlaying }" aria-hidden="true">
         <img :src="currentSong.cover" :alt="currentSong.title" class="song-cover" />
-        <i class="bar-song-record-hole"></i>
       </span>
       <div class="song-text">
         <PlayerTitleMarquee :text="currentSong.title" />

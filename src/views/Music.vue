@@ -916,7 +916,6 @@
       <div class="bar-song" @click="goToPlayer">
         <span class="bar-song-record" :class="{ 'is-spinning': isPlaying }" aria-hidden="true">
           <img :src="currentSong.cover" class="song-cover" :key="spinKey" @error="handleImageError" />
-          <i class="bar-song-record-hole"></i>
         </span>
         <div class="song-text">
           <PlayerTitleMarquee :text="currentSong.title" />

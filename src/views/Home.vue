@@ -51,7 +51,9 @@
               :data-card-index="assetIndex"
             >
               <div class="oddy-marquee-card-inner">
+                <span class="oddy-marquee-poster" aria-hidden="true"></span>
                 <video
+                  v-if="!marqueeStaticPreviews"
                   class="oddy-marquee-media"
                   :src="asset.src"
                   :aria-label="asset.alt"
@@ -355,6 +357,9 @@ const marqueeSection = ref(null)
 const marqueeTrack = ref(null)
 const marqueeDragging = ref(false)
 const marqueeMounted = ref(false)
+const marqueeStaticPreviews = ref(
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+)
 const avatarVisible = ref(false)
 const avatarReady = ref(false)
 const avatarFailed = ref(false)
@@ -612,6 +617,8 @@ let marqueeDragStartX = 0
 let marqueeDragStartOffset = 0
 let marqueeLastPointerX = 0
 let marqueeLastPointerTime = 0
+let marqueeDragFrame = 0
+let marqueePendingPointerX = 0
 let marqueeReducedMotion = false
 let marqueeIsVisible = true
 let marqueeLastPaint = 0
@@ -652,6 +659,10 @@ const wrapMarqueeOffset = (value) => {
 const renderMarquee = () => {
   if (!marqueeTrack.value) return
   marqueeTrack.value.style.transform = `translate3d(${-marqueeOffset}px, 0, 0)`
+}
+
+const syncMarqueePreviewMode = () => {
+  marqueeStaticPreviews.value = window.matchMedia('(max-width: 767px)').matches
 }
 
 const measureMarquee = () => {
@@ -756,14 +767,31 @@ const moveMarqueeDrag = (event) => {
   const pointerDelta = event.clientX - marqueeLastPointerX
   const instantVelocity = -(pointerDelta / elapsed) * 1000
   marqueeVelocity = (marqueeVelocity * 0.55) + (instantVelocity * 0.45)
-  marqueeOffset = wrapMarqueeOffset(marqueeDragStartOffset - (event.clientX - marqueeDragStartX))
   marqueeLastPointerX = event.clientX
   marqueeLastPointerTime = now
-  renderMarquee()
+  marqueePendingPointerX = event.clientX
+
+  if (!marqueeDragFrame) {
+    marqueeDragFrame = requestAnimationFrame(() => {
+      marqueeDragFrame = 0
+      marqueeOffset = wrapMarqueeOffset(
+        marqueeDragStartOffset - (marqueePendingPointerX - marqueeDragStartX)
+      )
+      renderMarquee()
+    })
+  }
 }
 
 const finishMarqueeDrag = (event) => {
   if (!marqueeDragging.value || event.pointerId !== marqueePointerId) return
+  if (marqueeDragFrame) {
+    cancelAnimationFrame(marqueeDragFrame)
+    marqueeDragFrame = 0
+    marqueeOffset = wrapMarqueeOffset(
+      marqueeDragStartOffset - (event.clientX - marqueeDragStartX)
+    )
+    renderMarquee()
+  }
   marqueeDragging.value = false
   marqueeVelocity = Math.max(-1800, Math.min(1800, marqueeVelocity))
   if (Math.abs(marqueeVelocity) < 36) marqueeVelocity = 0
@@ -1232,6 +1260,7 @@ onMounted(() => {
   }
 
   window.addEventListener('resize', measureMarquee, { passive: true })
+  window.addEventListener('resize', syncMarqueePreviewMode, { passive: true })
 
   // The card has an instant still preview. Warm the original model early while
   // the first screen is settling, so its decode and shader compilation do not
@@ -1266,6 +1295,7 @@ onUnmounted(() => {
   noteCarouselObserver?.disconnect()
   projectImageObserver?.disconnect()
   window.removeEventListener('resize', measureMarquee)
+  window.removeEventListener('resize', syncMarqueePreviewMode)
   if (avatarWarmupTimer) window.clearTimeout(avatarWarmupTimer)
   if (avatarWarmupIdleHandle && 'cancelIdleCallback' in window) {
     window.cancelIdleCallback(avatarWarmupIdleHandle)
@@ -1274,6 +1304,7 @@ onUnmounted(() => {
   document.removeEventListener('mesting:scroll-state', handleScrollState)
   heroVideo.value?.pause()
   stopMarqueeAnimation()
+  if (marqueeDragFrame) window.cancelAnimationFrame(marqueeDragFrame)
   destroyMarqueeCardMotion()
   pauseCarousel()
   projectMotionCleanups.forEach(cleanup => cleanup())

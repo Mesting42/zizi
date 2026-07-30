@@ -24,83 +24,22 @@ export const generateMusicId = (url) => {
 // ============================================================
 // 全量歌曲库（所有可用歌曲的完整列表）
 // ============================================================
-export const allSongs = [
-  {
-    title: '起风了',
-    artist: '买辣椒也用券',
-    url: '/music/起风了 - 买辣椒也用券.aac',
-    cover: '/images/covers/qifengle.jpg',
-    duration: '5:25',
-    lrc: '/lyrics/起风了.lrc'
-  },
-  {
-    title: '晴天',
-    artist: '周杰伦',
-    url: '/music/晴天 - 周杰伦.mp3',
-    cover: '/images/covers/qingtian.jpg',
-    duration: '4:29',
-    lrc: '/lyrics/晴天.lrc'
-  },
-  {
-    title: '稻香',
-    artist: '周杰伦',
-    url: '/music/稻香 - 周杰伦.mp3',
-    cover: '/images/covers/daoxiang.jpg',
-    duration: '3:43',
-    lrc: '/lyrics/稻香.lrc'
-  },
-  {
-    title: '夜曲',
-    artist: '周杰伦',
-    url: '/music/夜曲 - 周杰伦.mp3',
-    cover: '/images/covers/yequ.jpg',
-    duration: '4:34',
-    lrc: '/lyrics/夜曲.lrc'
-  },
-  {
-    title: '以父之名',
-    artist: '周杰伦',
-    url: '/music/以父之名.wav',
-    cover: '/images/covers/qingtian.jpg',
-    duration: '5:42',
-    lrc: '/lyrics/以父之名.lrc'
-  },
-  {
-    title: '七里香',
-    artist: '周杰伦',
-    url: '/music/七里香 - 周杰伦.mp3',
-    cover: '/images/covers/qilixiang.jpg',
-    duration: '4:59',
-    lrc: '/lyrics/七里香.lrc'
-  },
-  {
-    title: '告白气球',
-    artist: '周杰伦',
-    url: '/music/告白气球 - 周杰伦.aac',
-    cover: '/images/covers/gaobaiqiqiu.jpg',
-    duration: '3:35',
-    lrc: '/lyrics/告白气球.lrc'
-  },
-  {
-    title: '青花瓷',
-    artist: '周杰伦',
-    url: '/music/青花瓷 - 周杰伦.mp3',
-    cover: '/images/covers/qinghuaci.jpg',
-    duration: '3:59',
-    lrc: '/lyrics/青花瓷.lrc'
-  },
-  {
-    title: '花海',
-    artist: '周杰伦',
-    url: '/music/花海.m4a',
-    cover: '/images/covers/daoxiang.jpg',
-    duration: '4:24',
-    lrc: '/lyrics/花海.lrc'
-  }
-].map(song => ({
-  ...song,
-  id: generateMusicId(song.url)
-}))
+// The public site deliberately ships no local audio or lyric files. Visitors
+// can still use the online discovery and preview providers, while private
+// source media remains on the author's machine.
+export const allSongs = []
+
+export const isBundledAudioUrl = (url) => String(url || '').startsWith('/music/')
+
+const onlinePlaceholderSong = {
+  id: 'music-online-placeholder',
+  title: '在线音乐探索',
+  artist: '搜索或打开歌单即可试听',
+  cover: '/images/playlist-default.jpg',
+  url: '',
+  duration: '0:00',
+  source: 'public-release'
+}
 
 // ============================================================
 // 推荐歌曲（用于"发现音乐"页面的"最新音乐"区域）
@@ -223,7 +162,7 @@ export const getSongById = (id) => allSongs.find(s => s.id === id)
 export const getSongByUrl = (url) => allSongs.find(s => s.url === url)
 
 /** 获取默认歌曲（晴天） */
-export const getDefaultSong = () => allSongs.find(s => s.title === '晴天') || allSongs[0]
+export const getDefaultSong = () => allSongs[0] || { ...onlinePlaceholderSong }
 
 /** 初始化所有歌曲的ID（确保每首歌都有id字段） */
 export const ensureMusicId = (song) => {

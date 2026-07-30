@@ -1,10 +1,23 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
+import { rm } from 'node:fs/promises'
+
+const excludePrivateMusicFromPublicBuild = () => ({
+  name: 'exclude-private-music-from-public-build',
+  async closeBundle() {
+    // `public/` is copied verbatim by Vite. Keep source media locally but
+    // never package raw audio or lyric files into the public website.
+    await Promise.all([
+      rm(fileURLToPath(new URL('./dist/music', import.meta.url)), { recursive: true, force: true }),
+      rm(fileURLToPath(new URL('./dist/lyrics', import.meta.url)), { recursive: true, force: true })
+    ])
+  }
+})
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), excludePrivateMusicFromPublicBuild()],
   base: '/', // 部署到根路径使用 '/'，部署到子路径如 GitHub Pages 改为 '/仓库名/'
   resolve: {
     alias: {

@@ -1,5 +1,5 @@
 import { ref, watch, shallowRef, computed } from 'vue'
-import { allSongs, getDefaultSong as getDefaultSongFromData, ensureMusicId } from '../data/songs.js'
+import { allSongs, getDefaultSong as getDefaultSongFromData, ensureMusicId, isBundledAudioUrl } from '../data/songs.js'
 import { incrementPlayCount, getPlayCount, formatPlayCount } from './useStats.js'
 import {
   PLAY_MODES,
@@ -143,7 +143,10 @@ const syncSongWithCatalog = (song) => {
 
 const findFavoriteIndex = (song) => favorites.value.findIndex(item => getSongDedupeKey(item) === getSongDedupeKey(song))
 
-const currentSong = ref(syncSongWithCatalog(validateSong(savedState?.currentSong) ? savedState.currentSong : defaultSong))
+// Do not restore an old private local-file URL when a visitor opens the
+// public build after having used the local desktop version.
+const canRestoreSong = validateSong(savedState?.currentSong) && !isBundledAudioUrl(savedState.currentSong.url)
+const currentSong = ref(syncSongWithCatalog(canRestoreSong ? savedState.currentSong : defaultSong))
 
 const isPlaying = ref(false)
 const currentTime = ref(savedState?.currentTime || 0)
@@ -153,7 +156,9 @@ const playMode = ref(normalizePlayMode(savedState?.playMode))
 // 播放队列属于临时状态：每次重新打开站点都从 0 开始，不恢复上次的队列。
 const playlist = ref([])
 const storedFavoriteCount = Array.isArray(savedState?.favorites) ? savedState.favorites.length : 0
-const favorites = ref(dedupeSongList(savedState?.favorites || []))
+const favorites = ref(dedupeSongList(
+  (savedState?.favorites || []).filter(song => !isBundledAudioUrl(song?.url))
+))
 const hasStoredDuplicateFavorites = storedFavoriteCount !== favorites.value.length
 // 收藏状态必须由“当前歌曲是否存在于收藏列表”推导，不能在切歌时沿用上一首的布尔值。
 const isLiked = computed(() => findFavoriteIndex(currentSong.value) >= 0)
