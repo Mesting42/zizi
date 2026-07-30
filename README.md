@@ -13,15 +13,22 @@ Mesting Music 最初是个人数字空间中的音乐模块，后来使用 **Flu
 - 后台播放、通知栏、锁屏和耳机媒体控制
 - 账号资料、好友、聊天、一起听与跨设备恢复
 
-### 下载 Android APK
+### 下载 Flutter 最新版 APK
 
-**[⬇️ 直接下载 Mesting Music v1.5.0 APK](https://github.com/Mesting42/zizi/releases/download/music-v1.5.0/Mesting-Music-v1.5.0.apk)**
+**[⬇️ 直接下载 Mesting Music Flutter v1.0.37 APK](https://github.com/Mesting42/zizi/releases/download/flutter-music-v1.0.37/Mesting-Music-Flutter-v1.0.37.apk)**
 
-[查看版本说明与安装步骤](https://github.com/Mesting42/zizi/releases/tag/music-v1.5.0)
+[查看 Flutter v1.0.37 版本说明与安装步骤](https://github.com/Mesting42/zizi/releases/tag/flutter-music-v1.0.37)
 
-- 文件大小：约 104 MB
-- SHA-256：`7C8B0E2A761EAFD1569522F26770E9E959F4E30D7417CBB708636E347B00374B`
-- 当前提供的是可直接安装的 Android 调试构建；首次安装时，系统可能要求允许浏览器或文件管理器“安装未知应用”。
+- 版本：`1.0.37`（build `38`）
+- 文件大小：约 75.3 MB
+- SHA-256：`0E963BEB43C47459EEAE89F536056030ED7EA56E90798B27AED1D0E1C1942832`
+- 这是 Flutter / Dart 原生重构版；首次安装时，系统可能要求允许浏览器或文件管理器“安装未知应用”。
+
+### Vue3 / Capacitor 历史版本
+
+**[下载 Vue3 / Capacitor v1.5.0 APK](https://github.com/Mesting42/zizi/releases/download/music-v1.5.0/Mesting-Music-v1.5.0.apk)** · [查看旧版说明](https://github.com/Mesting42/zizi/releases/tag/music-v1.5.0)
+
+该安装包由 Vue3 音乐页面通过 Capacitor 打包，仅作为历史版本保留，与 Flutter v1.0.37 是两个不同的 APK。
 
 ## 亮点
 
