@@ -33,7 +33,10 @@
       <section
         ref="marqueeSection"
         class="oddy-marquee-section"
-        :class="{ 'is-dragging': marqueeDragging }"
+        :class="{
+          'is-dragging': marqueeDragging,
+          'uses-native-scroll': marqueeStaticPreviews
+        }"
         :aria-label="copy.marqueeAria"
         @pointerdown="beginMarqueeDrag"
         @pointermove="moveMarqueeDrag"
@@ -43,7 +46,12 @@
         @dragstart.prevent
       >
         <div v-if="marqueeMounted" ref="marqueeTrack" class="oddy-marquee-track">
-          <div v-for="repeat in 2" :key="repeat" class="oddy-marquee-group" aria-hidden="true">
+          <div
+            v-for="repeat in (marqueeStaticPreviews ? 1 : 2)"
+            :key="repeat"
+            class="oddy-marquee-group"
+            :aria-hidden="repeat > 1 ? 'true' : undefined"
+          >
             <figure
               v-for="(asset, assetIndex) in marqueeAssets"
               :key="`${repeat}-${asset.src}`"
@@ -656,18 +664,40 @@ const wrapMarqueeOffset = (value) => {
   return ((value % marqueeLoopWidth) + marqueeLoopWidth) % marqueeLoopWidth
 }
 
+const usesNativeMarqueeScroll = () => marqueeStaticPreviews.value
+
 const renderMarquee = () => {
   if (!marqueeTrack.value) return
+  if (usesNativeMarqueeScroll()) {
+    marqueeTrack.value.style.removeProperty('transform')
+    return
+  }
   marqueeTrack.value.style.transform = `translate3d(${-marqueeOffset}px, 0, 0)`
 }
 
 const syncMarqueePreviewMode = () => {
-  marqueeStaticPreviews.value = window.matchMedia('(max-width: 767px)').matches
+  const shouldUseStaticPreviews = window.matchMedia('(max-width: 767px)').matches
+  if (marqueeStaticPreviews.value === shouldUseStaticPreviews) return
+
+  marqueeStaticPreviews.value = shouldUseStaticPreviews
+  marqueeOffset = 0
+  marqueeVelocity = 0
+  stopMarqueeAnimation()
+
+  nextTick(() => {
+    measureMarquee()
+    setupMarqueeCardMotion()
+    if (!usesNativeMarqueeScroll()) startMarqueeAnimation()
+  })
 }
 
 const measureMarquee = () => {
   const firstGroup = marqueeTrack.value?.firstElementChild
   if (!firstGroup) return
+  if (usesNativeMarqueeScroll()) {
+    renderMarquee()
+    return
+  }
   const previousWidth = marqueeLoopWidth
   marqueeLoopWidth = firstGroup.getBoundingClientRect().width
   if (previousWidth && marqueeLoopWidth) marqueeOffset = (marqueeOffset / previousWidth) * marqueeLoopWidth
@@ -707,7 +737,14 @@ const animateMarquee = (time) => {
 }
 
 const startMarqueeAnimation = () => {
-  if (marqueeFrame || !marqueeIsVisible || !marqueeMounted.value || document.hidden || pageIsScrolling) return
+  if (
+    marqueeFrame ||
+    usesNativeMarqueeScroll() ||
+    !marqueeIsVisible ||
+    !marqueeMounted.value ||
+    document.hidden ||
+    pageIsScrolling
+  ) return
   marqueeLastFrame = 0
   marqueeLastPaint = 0
   marqueeFrame = window.requestAnimationFrame(animateMarquee)
@@ -746,6 +783,7 @@ const handleScrollState = (event) => {
 }
 
 const beginMarqueeDrag = (event) => {
+  if (usesNativeMarqueeScroll()) return
   if (event.pointerType === 'mouse' && event.button !== 0) return
   resetMarqueeCardMotion?.()
   marqueeHovering = false
@@ -761,6 +799,7 @@ const beginMarqueeDrag = (event) => {
 }
 
 const moveMarqueeDrag = (event) => {
+  if (usesNativeMarqueeScroll()) return
   if (!marqueeDragging.value || event.pointerId !== marqueePointerId) return
   const now = performance.now()
   const elapsed = Math.max(now - marqueeLastPointerTime, 8)
@@ -783,6 +822,7 @@ const moveMarqueeDrag = (event) => {
 }
 
 const finishMarqueeDrag = (event) => {
+  if (usesNativeMarqueeScroll()) return
   if (!marqueeDragging.value || event.pointerId !== marqueePointerId) return
   if (marqueeDragFrame) {
     cancelAnimationFrame(marqueeDragFrame)
@@ -855,6 +895,7 @@ const setupMarqueeCardMotion = () => {
 
   if (
     !marqueeTrack.value ||
+    usesNativeMarqueeScroll() ||
     window.matchMedia('(pointer: coarse)').matches ||
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
   ) {

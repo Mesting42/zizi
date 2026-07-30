@@ -1539,10 +1539,30 @@ body.page-home::before {
   .oddy-marquee-group { gap: 12px; padding-right: 12px; }
   .oddy-marquee-section { contain: layout paint style; }
   .oddy-marquee-track { perspective: none; }
+  .oddy-marquee-section.uses-native-scroll {
+    overflow-x: auto;
+    overflow-y: clip;
+    cursor: grab;
+    touch-action: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .oddy-marquee-section.uses-native-scroll::-webkit-scrollbar { display: none; }
+  .oddy-marquee-section.uses-native-scroll .oddy-marquee-track {
+    width: max-content;
+    padding: 0 18px;
+    transform: none !important;
+    will-change: auto;
+  }
+  .oddy-marquee-section.uses-native-scroll .oddy-marquee-group {
+    padding-right: 18px;
+  }
   .oddy-marquee-card {
     width: 196px;
     height: 270px;
     contain: layout paint style;
+    content-visibility: auto;
+    contain-intrinsic-size: 196px 270px;
     box-shadow: 0 10px 22px rgba(5, 26, 36, .12);
     transition: none;
   }
