@@ -44,7 +44,7 @@ const loadArticles = () => {
 }
 
 // 默认文章数据
-const getDefaultArticles = () => [
+const getDefaultArticles = () => applyEditorialRevision([
   {
     id: 1001,
     order: 1,
@@ -401,7 +401,168 @@ watchEffect(() => {
       <p>通过构建一个响应式的作品集页面，练习 CSS Grid 的应用。</p>
     `
   }
-]
+])
+
+// The original archive used broad learning-note copy. Keep the same article
+// ids and routes, but promote the built-in editorial layer to version 2 so
+// existing localStorage snapshots receive the more rigorous, source-aware
+// descriptions on the next load. User-created articles are left untouched.
+const applyEditorialRevision = (articles) => {
+  const authoritative = {
+    1: {
+      title: 'Vue 3 Composition API：响应式系统、生命周期与可复用逻辑',
+      excerpt: '以 Vue 3.5+ 为基线，解释 ref、reactive、computed、watch 与 composable 的边界，并用可验证的组件案例说明如何组织状态、清理副作用和控制更新范围。',
+      content: `
+        <p><strong>适用范围：</strong>Vue 3.5+、Composition API、单文件组件。本文讨论稳定 API 与可迁移的工程原则，不把个人偏好当作框架约束。</p>
+        <h2>先定义问题：逻辑应该放在哪里</h2>
+        <p>Composition API 的价值不是把 Options API 的字段换成函数，而是让同一条业务逻辑的状态、派生值、副作用与清理代码保持在同一处。组件应负责组合与展示；可跨组件复用的行为应提取为 composable；领域状态则应由明确的 store 或服务边界持有。</p>
+        <h2>响应式原语的工程边界</h2>
+        <ul><li><code>ref</code> 适合单值状态、DOM 引用和需要整体替换的对象。</li><li><code>reactive</code> 适合结构稳定的对象，但解构时必须使用 <code>toRefs</code> 保留响应式连接。</li><li><code>computed</code> 只表达可缓存的派生值，不承担异步副作用。</li><li><code>watch</code> 用于明确的外部影响，例如请求、存储同步或第三方 API。</li></ul>
+        <h2>副作用、清理与可测试性</h2>
+        <p>监听器和订阅必须拥有对称清理逻辑。请求应配合失效标记或 AbortController，定时器、事件监听和 WebSocket 则在 <code>onUnmounted</code> 中释放。这样组件卸载后不会继续写入已失效状态，也更容易在单元测试中验证。</p>
+        <pre><code>const stop = watch(query, async (value, _, onCleanup) =&gt; {
+  const controller = new AbortController()
+  onCleanup(() =&gt; controller.abort())
+  result.value = await fetchResult(value, controller.signal)
+})</code></pre>
+        <h2>验证清单</h2>
+        <p>检查状态是否有唯一来源、派生值是否可计算、异步结果是否会过期、组件卸载后是否仍有回调，以及更新是否只触发必要的子树。结论是：Composition API 提供组织能力，可靠性来自清晰的状态边界和可测试的副作用管理。</p>
+      `
+    },
+    2: {
+      title: '现代 CSS 布局：从 Grid、Flex 到容器查询与可访问动效',
+      excerpt: '基于现代浏览器标准，梳理 Grid、Flexbox、容器查询、级联层与自定义属性的适用边界，并给出响应式布局和动效降级的验证方法。',
+      content: `
+        <p><strong>适用范围：</strong>现代 Chromium、Firefox 与 Safari。示例遵循 CSS Grid、Flexbox、Container Queries 和 prefers-reduced-motion 的标准语义。</p>
+        <h2>布局决策而不是属性堆叠</h2>
+        <p>Flexbox 解决一维排列与对齐，Grid 解决二维轨道与区域。先确定组件的主轴和内容关系，再选择布局模型；不要用大量绝对定位去模拟本应由轨道表达的结构。</p>
+        <h2>可维护的响应式策略</h2>
+        <p>使用自定义属性集中管理间距、颜色和断点，优先采用 <code>minmax()</code>、<code>clamp()</code> 和 <code>auto-fit</code> 让布局随容器伸缩。容器查询适合组件级响应式：卡片根据自己的宽度变化，而不是依赖页面断点。</p>
+        <pre><code>.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--space); }
+.card { container-type: inline-size; }
+@container (min-width: 34rem) { .card { grid-template-columns: 8rem 1fr; } }</code></pre>
+        <h2>级联、动效与可访问性</h2>
+        <p>使用 <code>@layer</code> 明确 reset、组件和工具层的优先级；动效优先使用 transform 与 opacity，并为 <code>prefers-reduced-motion: reduce</code> 提供静态状态。键盘焦点、文字对比度和内容溢出应在布局验收中与视觉一致性同等重要。</p>
+        <h2>验证结论</h2>
+        <p>在窄屏、宽屏、长文本、放大字体和减少动效设置下分别检查布局。现代 CSS 的核心不是更复杂的选择器，而是让内容关系、组件边界和无障碍行为都能从样式结构中读出来。</p>
+      `
+    },
+    3: {
+      title: 'JavaScript 异步执行模型：Promise、事件循环与并发控制',
+      excerpt: '从 ECMAScript Promise 语义出发，解释微任务、任务队列、取消与并发限制，帮助你准确判断异步代码的执行顺序和失败传播路径。',
+      content: `
+        <p><strong>适用范围：</strong>浏览器与 Node.js 的标准 Promise API。本文区分语言规范行为与宿主环境调度，不用“异步等于多线程”这种不准确的简化。</p>
+        <h2>事件循环真正决定了什么</h2>
+        <p>JavaScript 代码在当前执行栈清空后，宿主环境才会调度后续工作。Promise 回调进入微任务队列，定时器、网络和用户事件通常进入任务队列；每轮任务结束后会优先清空微任务，因此连续创建微任务也可能延迟渲染。</p>
+        <pre><code>console.log('A')
+Promise.resolve().then(() =&gt; console.log('microtask'))
+setTimeout(() =&gt; console.log('task'), 0)
+console.log('B')
+// A, B, microtask, task</code></pre>
+        <h2>Promise 组合与失败边界</h2>
+        <p><code>Promise.all</code> 用于“全部成功才继续”，<code>allSettled</code> 用于需要完整结果报告的批处理，<code>race</code> 和 <code>any</code> 分别表达首个结算与首个成功。选择组合器时应先写出业务对部分失败的容忍度。</p>
+        <h2>取消、重试与并发上限</h2>
+        <p>Promise 本身不可取消；网络请求应使用 AbortController，重试必须限制次数并使用退避策略。对图片、搜索或批量接口设置并发上限，避免把浏览器连接池、服务端配额和用户带宽同时打满。</p>
+        <h2>验收标准</h2>
+        <p>用时间线记录任务、微任务、渲染和取消事件；测试成功、失败、超时、重复触发与组件卸载。可靠的异步代码不仅“能跑完”，还要能解释顺序、停止过期工作并保留失败信息。</p>
+      `
+    },
+    4: {
+      title: 'Web 性能工程：从 Core Web Vitals 到资源与渲染优化',
+      excerpt: '以 LCP、INP、CLS 为可观测指标，建立从网络传输、图片视频、代码拆分到渲染调度的性能诊断流程，避免只凭主观感受优化。',
+      content: `
+        <p><strong>适用范围：</strong>面向真实用户的移动与桌面 Web。指标应结合现场数据、实验室录制和设备能力解释，不能用单次本地分数替代用户体验。</p>
+        <h2>先测量，再决定优化对象</h2>
+        <p>LCP 关注主要内容出现的速度，INP 关注交互响应，CLS 关注布局稳定性。用 Performance 面板、Network 面板和 Web Vitals 采样定位瓶颈，再确认问题来自传输、解码、主线程还是布局。</p>
+        <h2>资源加载策略</h2>
+        <ul><li>首屏关键图片提供尺寸、合适格式和明确优先级。</li><li>非首屏图片使用懒加载，视频提供 poster，并避免移动端默认下载高码率源。</li><li>路由级代码拆分，确保首屏不加载不会立即执行的功能。</li><li>字体、第三方脚本和远程 API 通过预算控制，避免阻塞主要内容。</li></ul>
+        <h2>渲染与交互</h2>
+        <p>减少强制同步布局，优先使用 transform 和 opacity；长列表采用虚拟化或分批渲染；滚动中的动画暂停高成本绘制，组件离开视口后释放观察者和媒体资源。</p>
+        <h2>可复现的验收</h2>
+        <p>固定设备、网络和缓存条件记录基线，分别比较冷启动与回访。优化必须同时验证视觉完整性、键盘操作、低端设备和减少动效设置；只有指标改善且内容没有缺失，才算完成。</p>
+      `
+    },
+    5: {
+      title: 'Vite 构建系统：开发服务器、Rollup 与生产发布',
+      excerpt: '从原生 ESM 开发服务器到 Rollup 生产构建，解释 Vite 的依赖预构建、环境变量、代码拆分和静态部署边界，并给出可审计的发布流程。',
+      content: `
+        <p><strong>适用范围：</strong>Vite 6+ 项目。具体配置仍以当前项目安装的 Vite、插件和 Node.js 版本为准，本文不把工具默认行为当作永久 API。</p>
+        <h2>开发与生产是两条不同路径</h2>
+        <p>开发服务器通过原生 ESM 按需提供模块，并用依赖预构建减少重复解析；生产构建则由 Rollup 生成可部署的静态资源。开发环境的快速启动不代表生产包体积或运行时性能已经达标。</p>
+        <h2>配置与边界</h2>
+        <p><code>base</code> 决定子路径部署时的资源前缀，环境变量必须区分公开配置与服务端密钥。插件应只处理明确的转换职责；自定义别名、静态目录和 HTML 注入都应纳入构建产物检查。</p>
+        <pre><code>export default defineConfig(({ mode }) =&gt; ({
+  base: mode === 'production' ? '/project/' : '/',
+  build: { sourcemap: true }
+}))</code></pre>
+        <h2>拆分与发布验证</h2>
+        <p>按路由和重型依赖拆分代码，检查生成的 chunk 是否被首屏意外引入。部署前对 index、深层路由、静态资源 MIME、缓存头和 404 回退进行自动化检查，并保留构建版本与回滚入口。</p>
+        <h2>结论</h2>
+        <p>Vite 的速度来自开发阶段减少不必要的工作；可靠发布则依赖明确的 base、环境、产物和验证流程。两者必须分开测量。</p>
+      `
+    },
+    6: {
+      title: 'Vue 3 组件工程：状态边界、通信与可测试性',
+      excerpt: '从单文件组件的职责划分出发，讨论 props、emits、provide/inject、composable 与状态库的边界，建立可维护、可测试的 Vue 3 组件系统。',
+      content: `
+        <p><strong>适用范围：</strong>Vue 3 单文件组件与 TypeScript/JavaScript 混合项目。判断组件质量的标准是职责、依赖和测试边界，而不是文件大小。</p>
+        <h2>组件通信的选择顺序</h2>
+        <ul><li>父子之间使用明确的 props 与 emits，并保持单向数据流。</li><li>深层但局部的依赖可使用 provide/inject，同时定义注入键和默认行为。</li><li>跨页面、跨生命周期的领域状态放入 composable 或状态库。</li><li>不要用全局状态替代一次性的事件通知，也不要让子组件直接修改父状态。</li></ul>
+        <h2>让模板保持可读</h2>
+        <p>把格式化、请求、权限和复杂条件提取为命名清晰的计算值或函数；模板只表达结构。异步加载应暴露 loading、error、empty 和 success 四种状态，避免请求失败时出现不可解释的空白。</p>
+        <h2>可测试的副作用</h2>
+        <p>把网络、时间、存储和路由作为可替换依赖传入 composable。组件测试关注用户可观察的 DOM、事件和状态变化，单元测试关注纯函数与状态转换，不依赖实现细节。</p>
+        <h2>工程结论</h2>
+        <p>可维护组件不是“越小越好”，而是每个状态只拥有一个权威来源，每个副作用都能被停止，每个公开事件都有明确语义。</p>
+      `
+    },
+    7: {
+      title: 'CSS Grid 工程实践：轨道、区域与响应式策略',
+      excerpt: '以真实内容约束为起点，系统讲解 Grid 轨道、命名区域、隐式网格、minmax 与 auto-fit，并覆盖长文本、窄屏和组件嵌套的验证要点。',
+      content: `
+        <p><strong>适用范围：</strong>CSS Grid Level 1 的主流实现。示例强调内容适配和可读性，不依赖固定高度或脆弱的像素定位。</p>
+        <h2>先画出内容关系</h2>
+        <p>Grid 容器负责列和行，子项负责放入轨道或命名区域。页面级结构适合使用 <code>grid-template-areas</code>，重复卡片适合使用自动放置与最小轨道宽度。</p>
+        <pre><code>.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
+  grid-template-areas: 'main aside';
+  gap: clamp(1rem, 3vw, 3rem);
+}
+@media (max-width: 48rem) { .layout { grid-template-areas: 'main' 'aside'; grid-template-columns: 1fr; } }</code></pre>
+        <h2>避免溢出与隐式陷阱</h2>
+        <p>长文本列通常需要 <code>minmax(0, 1fr)</code>，否则最小内容宽度可能撑破容器。明确是否允许隐式轨道，检查图片尺寸、表格和代码块在窄屏下的最小宽度。</p>
+        <h2>验收矩阵</h2>
+        <p>至少验证 320px 窄屏、平板、宽桌面、放大字体、英文长单词和动态增删卡片。Grid 的成功标准是内容顺序仍然合理、焦点顺序不被视觉布局破坏，且没有依赖固定高度的截断。</p>
+      `
+    },
+    8: {
+      title: 'Web 动效工程：Transform、合成层与 reduced-motion',
+      excerpt: '从 transform 的坐标系和 transform-origin 出发，说明如何设计可解释的交互动效、控制合成与布局成本，并为减少动效用户提供等价的静态状态。',
+      content: `
+        <p><strong>适用范围：</strong>CSS Transforms、Transitions、Animations 与 prefers-reduced-motion。动效应解释状态变化，而不是成为内容本身。</p>
+        <h2>选择不会破坏布局的属性</h2>
+        <p>大多数交互优先使用 transform 与 opacity，避免频繁修改会触发布局的 width、top 或 margin。合成层不是越多越好；应通过 Performance 面板确认图层、内存和绘制成本。</p>
+        <pre><code>.card { transition: transform 220ms ease, opacity 220ms ease; }
+.card:hover, .card:focus-within { transform: translateY(-0.35rem); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}</code></pre>
+        <h2>距离、时间与起点</h2>
+        <p>小距离、明确的 transform-origin 和与内容层级匹配的缓动通常比夸张位移更可信。进入动效应让用户理解内容出现，退出动效则不应阻止下一步操作。</p>
+        <h2>验证结论</h2>
+        <p>用键盘、触摸、鼠标和减少动效设置分别检查；确认焦点不会因视觉移动丢失，重复进入视口不会叠加动画，低性能设备也能保持可操作。好的动效最终让界面更容易理解，而不是更难使用。</p>
+      `
+    }
+  }
+
+  return articles.map((article) => {
+    const revision = authoritative[article.id]
+    return revision
+      ? { ...article, ...revision, builtInRevision: 2 }
+      : article
+  })
+}
 
 // 创建响应式文章数据
 const articles = ref(loadArticles())
