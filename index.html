@@ -60,6 +60,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Mesting is a personal digital space for evolving projects, interfaces, sound, and ideas.">
+    <!-- Warm media origins before the first video asks for a byte range. This
+         only performs DNS/TLS setup; it does not download media early. -->
+    <link rel="dns-prefetch" href="//d8j0ntlcm91z4.cloudfront.net">
+    <link rel="preconnect" href="https://d8j0ntlcm91z4.cloudfront.net" crossorigin>
+    <link rel="dns-prefetch" href="//videos.pexels.com">
+    <link rel="preconnect" href="https://videos.pexels.com" crossorigin>
     <title>Mesting — Personal Digital Space</title>
     <style>
       html:is(.page-home, .page-case, .page-article, .page-article-archive),

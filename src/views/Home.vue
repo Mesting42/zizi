@@ -3,8 +3,21 @@
     <main>
       <section id="top" class="oddy-hero nk-hero">
         <div class="nk-video-shell" aria-hidden="true">
-          <video ref="heroVideo" class="nk-hero-video" autoplay muted loop playsinline preload="auto">
-            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4" type="video/mp4">
+          <video
+            ref="heroVideo"
+            class="nk-hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="/generated/home-hero-poster.webp"
+          >
+            <source
+              v-if="!marqueeStaticPreviews"
+              src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4"
+              type="video/mp4"
+            >
           </video>
         </div>
 
@@ -69,7 +82,7 @@
                   loop
                   muted
                   playsinline
-                  preload="metadata"
+                  preload="none"
                   disablepictureinpicture
                 ></video>
                 <span class="oddy-marquee-glint" aria-hidden="true"></span>
@@ -219,7 +232,7 @@
                   </div>
                   <div class="oddy-flutter-record"></div>
                   <div class="oddy-flutter-phone">
-                    <img src="/generated/flutter-music/recommendation.png" alt="" loading="lazy" decoding="async">
+                    <img src="/generated/flutter-music/recommendation.webp" alt="" loading="lazy" decoding="async">
                   </div>
                   <div class="oddy-flutter-stat"><b>25</b><span>VISUAL<br>THEMES</span></div>
                 </div>
@@ -605,7 +618,7 @@ const projects = computed(() => [
     description: isChinese.value
       ? '为不同文化语境下的用户，寻找更直接、更有辨识度的表达方式。'
       : 'A more direct and distinctive visual language designed for audiences across different cultural contexts.',
-    image: 'https://motionsites.ai/assets/hero-automation-machines-preview-DlTveRIN.gif',
+    image: '/generated/project-previews-global-brand.webp',
     anchor: 'project-global-brand-experiment',
     to: '/foreign-case'
   }
@@ -921,7 +934,10 @@ const setupMarqueeVideos = () => {
   // A card receives its original video only near the visible reel. The
   // generated poster keeps off-screen cards visually complete, while avoiding
   // simultaneous network and decoder work for every 4K loop in the strip.
-  if (!marqueeTrack.value) return
+  // The mobile reel uses native horizontal scrolling. Do not attach the
+  // remote 1080p/4K loops there: a cellular viewport should get the lightweight
+  // poster treatment and never compete with the page's first contentful paint.
+  if (!marqueeTrack.value || usesNativeMarqueeScroll()) return
 
   const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card')]
   if (!('IntersectionObserver' in window)) {
@@ -944,7 +960,10 @@ const setupMarqueeVideos = () => {
     marqueeActiveVideoKeys.value = nextActiveKeys
   }, {
     root: marqueeSection.value,
-    rootMargin: '0px 560px',
+    // Keep one neighbouring card warm on each side. The former 560px margin
+    // could start most of the eight remote 4K loops at once, competing with
+    // the hero video even though those cards were still outside the reel.
+    rootMargin: '0px 160px',
     threshold: 0.01
   })
 

@@ -85,7 +85,7 @@
 
         <div class="fm-stage-copy">
           <div class="fm-stage-brand">
-            <img src="/generated/flutter-music/brand-lockup.png" alt="Mesting Music">
+            <img src="/generated/flutter-music/brand-lockup.webp" alt="Mesting Music" decoding="async">
           </div>
           <p>{{ caseCopy.makeListeningPersonal }}</p>
           <h2>
@@ -100,8 +100,9 @@
           <div class="fm-phone" aria-label="Flutter recommendation screen">
             <div class="fm-phone-speaker" aria-hidden="true"></div>
             <img
-              src="/generated/flutter-music/recommendation.png"
+              src="/generated/flutter-music/recommendation.webp"
               alt="Mesting Music recommendation screen with personal mixes, daily picks, and mood-based listening"
+              decoding="async"
             >
           </div>
           <span class="fm-phone-note fm-phone-note-a">{{ caseCopy.nativeDiscovery }} <b>01</b></span>
@@ -174,7 +175,8 @@
                     <img
                       :src="shot.src"
                       :alt="shot.alt"
-                      loading="lazy"
+                      :loading="index === 0 ? 'eager' : 'lazy'"
+                      :fetchpriority="index === 0 ? 'high' : 'low'"
                       decoding="async"
                     >
                   </div>
@@ -204,7 +206,7 @@
 
         <div class="fm-next-portal" aria-hidden="true">
           <div class="fm-next-portal-frame">
-            <img src="/generated/flutter-music/midnight-launch.webp" alt="">
+            <img src="/generated/flutter-music/midnight-launch.webp" alt="" loading="lazy" decoding="async">
             <span class="fm-next-portal-dot"></span>
             <div class="fm-next-portal-copy">
               <small>NOW OPEN / 02</small>
@@ -331,48 +333,48 @@ const projectReturnTarget = computed(() => {
 const featureVisuals = {
   DISCOVER: [
     {
-      src: '/generated/flutter-music/real-screens/discover.jpg',
+      src: '/generated/flutter-music/optimized-screens/discover.webp',
       alt: 'Mesting Music discovery screen with featured playlists, popular tracks, and curated collections',
       caption: 'Music Discovery / Playlists and popular releases'
     },
     {
-      src: '/generated/flutter-music/real-screens/mood-status.jpg',
+      src: '/generated/flutter-music/optimized-screens/mood-status.webp',
       alt: 'Mesting Music mood panel for finding music by feeling and context',
       caption: 'Mood Discovery / Let the moment choose what plays next'
     }
   ],
   PLAY: [
     {
-      src: '/generated/flutter-music/real-screens/player-liquid.jpg',
+      src: '/generated/flutter-music/optimized-screens/player-liquid.webp',
       alt: 'Mesting Music Liquid Spectrum player with reactive visuals, shared listening, and full playback controls',
       caption: 'Liquid Spectrum / Reactive full-screen player'
     },
     {
-      src: '/generated/flutter-music/real-screens/playlist-detail.jpg',
+      src: '/generated/flutter-music/optimized-screens/playlist-detail.webp',
       alt: 'Mesting Music personal playlist with play-all, add-track, and management controls',
       caption: 'Personal Playlist / Play, add, and manage'
     }
   ],
   COLLECT: [
     {
-      src: '/generated/flutter-music/real-screens/favorites.jpg',
+      src: '/generated/flutter-music/optimized-screens/favorites.webp',
       alt: 'Mesting Music favorites screen showing saved tracks and current playback',
       caption: 'Favorites / A personal archive of loved sounds'
     },
     {
-      src: '/generated/flutter-music/real-screens/history-ranking.jpg',
+      src: '/generated/flutter-music/optimized-screens/history-ranking.webp',
       alt: 'Mesting Music listening ranking based on completed plays',
       caption: 'Listening Ranking / Preference measured through plays'
     },
     {
-      src: '/generated/flutter-music/real-screens/history-recent.jpg',
+      src: '/generated/flutter-music/optimized-screens/history-recent.webp',
       alt: 'Mesting Music recent history with tracks and playback times',
       caption: 'Recently Played / Return to anything you heard'
     }
   ],
   DRESS: [
     {
-      src: '/generated/flutter-music/real-screens/dress-system.jpg',
+      src: '/generated/flutter-music/optimized-screens/dress-system.webp',
       alt: 'Mesting Music appearance settings with brand kits, player styles, progress characters, and motion effects',
       caption: 'Complete Styling System / Brand, player, and character',
       scrollPreview: true,
@@ -380,43 +382,43 @@ const featureVisuals = {
       scrollDuration: '12s'
     },
     {
-      src: '/generated/flutter-music/real-screens/theme-shinchan.jpg',
+      src: '/generated/flutter-music/optimized-screens/theme-shinchan.webp',
       alt: 'Mesting Music Crayon Shin-chan theme and custom background',
       caption: 'Crayon Shin-chan / Scene-based themes',
       scrollPreview: true,
       scrollOffset: '-13%'
     },
     {
-      src: '/generated/flutter-music/real-screens/theme-kuromi.jpg',
+      src: '/generated/flutter-music/optimized-screens/theme-kuromi.webp',
       alt: 'Mesting Music Kuromi static and animated themes',
       caption: 'Kuromi / Static and animated themes'
     },
     {
-      src: '/generated/flutter-music/real-screens/theme-kitty.jpg',
+      src: '/generated/flutter-music/optimized-screens/theme-kitty.webp',
       alt: 'Mesting Music Hello Kitty static and animated themes',
       caption: 'Hello Kitty / Sweet visual collection'
     }
   ],
   CONNECT: [
     {
-      src: '/generated/flutter-music/real-screens/friends.jpg',
+      src: '/generated/flutter-music/optimized-screens/friends.webp',
       alt: 'Mesting Music friends screen with following, followers, and mutual connections',
       caption: 'Connections / Following, followers, and mutuals'
     },
     {
-      src: '/generated/flutter-music/real-screens/chat.jpg',
+      src: '/generated/flutter-music/optimized-screens/chat.webp',
       alt: 'Mesting Music chat with image, video, and voice messages',
       caption: 'Music Social / Text, images, video, and voice'
     }
   ],
   SYSTEM: [
     {
-      src: '/generated/flutter-music/real-screens/profile-home.jpg',
+      src: '/generated/flutter-music/optimized-screens/profile-home.webp',
       alt: 'Mesting Music personal space combining playlists, listening history, connections, and themes',
       caption: 'Personal Music Space / Profile and content overview'
     },
     {
-      src: '/generated/flutter-music/real-screens/profile-edit.jpg',
+      src: '/generated/flutter-music/optimized-screens/profile-edit.webp',
       alt: 'Mesting Music profile editor for avatar, background, nickname, and personal information',
       caption: 'Account Profile / Consistent across the experience',
       scrollPreview: true,
