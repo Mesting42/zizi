@@ -38,7 +38,8 @@ const onlinePlaceholderSong = {
   cover: '/images/playlist-default.jpg',
   url: '',
   duration: '0:00',
-  source: 'public-release'
+  source: 'public-release',
+  skipLyricsLookup: true
 }
 
 // ============================================================

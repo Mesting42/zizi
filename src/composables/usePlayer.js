@@ -357,6 +357,7 @@ const pickBestLyricsRecord = (results, song) => {
 
 const resolveLyricsPath = (song) => {
   if (!song) return null
+  if (song.skipLyricsLookup) return null
   if (song.lrc) return song.lrc
   if (song.title) return `/lyrics/${encodeURIComponent(song.title)}.lrc`
   return null
@@ -701,7 +702,7 @@ const applyPreviewTimeline = (song, lyrics) => {
 }
 
 const fetchRawLyricsForSong = async (song) => {
-  if (song?.isInstrumental) return []
+  if (song?.isInstrumental || song?.skipLyricsLookup) return []
 
   const candidatePaths = song.isPreview
     ? [findLocalSongLyricsPath(song)].filter(Boolean)
