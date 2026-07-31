@@ -1,5 +1,6 @@
 // 文章数据存储管理
 import { ref, watch } from 'vue'
+import { frontierArticles } from './frontierArticles'
 
 // 从 localStorage 加载数据
 const loadArticles = () => {
@@ -557,9 +558,9 @@ console.log('B')
   }
 
   return articles.map((article) => {
-    const revision = authoritative[article.id]
+    const revision = frontierArticles[article.id] || authoritative[article.id]
     return revision
-      ? { ...article, ...revision, builtInRevision: 2 }
+      ? { ...article, ...revision, builtInRevision: revision.builtInRevision || 2 }
       : article
   })
 }
