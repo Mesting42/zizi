@@ -1,0 +1,1 @@
+import{t as a}from"./AvatarMouseFollow-DCFY6967.js";export{a as default};
