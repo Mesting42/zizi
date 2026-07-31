@@ -56,12 +56,12 @@
               v-for="(asset, assetIndex) in marqueeAssets"
               :key="`${repeat}-${asset.src}`"
               class="oddy-marquee-card"
-              :data-card-index="assetIndex"
+              :data-card-key="`${repeat}-${assetIndex}`"
             >
               <div class="oddy-marquee-card-inner">
                 <span class="oddy-marquee-poster" aria-hidden="true"></span>
                 <video
-                  v-if="!marqueeStaticPreviews || marqueeActiveVideoIndexes.has(assetIndex)"
+                  v-if="marqueeActiveVideoKeys.has(`${repeat}-${assetIndex}`)"
                   class="oddy-marquee-media"
                   :src="asset.src"
                   :aria-label="asset.alt"
@@ -109,7 +109,7 @@
                 :alt="isChinese ? 'Mesting 的数字分身预览' : 'Mesting digital avatar preview'"
                 width="1016"
                 height="940"
-                loading="eager"
+                loading="lazy"
                 decoding="async"
                 fetchpriority="low"
               >
@@ -298,7 +298,7 @@
           <div class="oddy-partner-content">
             <p class="oddy-kicker">{{ copy.conversationKicker }}</p>
             <h2>{{ copy.partnerTitle[0] }}<br><span>{{ copy.partnerTitle[1] }}</span></h2>
-            <a class="oddy-button oddy-button-primary" href="mailto:3541798955@qq.com">
+            <a class="oddy-button oddy-button-primary" href="mailto:mesting042@gmail.com">
               <span class="oddy-button-avatar">M</span>{{ copy.writeEmail }}
             </a>
           </div>
@@ -311,7 +311,7 @@
         <div class="oddy-footer-invite">
           <p>{{ copy.footerEyebrow }}</p>
           <h2>{{ copy.footerTitle[0] }}<br><span>{{ copy.footerTitle[1] }}</span></h2>
-          <a class="oddy-button oddy-button-primary" href="mailto:3541798955@qq.com">{{ copy.startConversation }} <span>↗</span></a>
+          <a class="oddy-button oddy-button-primary" href="mailto:mesting042@gmail.com">{{ copy.startConversation }} <span>↗</span></a>
         </div>
         <div class="oddy-footer-links">
           <div>
@@ -323,7 +323,7 @@
           <div>
             <span class="oddy-footer-link-title">{{ copy.connect }}</span>
             <a href="https://github.com" target="_blank" rel="noreferrer">GitHub ↗</a>
-            <a href="mailto:3541798955@qq.com">{{ copy.email }} ↗</a>
+            <a href="mailto:mesting042@gmail.com">{{ copy.email }} ↗</a>
           </div>
         </div>
       </div>
@@ -332,7 +332,7 @@
 
     <nav class="oddy-bottom-nav" :aria-label="copy.quickNavAria">
       <button type="button" class="oddy-bottom-mark" :aria-label="copy.backToTop" @click="scrollToTop">M</button>
-      <a href="mailto:3541798955@qq.com">{{ copy.writeEmail }} <span>↗</span></a>
+      <a href="mailto:mesting042@gmail.com">{{ copy.writeEmail }} <span>↗</span></a>
     </nav>
   </div>
 </template>
@@ -368,7 +368,7 @@ const marqueeMounted = ref(false)
 const marqueeStaticPreviews = ref(
   typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
 )
-const marqueeActiveVideoIndexes = ref(new Set())
+const marqueeActiveVideoKeys = ref(new Set())
 const avatarVisible = ref(false)
 const avatarReady = ref(false)
 const avatarFailed = ref(false)
@@ -590,14 +590,14 @@ const projects = computed(() => [
     to: '/flutter-music-case'
   },
   {
-    index: isChinese.value ? '02 / 数字体验' : '02 / DIGITAL EXPERIENCE',
-    title: isChinese.value ? 'Vivo 概念重构' : 'Vivo Concept Rebuild',
+    index: isChinese.value ? '02 / 小米全生态' : '02 / XIAOMI ECOSYSTEM',
+    title: isChinese.value ? '小米全生态体验' : 'Xiaomi Ecosystem Study',
     description: isChinese.value
-      ? '将品牌叙事、页面节奏与动态体验重新组织成一条连续的浏览路径。'
-      : 'Brand storytelling, rhythm, and motion reorganized into one continuous browsing experience.',
-    image: 'https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif',
-    anchor: 'project-vivo-concept-rebuild',
-    to: '/vivo-case'
+      ? '从 Xiaomi 17 Ultra 到 HyperOS、人车家与全生态设备，探索一条连续的体验路径。'
+      : 'From Xiaomi 17 Ultra to HyperOS, Xiaomi EV, and the human × car × home ecosystem.',
+    image: '/vivo/img/xiaomi-17-ultra-hero.webp',
+    anchor: 'project-xiaomi-ecosystem',
+    to: '/xiaomi-case'
   },
   {
     index: isChinese.value ? '03 / 海外落地页' : '03 / GLOBAL LANDING',
@@ -615,6 +615,7 @@ let revealObserver = null
 let heroVideoObserver = null
 let marqueeObserver = null
 let marqueeMediaObserver = null
+let avatarObserver = null
 let noteCarouselObserver = null
 let projectImageObserver = null
 let marqueeFrame = 0
@@ -622,6 +623,23 @@ let marqueeLastFrame = 0
 let marqueeOffset = 0
 let marqueeLoopWidth = 0
 let marqueeVelocity = 0
+
+const prepareRevealTargets = () => {
+  const targets = Array.from(homeRoot.value?.querySelectorAll('.oddy-reveal') ?? [])
+
+  return targets.map((element, index) => {
+    let direction = 'lift'
+
+    if (element.classList.contains('oddy-quote-copy')) direction = 'left'
+    if (element.classList.contains('oddy-notes') || element.classList.contains('oddy-partner-shell')) direction = 'right'
+    if (element.classList.contains('oddy-projects-intro')) direction = 'left'
+    if (element.classList.contains('oddy-project')) direction = index % 2 === 0 ? 'left' : 'right'
+
+    element.dataset.revealDirection = direction
+    element.style.setProperty('--oddy-reveal-delay', `${(index % 3) * 42}ms`)
+    return element
+  })
+}
 let marqueePointerId = null
 let marqueeDragStartX = 0
 let marqueeDragStartOffset = 0
@@ -641,8 +659,6 @@ let projectMotionCleanups = []
 let marqueeCardMotionCleanup = null
 let resetMarqueeCardMotion = null
 let marqueeHovering = false
-let avatarWarmupTimer = 0
-let avatarWarmupIdleHandle = 0
 let avatarModelPrefetched = false
 const trailTimers = new Set()
 
@@ -689,7 +705,7 @@ const syncMarqueePreviewMode = () => {
   nextTick(() => {
     measureMarquee()
     setupMarqueeCardMotion()
-    setupMarqueeMobileVideos()
+    setupMarqueeVideos()
     if (!usesNativeMarqueeScroll()) startMarqueeAnimation()
   })
 }
@@ -893,42 +909,42 @@ const destroyMarqueeCardMotion = () => {
   marqueeHovering = false
 }
 
-const destroyMarqueeMobileVideos = () => {
+const destroyMarqueeVideos = () => {
   marqueeMediaObserver?.disconnect()
   marqueeMediaObserver = null
-  marqueeActiveVideoIndexes.value = new Set()
+  marqueeActiveVideoKeys.value = new Set()
 }
 
-const setupMarqueeMobileVideos = () => {
-  destroyMarqueeMobileVideos()
+const setupMarqueeVideos = () => {
+  destroyMarqueeVideos()
 
-  // Desktop keeps the complete looping reel. On phones, the poster remains
-  // visible until a card is close to the scroll viewport, then only those
-  // nearby cards receive a real video element to decode and play.
-  if (!usesNativeMarqueeScroll() || !marqueeTrack.value) return
+  // A card receives its original video only near the visible reel. The
+  // generated poster keeps off-screen cards visually complete, while avoiding
+  // simultaneous network and decoder work for every 4K loop in the strip.
+  if (!marqueeTrack.value) return
 
   const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card')]
   if (!('IntersectionObserver' in window)) {
-    marqueeActiveVideoIndexes.value = new Set(
-      cards.map(card => Number(card.dataset.cardIndex))
+    marqueeActiveVideoKeys.value = new Set(
+      cards.map(card => card.dataset.cardKey).filter(Boolean)
     )
     return
   }
 
   marqueeMediaObserver = new IntersectionObserver(entries => {
-    const nextActiveIndexes = new Set(marqueeActiveVideoIndexes.value)
+    const nextActiveKeys = new Set(marqueeActiveVideoKeys.value)
 
     entries.forEach(entry => {
-      const assetIndex = Number(entry.target.dataset.cardIndex)
-      if (!Number.isInteger(assetIndex)) return
-      if (entry.isIntersecting) nextActiveIndexes.add(assetIndex)
-      else nextActiveIndexes.delete(assetIndex)
+      const cardKey = entry.target.dataset.cardKey
+      if (!cardKey) return
+      if (entry.isIntersecting) nextActiveKeys.add(cardKey)
+      else nextActiveKeys.delete(cardKey)
     })
 
-    marqueeActiveVideoIndexes.value = nextActiveIndexes
+    marqueeActiveVideoKeys.value = nextActiveKeys
   }, {
     root: marqueeSection.value,
-    rootMargin: '0px 128px',
+    rootMargin: '0px 560px',
     threshold: 0.01
   })
 
@@ -950,7 +966,9 @@ const setupMarqueeCardMotion = () => {
   const track = marqueeTrack.value
   const cards = [...track.querySelectorAll('.oddy-marquee-card')]
   const inners = cards.map(card => card.querySelector('.oddy-marquee-card-inner'))
-  const media = cards.map(card => card.querySelector('.oddy-marquee-media'))
+  const getMedia = () => cards
+    .map(card => card.querySelector('.oddy-marquee-media'))
+    .filter(Boolean)
   const captions = cards.map(card => card.querySelector('.oddy-marquee-caption'))
   const glints = cards.map(card => card.querySelector('.oddy-marquee-glint'))
   const focuses = cards.map(card => card.querySelector('.oddy-marquee-focus'))
@@ -992,7 +1010,7 @@ const setupMarqueeCardMotion = () => {
       ease: 'power3.out',
       overwrite: true
     })
-    gsap.to(media, {
+    gsap.to(getMedia(), {
       x: 0,
       y: 0,
       scale: 1,
@@ -1023,7 +1041,7 @@ const setupMarqueeCardMotion = () => {
   const connectQuickMotion = card => {
     const cardIndex = cards.indexOf(card)
     const inner = inners[cardIndex]
-    const video = media[cardIndex]
+    const video = card.querySelector('.oddy-marquee-media')
     const focus = focuses[cardIndex]
 
     activeMotion.rotationXTo = gsap.quickTo(inner, 'rotationX', {
@@ -1034,14 +1052,16 @@ const setupMarqueeCardMotion = () => {
       duration: 0.42,
       ease: 'power3.out'
     })
-    activeMotion.imageXTo = gsap.quickTo(video, 'x', {
-      duration: 0.5,
-      ease: 'power3.out'
-    })
-    activeMotion.imageYTo = gsap.quickTo(video, 'y', {
-      duration: 0.5,
-      ease: 'power3.out'
-    })
+    if (video) {
+      activeMotion.imageXTo = gsap.quickTo(video, 'x', {
+        duration: 0.5,
+        ease: 'power3.out'
+      })
+      activeMotion.imageYTo = gsap.quickTo(video, 'y', {
+        duration: 0.5,
+        ease: 'power3.out'
+      })
+    }
     activeMotion.focusXTo = gsap.quickTo(focus, 'x', {
       duration: 0.3,
       ease: 'power3.out'
@@ -1104,12 +1124,15 @@ const setupMarqueeCardMotion = () => {
       ease: 'power3.out',
       overwrite: 'auto'
     })
-    gsap.to(media[cardIndex], {
-      scale: 1.055,
-      duration: 0.7,
-      ease: 'power3.out',
-      overwrite: 'auto'
-    })
+    const video = card.querySelector('.oddy-marquee-media')
+    if (video) {
+      gsap.to(video, {
+        scale: 1.055,
+        duration: 0.7,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      })
+    }
     gsap.fromTo(captions[cardIndex], {
       autoAlpha: 0,
       y: 18
@@ -1170,7 +1193,7 @@ const setupMarqueeCardMotion = () => {
     track.removeEventListener('pointermove', handlePointerMove)
     track.removeEventListener('pointerleave', handlePointerLeave)
     resetMotionTargets(true)
-    gsap.killTweensOf([...inners, ...media, ...captions, ...glints, ...focuses])
+    gsap.killTweensOf([...inners, ...getMedia(), ...captions, ...glints, ...focuses])
   }
 }
 
@@ -1270,16 +1293,23 @@ const setupProjectMotion = () => {
 }
 
 onMounted(() => {
+  const revealTargets = prepareRevealTargets()
+
   if ('IntersectionObserver' in window) {
     revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         // Home sections reset after leaving so the reveal is available every
         // time readers return to them, without a page refresh.
-        const shouldReveal = entry.isIntersecting && entry.intersectionRatio >= 0.01
+        const alreadyVisible = entry.target.classList.contains('is-visible')
+        const shouldReveal = entry.isIntersecting && (
+          alreadyVisible
+            ? entry.intersectionRatio > 0.012
+            : entry.intersectionRatio >= 0.08
+        )
         entry.target.classList.toggle('is-visible', shouldReveal)
       })
-    }, { threshold: 0.01, rootMargin: '0px 0px -2% 0px' })
-    homeRoot.value?.querySelectorAll('.oddy-reveal').forEach(element => revealObserver.observe(element))
+    }, { threshold: [0, 0.012, 0.08], rootMargin: '0px 0px -6% 0px' })
+    revealTargets.forEach(element => revealObserver.observe(element))
 
     marqueeIsVisible = false
     marqueeObserver = new IntersectionObserver(([entry]) => {
@@ -1289,13 +1319,13 @@ onMounted(() => {
         nextTick(() => {
           measureMarquee()
           setupMarqueeCardMotion()
-          setupMarqueeMobileVideos()
+          setupMarqueeVideos()
           startMarqueeAnimation()
         })
       } else {
         stopMarqueeAnimation()
         destroyMarqueeCardMotion()
-        destroyMarqueeMobileVideos()
+        destroyMarqueeVideos()
         marqueeMounted.value = false
       }
     }, { rootMargin: '420px 0px' })
@@ -1310,6 +1340,19 @@ onMounted(() => {
       }
     }, { rootMargin: '80px 0px' })
     if (heroVideo.value) heroVideoObserver.observe(heroVideo.value)
+
+    avatarObserver = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting || avatarVisible.value || avatarFailed.value) return
+
+      // Keep the fallback visible until the real canvas is ready, but avoid
+      // parsing Three.js and fetching the 3D asset when this card is still
+      // outside the reading path.
+      preloadAvatarComponent()
+      prefetchAvatarModel()
+      avatarVisible.value = true
+      avatarObserver?.disconnect()
+    }, { rootMargin: '180px 0px', threshold: 0.01 })
+    if (avatarMount.value) avatarObserver.observe(avatarMount.value)
 
     noteCarouselObserver = new IntersectionObserver(([entry]) => {
       if (entry?.isIntersecting) resumeCarousel()
@@ -1332,7 +1375,7 @@ onMounted(() => {
       ?.querySelectorAll('[data-project-image]')
       .forEach(element => projectImageObserver.observe(element))
   } else {
-    homeRoot.value?.querySelectorAll('.oddy-reveal').forEach(element => element.classList.add('is-visible'))
+    revealTargets.forEach(element => element.classList.add('is-visible'))
     avatarVisible.value = true
     marqueeMounted.value = true
     marqueeIsVisible = true
@@ -1343,31 +1386,13 @@ onMounted(() => {
     nextTick(() => {
       measureMarquee()
       setupMarqueeCardMotion()
-      setupMarqueeMobileVideos()
+      setupMarqueeVideos()
       startMarqueeAnimation()
     })
   }
 
   window.addEventListener('resize', measureMarquee, { passive: true })
   window.addEventListener('resize', syncMarqueePreviewMode, { passive: true })
-
-  // The card has an instant still preview. Warm the original model early while
-  // the first screen is settling, so its decode and shader compilation do not
-  // wait until the reader reaches the avatar on a return scroll.
-  avatarWarmupTimer = window.setTimeout(() => {
-    const warmAvatar = () => {
-      avatarWarmupIdleHandle = 0
-      preloadAvatarComponent()
-      prefetchAvatarModel()
-      avatarVisible.value = true
-    }
-
-    if ('requestIdleCallback' in window) {
-      avatarWarmupIdleHandle = window.requestIdleCallback(warmAvatar, { timeout: 1200 })
-    } else {
-      warmAvatar()
-    }
-  }, 280)
 
   marqueeReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   measureMarquee()
@@ -1381,15 +1406,12 @@ onUnmounted(() => {
   revealObserver?.disconnect()
   heroVideoObserver?.disconnect()
   marqueeObserver?.disconnect()
-  destroyMarqueeMobileVideos()
+  avatarObserver?.disconnect()
+  destroyMarqueeVideos()
   noteCarouselObserver?.disconnect()
   projectImageObserver?.disconnect()
   window.removeEventListener('resize', measureMarquee)
   window.removeEventListener('resize', syncMarqueePreviewMode)
-  if (avatarWarmupTimer) window.clearTimeout(avatarWarmupTimer)
-  if (avatarWarmupIdleHandle && 'cancelIdleCallback' in window) {
-    window.cancelIdleCallback(avatarWarmupIdleHandle)
-  }
   document.removeEventListener('visibilitychange', handlePageVisibility)
   document.removeEventListener('mesting:scroll-state', handleScrollState)
   heroVideo.value?.pause()

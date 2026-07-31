@@ -6,16 +6,8 @@
   >
     <div ref="sideSignalFields" class="fm-side-signal-fields" aria-hidden="true">
       <div class="fm-signal-field fm-signal-field--left">
-        <span class="fm-signal-aurora"></span>
         <span class="fm-signal-halo"></span>
         <span class="fm-signal-grid"></span>
-        <svg class="fm-signal-vector-map" viewBox="0 0 520 1440" preserveAspectRatio="none">
-          <path class="fm-vector-trace fm-vector-trace--major" d="M-56 208 C 94 164 126 380 294 342 S 474 492 570 430" />
-          <path class="fm-vector-trace fm-vector-trace--minor" d="M-40 716 C 116 626 182 842 316 782 S 470 974 562 908" />
-          <path class="fm-vector-trace fm-vector-trace--minor" d="M-50 1122 C 140 1050 184 1220 332 1186 S 464 1332 560 1268" />
-          <path class="fm-vector-pulse" d="M-64 518 L 572 356" />
-          <path class="fm-vector-pulse fm-vector-pulse--secondary" d="M-64 946 L 572 1088" />
-        </svg>
         <span class="fm-signal-orbit fm-signal-orbit--outer"></span>
         <span class="fm-signal-orbit fm-signal-orbit--inner"></span>
         <span class="fm-signal-path fm-signal-path--a"></span>
@@ -23,22 +15,12 @@
         <span class="fm-signal-rail fm-signal-rail--a"></span>
         <span class="fm-signal-rail fm-signal-rail--b"></span>
         <span class="fm-signal-rail fm-signal-rail--c"></span>
-        <span class="fm-signal-sweep"></span>
-        <b class="fm-signal-index">01</b>
         <small class="fm-signal-label">NATIVE / SIGNAL 01</small>
         <i v-for="node in 5" :key="`left-${node}`" class="fm-signal-node"></i>
       </div>
       <div class="fm-signal-field fm-signal-field--right">
-        <span class="fm-signal-aurora"></span>
         <span class="fm-signal-halo"></span>
         <span class="fm-signal-grid"></span>
-        <svg class="fm-signal-vector-map" viewBox="0 0 520 1440" preserveAspectRatio="none">
-          <path class="fm-vector-trace fm-vector-trace--major" d="M-56 208 C 94 164 126 380 294 342 S 474 492 570 430" />
-          <path class="fm-vector-trace fm-vector-trace--minor" d="M-40 716 C 116 626 182 842 316 782 S 470 974 562 908" />
-          <path class="fm-vector-trace fm-vector-trace--minor" d="M-50 1122 C 140 1050 184 1220 332 1186 S 464 1332 560 1268" />
-          <path class="fm-vector-pulse" d="M-64 518 L 572 356" />
-          <path class="fm-vector-pulse fm-vector-pulse--secondary" d="M-64 946 L 572 1088" />
-        </svg>
         <span class="fm-signal-orbit fm-signal-orbit--outer"></span>
         <span class="fm-signal-orbit fm-signal-orbit--inner"></span>
         <span class="fm-signal-path fm-signal-path--a"></span>
@@ -46,8 +28,6 @@
         <span class="fm-signal-rail fm-signal-rail--a"></span>
         <span class="fm-signal-rail fm-signal-rail--b"></span>
         <span class="fm-signal-rail fm-signal-rail--c"></span>
-        <span class="fm-signal-sweep"></span>
-        <b class="fm-signal-index">02</b>
         <small class="fm-signal-label">MUSIC / SYSTEM 02</small>
         <i v-for="node in 5" :key="`right-${node}`" class="fm-signal-node"></i>
       </div>
@@ -242,7 +222,7 @@
         <router-link to="/">{{ caseCopy.home }}</router-link>
         <router-link to="/articles">{{ caseCopy.thinking }}</router-link>
         <router-link to="/music">{{ caseCopy.music }}</router-link>
-        <a href="mailto:3541798955@qq.com">{{ caseCopy.contact }}</a>
+        <a href="mailto:mesting042@gmail.com">{{ caseCopy.contact }}</a>
       </div>
       <span>{{ caseCopy.spaceName }} / 2026</span>
     </footer>
@@ -575,109 +555,67 @@ const setupSideSignalMotion = () => {
     const orbits = gsap.utils.toArray('.fm-signal-orbit--outer', scope)
     const innerOrbits = gsap.utils.toArray('.fm-signal-orbit--inner', scope)
     const paths = gsap.utils.toArray('.fm-signal-path', scope)
-    const vectorMaps = gsap.utils.toArray('.fm-signal-vector-map', scope)
-    const vectorTraces = gsap.utils.toArray('.fm-vector-trace', scope)
-    const vectorPulses = gsap.utils.toArray('.fm-vector-pulse', scope)
     const halos = gsap.utils.toArray('.fm-signal-halo', scope)
     const rails = gsap.utils.toArray('.fm-signal-rail', scope)
-    const auroras = gsap.utils.toArray('.fm-signal-aurora', scope)
-    const sweeps = gsap.utils.toArray('.fm-signal-sweep', scope)
-    const indexes = gsap.utils.toArray('.fm-signal-index', scope)
     const labels = gsap.utils.toArray('.fm-signal-label', scope)
     const fields = gsap.utils.toArray('.fm-signal-field', scope)
 
-    gsap.set(sweeps, { yPercent: -135 })
-
-    const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
+    const intro = gsap.timeline({ defaults: { ease: 'power2.out' } })
     intro
-      .fromTo(fields, { autoAlpha: 0, xPercent: -10 }, { autoAlpha: 1, xPercent: 0, duration: .78, stagger: .08 }, 0)
-      .fromTo(auroras, { autoAlpha: 0, scale: .72 }, { autoAlpha: 1, scale: 1, duration: 1.25, stagger: .1 }, .04)
-      .fromTo(halos, { autoAlpha: 0, scale: .44 }, { autoAlpha: 1, scale: 1, duration: 1.12, stagger: .12 }, .1)
-      .fromTo(vectorMaps, { autoAlpha: 0, xPercent: -16 }, { autoAlpha: 1, xPercent: 0, duration: 1.02, stagger: .1 }, .18)
-      .fromTo([...orbits, ...innerOrbits], { autoAlpha: 0, scale: .52 }, { autoAlpha: 1, scale: 1, duration: 1.12, stagger: .08 }, .24)
-      .fromTo(paths, { autoAlpha: 0, xPercent: -36 }, { autoAlpha: 1, xPercent: 0, duration: .86, stagger: .1 }, .34)
-      .fromTo(rails, { autoAlpha: 0, yPercent: 56 }, { autoAlpha: 1, yPercent: 0, duration: .8, stagger: .08 }, .4)
-      .fromTo([...leftNodes, ...rightNodes], { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: .52, stagger: .06 }, .58)
-      .fromTo([...labels, ...indexes], { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .5, stagger: .07 }, .68)
+      .fromTo(fields, { autoAlpha: 0 }, { autoAlpha: 1, duration: .5, stagger: .08 }, 0)
+      .fromTo(halos, { autoAlpha: 0, scale: .8 }, { autoAlpha: 1, scale: 1, duration: .9, stagger: .1 }, .06)
+      .fromTo([...orbits, ...innerOrbits], { autoAlpha: 0, scale: .84 }, { autoAlpha: 1, scale: 1, duration: .82, stagger: .06 }, .12)
+      .fromTo(paths, { autoAlpha: 0, xPercent: -12 }, { autoAlpha: 1, xPercent: 0, duration: .7, stagger: .08 }, .18)
+      .fromTo(rails, { autoAlpha: 0, yPercent: 18 }, { autoAlpha: 1, yPercent: 0, duration: .7, stagger: .06 }, .22)
+      .fromTo([...leftNodes, ...rightNodes], { autoAlpha: 0, scale: .45 }, { autoAlpha: 1, scale: 1, duration: .45, stagger: .05 }, .32)
+      .fromTo(labels, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: .42, stagger: .06 }, .42)
 
     const drift = gsap.timeline({ repeat: -1, yoyo: true, defaults: { ease: 'sine.inOut' } })
     drift
-      .to(leftNodes, { x: 13, y: -22, duration: 7.5, stagger: .24 }, 0)
-      .to(rightNodes, { x: -13, y: 20, duration: 8.5, stagger: .21 }, .55)
-      .to(paths, { y: -14, duration: 9, stagger: .3 }, 0)
+      .to(leftNodes, { x: 7, y: -10, duration: 9.5, stagger: .3 }, 0)
+      .to(rightNodes, { x: -7, y: 9, duration: 10.5, stagger: .28 }, .5)
+      .to(paths, { y: -7, duration: 12, stagger: .4 }, 0)
 
     const rotation = gsap.to(orbits, {
       rotation: 360,
-      duration: 34,
+      duration: 70,
       repeat: -1,
       ease: 'none',
       transformOrigin: '50% 50%'
     })
     const counterRotation = gsap.to(innerOrbits, {
       rotation: -360,
-      duration: 24,
+      duration: 54,
       repeat: -1,
       ease: 'none',
       transformOrigin: '50% 50%'
     })
     const pulse = gsap.to([...leftNodes, ...rightNodes], {
-      opacity: .95,
-      scale: 1.55,
-      duration: 2.8,
-      stagger: .18,
+      opacity: .82,
+      scale: 1.22,
+      duration: 4.4,
+      stagger: .24,
       repeat: -1,
       yoyo: true,
       ease: 'sine.inOut'
     })
     const haloPulse = gsap.to(halos, {
-      scale: 1.14,
-      opacity: .8,
-      duration: 5.2,
-      stagger: .45,
+      scale: 1.05,
+      opacity: .56,
+      duration: 8.2,
+      stagger: .6,
       repeat: -1,
       yoyo: true,
       ease: 'sine.inOut'
     })
     const railDrift = gsap.to(rails, {
-      yPercent: -22,
-      duration: 6.8,
-      stagger: .16,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut'
-    })
-    const traceFlow = gsap.to(vectorTraces, {
-      strokeDashoffset: -520,
-      duration: 7.8,
-      stagger: .34,
-      repeat: -1,
-      ease: 'none'
-    })
-    const pulseFlow = gsap.to(vectorPulses, {
-      strokeDashoffset: -680,
-      duration: 4.8,
-      stagger: .42,
-      repeat: -1,
-      ease: 'none'
-    })
-    const scanFlow = gsap.to(sweeps, {
-      yPercent: 510,
-      duration: 5.6,
-      stagger: .72,
-      repeat: -1,
-      repeatDelay: 1.6,
-      ease: 'power1.inOut'
-    })
-    const auroraDrift = gsap.to(auroras, {
-      xPercent: 16,
       yPercent: -10,
-      duration: 8.8,
-      stagger: .55,
+      duration: 10.8,
+      stagger: .2,
       repeat: -1,
       yoyo: true,
       ease: 'sine.inOut'
     })
-
     return () => {
       intro.kill()
       drift.kill()
@@ -686,10 +624,6 @@ const setupSideSignalMotion = () => {
       pulse.kill()
       haloPulse.kill()
       railDrift.kill()
-      traceFlow.kill()
-      pulseFlow.kill()
-      scanFlow.kill()
-      auroraDrift.kill()
     }
   })
 }
