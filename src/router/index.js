@@ -11,7 +11,8 @@ const loadMusicPlayer = () => import('../views/MusicPlayer.vue')
 const loadArticleDetail = () => import('../views/ArticleDetail.vue')
 const loadCategory = () => import('../views/Category.vue')
 const loadAbout = () => import('../views/About.vue')
-const loadVivoCase = () => import('../views/VivoCase.vue')
+const loadXiaomiCase = () => import('../views/VivoCase.vue')
+const loadXiaomiPhoneDetail = () => import('../views/XiaomiPhoneDetail.vue')
 const loadForeignCase = () => import('../views/ForeignCase.vue')
 const loadFlutterMusicCase = () => import('../views/FlutterMusicCase.vue')
 const loadAvatarLab = () => import('../views/AvatarLab.vue')
@@ -25,12 +26,26 @@ const musicRouteLoaders = [
 ]
 
 let musicRoutesPreloadPromise = null
+let musicLandingPreloadPromise = null
+
+// Keep the initial visit focused on the page the reader actually opened. The
+// music landing route can be warmed on an explicit navigation intent, while
+// the remaining music sub-routes wait until the music space is open.
+export const preloadMusicLanding = () => {
+  if (!musicLandingPreloadPromise) {
+    musicLandingPreloadPromise = loadMusic()
+  }
+  return musicLandingPreloadPromise
+}
 
 // The native app only serves the music module. Warm its route chunks after the
 // first screen is interactive so later page switches never wait on parsing.
 export const preloadMusicRoutes = () => {
   if (!musicRoutesPreloadPromise) {
-    musicRoutesPreloadPromise = Promise.allSettled(musicRouteLoaders.map(loader => loader()))
+    musicRoutesPreloadPromise = Promise.allSettled([
+      preloadMusicLanding(),
+      ...musicRouteLoaders.slice(1).map(loader => loader())
+    ])
   }
   return musicRoutesPreloadPromise
 }
@@ -87,9 +102,19 @@ const routes = [
     redirect: { path: '/', hash: '#about-space' }
   },
   {
+    path: '/xiaomi-case',
+    name: 'XiaomiCase',
+    component: loadXiaomiCase
+  },
+  {
+    path: '/xiaomi-case/phone/:model',
+    name: 'XiaomiPhoneDetail',
+    component: loadXiaomiPhoneDetail
+  },
+  {
     path: '/vivo-case',
-    name: 'VivoCase',
-    component: loadVivoCase
+    name: 'VivoCaseLegacy',
+    redirect: '/xiaomi-case'
   },
   {
     path: '/foreign-case',

@@ -1,608 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>courses</title>
-  <!-- 引入网页图标 -->
-  <link rel="icon" href="./favicon-32x32.png" type="image/x-icon">
-  <!-- 引入css文件 -->
-  <link rel="stylesheet" href="./CSS/base.css">
+  <meta name="theme-color" content="#f5f6f3">
+  <meta name="description" content="A global learning landing page concept rebuilt as a personal portfolio exercise.">
+  <title>Northstar — Learn in Public</title>
+  <link rel="icon" href="./favicon-32x32.png" type="image/png">
   <link rel="stylesheet" href="./CSS/index.css">
 </head>
-
 <body>
-  <div class="topbar">
-    Get 50% off during WWDC 2025!
-  </div>
-  <!-- 准备背景盒子 -->
-  <div class="bg">
-    <div class="ball1"></div>
-    <div class="ball2"></div>
-  </div>
-  <!-- 头部盒子制作 -->
-  <div class="header w">
-    <a href="#" class="logo">
-      <img src="./img/logo.svg" alt="">
-    </a>
-    <div class="nav">
-      <a href="#">
-        <button>
-          <img src="./img/courses.svg" alt="">
-          <p>Courses</p>
-        </button>
-      </a>
-      <a href="#">
-        <button>
-          <img src="./img/tutorials.svg" alt="">
-          <p>Tutorials</p>
-        </button>
-      </a>
-      <a href="#">
-        <button>
-          <img src="./img/livestreams.svg" alt="">
-          <p>Livestreams</p>
-        </button>
-      </a>
-      <a href="#">
-        <button>
-          <img src="./img/pricing.svg" alt="">
-          <p>Pricing</p>
-        </button>
-      </a>
-      <a href="#">
-        <button>
-          <img src="./img/more.svg" alt="">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="notice"><span>NEW /</span> A personal redesign exercise for a global learning product. <a href="#about">See the approach</a></div>
 
-        </button>
-      </a>
-      <a href="#">
-        <button>
-          <img src="./img/search.svg" alt="">
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Northstar home"><span class="brand-mark">N</span>northstar</a>
+    <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false"><i></i><i></i><span>Menu</span></button>
+    <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+      <a href="#programs">Programs</a>
+      <a href="#methods">Methods</a>
+      <a href="#tools">Tools</a>
+      <a href="#about">About</a>
+    </nav>
+    <a class="header-link" href="#start">Start learning <span>↗</span></a>
+  </header>
 
-        </button>
-      </a>
-      <a href="#">
-        <button>
-          <img src="./img/account.svg" alt="">
+  <main id="main">
+    <section id="top" class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">BUILD A PRACTICE, NOT A PLAYLIST</p>
+        <h1>Practice makes <em>a path.</em></h1>
+        <p>Northstar is a concept for a calmer, more legible way to enter creative technology: clear routes, active practice, and a place to keep moving.</p>
+        <div class="hero-actions"><a class="button button-dark" href="#programs">Explore programs <span>↓</span></a><a class="button button-quiet" href="#about">How it works <span>↗</span></a></div>
+      </div>
+      <div class="hero-system" aria-label="A visual overview of learning routes">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div>
+        <p>LEARNING SIGNAL / 01</p><strong>Find a path<br>that keeps pace<br>with your curiosity.</strong>
+        <div class="system-card"><img src="./img/Lingo.png" alt="Course application mobile interface" loading="eager"><span>ACTIVE PRACTICE<br><b>06:42</b></span></div>
+        <div class="system-tag tag-one">DESIGN SYSTEMS</div><div class="system-tag tag-two">CODE &amp; MOTION</div>
+      </div>
+    </section>
 
-        </button>
-      </a>
-    </div>
-    <div class="mobile-nav">
-      <img src="./img/hamburger-menu.svg" alt="">
-    </div>
-  </div>
+    <section class="signal-bar" aria-label="Platform principles"><div><b>01</b><span>Guided entry points</span></div><div><b>02</b><span>Work in small loops</span></div><div><b>03</b><span>Keep proof of progress</span></div></section>
 
-  <!-- 课程模块 -->
-  <div class="course w">
-    <div class="course-l">
-      <p class="time">300 HOURS OF COURSES</p>
-      <h2>Learn the best tools and platforms</h2>
-      <p>We focus on industry leading platforms so that you can be prepared for your next job. Then we teach all we can
-        about them.</p>
-    </div>
-    <div class="course-r">
-      <div class="icon">
-        <ul>
-          <li><a href="#"> <img src="./img/swiftui-logo.svg" alt=""></a></li>
-          <li><a href="#"> <img src="./img/react-logo.svg" alt=""></a></li>
-          <li><a href="#"> <img src="./img/figma-logo.svg" alt=""></a></li>
-          <li><a href="#"> <img src="./img/sketch-logo.svg" alt=""></a></li>
-          <li><a href="#"> <img src="./img/framer-logo.svg" alt=""></a></li>
-          <li><a href="#"> <img src="./img/webflow-logo.svg" alt=""></a></li>
-          <li><a href="#"> <img src="./img/protopie-logo.svg" alt=""></a></li>
-        </ul>
+    <section id="programs" class="programs reveal">
+      <div class="section-heading"><p class="eyebrow">01 / SELECTED PROGRAMS</p><h2>Build confidence one focused system at a time.</h2><p>Rather than a wall of content, each route has a clear context, a practical output, and a visible next step.</p></div>
+      <div class="program-grid">
+        <article class="program-card program-card-featured"><figure><img src="./img/pic.png" alt="Design and code course interface" loading="lazy"></figure><div><span>01 / PRODUCT DESIGN</span><h3>Design systems for interfaces that keep changing.</h3><p>18 lessons · 5 practice briefs</p><a href="#start">View route <b>↗</b></a></div></article>
+        <article class="program-card"><figure><img src="./img/pic2.png" alt="Mobile app course interface" loading="lazy"></figure><div><span>02 / APP PROTOTYPING</span><h3>Prototype a complete mobile flow.</h3><p>12 lessons · 3 feedback loops</p><a href="#start">View route <b>↗</b></a></div></article>
+        <article class="program-card"><figure><img src="./img/pic3.png" alt="Interface development course interface" loading="lazy"></figure><div><span>03 / CREATIVE CODE</span><h3>Turn interaction into a visual language.</h3><p>16 lessons · 4 small builds</p><a href="#start">View route <b>↗</b></a></div></article>
       </div>
-      <div class="search">
-        <img src="./img/search.svg" alt="">
-        <input type="search" placeholder="Search">
-      </div>
-    </div>
-  </div>
-  <!-- 课程卡片模块 -->
-  <div class="course-card">
-    <div class="item">
-      <figure>
-        <img src="./img/pic.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Design and Code User Interfaces with Galileo and Claude AI</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic2.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Build SwiftUI apps for iOS 18 with Cursor and Xcode</h3>
-      <p>23 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic3.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>UIKit for iOS 15</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item item4">
-      <figure>
-        <img src="./img/pic4.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>SwiftUI Concurrency</h3>
-      <p>20 videos - 3 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Design and Code User Interfaces with Galileo and Claude AI</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic2.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Build SwiftUI apps for iOS 18 with Cursor and Xcode</h3>
-      <p>23 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic3.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>UIKit for iOS 15</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item item4">
-      <figure>
-        <img src="./img/pic4.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>SwiftUI Concurrency</h3>
-      <p>20 videos - 3 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Design and Code User Interfaces with Galileo and Claude AI</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic2.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Build SwiftUI apps for iOS 18 with Cursor and Xcode</h3>
-      <p>23 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic3.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>UIKit for iOS 15</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item item4">
-      <figure>
-        <img src="./img/pic4.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>SwiftUI Concurrency</h3>
-      <p>20 videos - 3 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Design and Code User Interfaces with Galileo and Claude AI</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic2.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Build SwiftUI apps for iOS 18 with Cursor and Xcode</h3>
-      <p>23 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic3.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>UIKit for iOS 15</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item item4">
-      <figure>
-        <img src="./img/pic4.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>SwiftUI Concurrency</h3>
-      <p>20 videos - 3 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Design and Code User Interfaces with Galileo and Claude AI</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic2.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>Build SwiftUI apps for iOS 18 with Cursor and Xcode</h3>
-      <p>23 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item">
-      <figure>
-        <img src="./img/pic3.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>UIKit for iOS 15</h3>
-      <p>17 videos - 5 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-    <div class="item item4">
-      <figure>
-        <img src="./img/pic4.png" alt="">
-        <div class="icon1">
-          <img src="./img/swiftui-logo.svg" alt="">
-        </div>
-        <div class="icon2">
-          <img src="./img/ldh.webp" alt="">
-        </div>
-      </figure>
-      <h3>SwiftUI Concurrency</h3>
-      <p>20 videos - 3 hours</p>
-      <div class="star">
-        <img src="./img/star.svg" alt="">
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- 故事卡片模块 -->
-  <div class="story-card w">
-    <div class="story-l">
-      <div class="story-l-left">
-        <div class="top">
-          <img src="./img/ldh.webp" alt="">
-          <div>
-            <p class="name">Andyliu</p>
-            <p class="info">iOS Developer</p>
-          </div>
-        </div>
-        <div class="middle">
-          <img src="./img/Lingo.png" alt="">
-        </div>
-        <div class="desc">
-          Hey MengTo, I launched my iOS/watchOS app RunnerGoal almost completely built with SwiftUI. Thank you for the
-          design lessons and many controls.
-        </div>
-        <button>View on the app store</button>
-      </div>
-      <div class="story-l-right">
-        <div class="top">
-          <img src="./img/ldh.webp" alt="">
-          <div>
-            <p class="name">Andyliu</p>
-            <p class="info">iOS Developer</p>
-          </div>
-        </div>
-        <div class="middle">
-          <img src="./img/Lingo.png" alt="">
-        </div>
-        <div class="desc">
-          Hey MengTo, I launched my iOS/watchOS app RunnerGoal almost completely built with SwiftUI. Thank you for the
-          design lessons and many controls.
-        </div>
-        <button>View on the app store</button>
-      </div>
-    </div>
-    <div class="story-r">
-      <div class="story-r-top">
-        <div class="top toggle">
-          <img src="./img/ldh.webp" alt="">
-          <div>
-            <p class="name">Andyliu</p>
-            <p class="info">iOS Developer</p>
-          </div>
-        </div>
-        <div class="pic">
-          <img src="./img/460x0w-3.png" alt="">
-        </div>
-        <div class="info">
-          <div class="top">
-            <img src="./img/ldh.webp" alt="">
-            <div>
-              <p class="name">Andyliu</p>
-              <p class="info">iOS Developer</p>
-            </div>
-          </div>
-          <div class="desc">
-            Hey MengTo, I launched my iOS/watchOS app RunnerGoal almost completely built with SwiftUI. Thank you for
-            the
-            design lessons and many controls.
-          </div>
-          <button>View on the app store</button>
-        </div>
-      </div>
-      <div class="story-r-bottom">
-        <div class="top toggle">
-          <img src="./img/ldh.webp" alt="">
-          <div>
-            <p class="name">Andyliu</p>
-            <p class="info">iOS Developer</p>
-          </div>
-        </div>
-        <div class="pic">
-          <img src="./img/460x0w-3.png" alt="">
-        </div>
-        <div class="info">
-          <div class="top">
-            <img src="./img/ldh.webp" alt="">
-            <div>
-              <p class="name">Andyliu</p>
-              <p class="info">iOS Developer</p>
-            </div>
-          </div>
-          <div class="desc">
-            Hey MengTo, I launched my iOS/watchOS app RunnerGoal almost completely built with SwiftUI. Thank you for
-            the
-            design lessons and many controls.
-          </div>
-          <button>View on the app store</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <section id="methods" class="methods reveal">
+      <div class="methods-art"><img src="./img/pic4.png" alt="Course chapter artwork" loading="lazy"><span>THE PRACTICE LOOP / OBSERVE · MAKE · SHARE · REPEAT</span></div>
+      <div class="methods-copy"><p class="eyebrow">02 / A SMALLER LOOP</p><h2>Less collecting. More returning.</h2><p>Every route is designed as a loop: a short context, one useful constraint, a visible artifact, then a chance to revisit the decision with new eyes.</p><ol><li><span>01</span><div><b>Notice</b><p>Start with a clear problem worth looking at.</p></div></li><li><span>02</span><div><b>Make</b><p>Build a small, complete response before scaling up.</p></div></li><li><span>03</span><div><b>Reflect</b><p>Keep the outcome and the reasoning together.</p></div></li></ol></div>
+    </section>
 
-  <!-- 底部模块 -->
-  <div class="footer">
-    <div class="footer-con">
-      <div class="footer-con-left">
-        <div class="item">
-          <a href="#">
-            <button>
-              <img src="./img/courses.svg" alt="">
-              <p>Courses</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/tutorials.svg" alt="">
-              <p>Tutorials</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/livestreams.svg" alt="">
-              <p>Livestreams</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/pricing.svg" alt="">
-              <p>Pricing</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/pricing.svg" alt="">
-              <p>Pricing</p>
-            </button>
-          </a>
-        </div>
-        <div class="item">
-          <a href="#">
-            <button>
-              <img src="./img/courses.svg" alt="">
-              <p>Courses</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/tutorials.svg" alt="">
-              <p>Tutorials</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/livestreams.svg" alt="">
-              <p>Livestreams</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/pricing.svg" alt="">
-              <p>Pricing</p>
-            </button>
-          </a>
-          <a href="#">
-            <button>
-              <img src="./img/pricing.svg" alt="">
-              <p>Pricing</p>
-            </button>
-          </a>
-        </div>
-      </div>
-      <div class="footer-con-right">
+    <section id="tools" class="toolbox reveal"><div class="toolbox-heading"><p class="eyebrow">03 / TOOLBOX</p><h2>Choose a medium. Keep the question.</h2></div><div class="tool-list"><a href="#start"><img src="./img/figma-logo.svg" alt="Figma"><span>Interface systems</span><b>↗</b></a><a href="#start"><img src="./img/react-logo.svg" alt="React"><span>Responsive products</span><b>↗</b></a><a href="#start"><img src="./img/framer-logo.svg" alt="Framer"><span>Prototype motion</span><b>↗</b></a><a href="#start"><img src="./img/swiftui-logo.svg" alt="SwiftUI"><span>Native experiments</span><b>↗</b></a></div></section>
 
-        <p> Site made with React, Gatsby,
-          Netlify and Contentful. Learn how.</p>
-        <p> Design+Code © 2025</p>
+    <section id="about" class="about reveal"><p class="eyebrow">04 / WHY THIS REBUILD</p><div><h2>One product voice, <em>many ways in.</em></h2><p>The former landing page treated every course as the same card. This concept rebuild gives first-time visitors orientation, makes routes easier to compare, and introduces a visual rhythm that can hold long English copy across device sizes.</p></div></section>
 
-        <p> Terms of Service - Privacy Policy
-        </p>
-        <p>Need help? Contact Us </p>
-      </div>
+    <section id="start" class="start reveal"><div><p class="eyebrow">START SOMEWHERE</p><h2>Make room for the next useful thing.</h2></div><form><label for="email">A note when the next route opens</label><div><input id="email" type="email" placeholder="you@example.com" autocomplete="email" required><button type="submit">Join the list <span>↗</span></button></div><p class="form-message" aria-live="polite"></p></form></section>
+  </main>
 
-    </div>
-  </div>
+  <footer class="site-footer"><a class="brand" href="#top"><span class="brand-mark">N</span>northstar</a><p>Global learning landing-page concept.<br>Independent portfolio exercise by Mesting.</p><span>2026 / BUILT TO KEEP EVOLVING</span></footer>
+
+  <script>
+    const header = document.querySelector('.site-header')
+    const toggle = document.querySelector('.menu-toggle')
+    toggle.addEventListener('click', () => { const open = header.classList.toggle('is-menu-open'); toggle.setAttribute('aria-expanded', String(open)) })
+    document.querySelectorAll('.site-nav a').forEach((link) => link.addEventListener('click', () => { header.classList.remove('is-menu-open'); toggle.setAttribute('aria-expanded', 'false') }))
+    const revealTargets = document.querySelectorAll('.reveal')
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      revealTargets.forEach((item) => item.classList.add('is-visible'))
+    } else {
+      const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting)
+      }), { threshold: .16, rootMargin: '0px 0px -8% 0px' })
+      revealTargets.forEach((item) => observer.observe(item))
+    }
+    const form = document.querySelector('.start form')
+    form.addEventListener('submit', (event) => { event.preventDefault(); form.querySelector('.form-message').textContent = 'Thanks — this concept form is ready to connect to your email service.'; form.reset() })
+  </script>
 </body>
-
 </html>

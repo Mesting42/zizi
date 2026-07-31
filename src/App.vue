@@ -91,7 +91,7 @@ const currentPage = computed(() => {
   if (path.startsWith('/category')) return 'articles'
   if (path.startsWith('/article')) return 'article'
   if (path.startsWith('/music') || path === '/music-player') return 'music'
-  if (path.startsWith('/vivo-case') || path.startsWith('/foreign-case') || path.startsWith('/flutter-music-case')) return 'case'
+  if (path.startsWith('/vivo-case') || path.startsWith('/xiaomi-case') || path.startsWith('/foreign-case') || path.startsWith('/flutter-music-case')) return 'case'
   return 'home'
 })
 
@@ -516,6 +516,7 @@ const moduleSelectors = [
   '.footer-section',
   '.footer-bottom'
 ]
+const moduleSelectorQuery = moduleSelectors.join(',')
 
 const skipEntranceSelectors = [
   '.home',
@@ -532,7 +533,7 @@ const getEntranceModules = () => {
   const root = document.querySelector('.app-shell') || document.querySelector('#app')
   if (!root) return []
 
-  const modules = Array.from(root.querySelectorAll(moduleSelectors.join(',')))
+  const modules = Array.from(root.querySelectorAll(moduleSelectorQuery))
     .filter((element) => !skipEntranceSelectors.some((selector) => element.closest(selector)))
 
   return [...new Set(modules)]
@@ -552,11 +553,16 @@ const applyModuleEntrance = () => {
             // Keep each module observed. Removing the entered state after it
             // leaves the viewport lets the same transition play again in
             // either scroll direction instead of only on the first pass.
-            const shouldEnter = entry.isIntersecting && entry.intersectionRatio >= 0.04
+            const alreadyEntered = entry.target.classList.contains('module-entered')
+            const shouldEnter = entry.isIntersecting && (
+              alreadyEntered
+                ? entry.intersectionRatio > 0.01
+                : entry.intersectionRatio >= 0.04
+            )
             entry.target.classList.toggle('module-entered', shouldEnter)
           })
         },
-        { threshold: 0.04, rootMargin: '0px 0px -4% 0px' }
+        { threshold: [0, 0.01, 0.04], rootMargin: '0px 0px -4% 0px' }
       )
     : null
   }
@@ -578,9 +584,14 @@ const applyModuleEntrance = () => {
   entranceOrder = Math.min(entranceOrder + modules.length, 10)
 }
 
+const hasEntranceModule = (node) => {
+  if (!(node instanceof Element)) return false
+  return node.matches(moduleSelectorQuery) || Boolean(node.querySelector(moduleSelectorQuery))
+}
+
 const shouldReactToMutation = (mutations) => mutations.some((mutation) => {
   if (mutation.type === 'childList') {
-    return mutation.addedNodes.length > 0
+    return [...mutation.addedNodes].some(hasEntranceModule)
   }
 
   if (mutation.type !== 'attributes') return false
@@ -588,15 +599,29 @@ const shouldReactToMutation = (mutations) => mutations.some((mutation) => {
   const target = mutation.target
   if (!(target instanceof Element)) return false
   if (mutation.attributeName === 'class') {
-    return !target.classList.contains('module-enter')
+    return hasEntranceModule(target)
+      && !target.classList.contains('module-enter')
       && !target.classList.contains('module-entered')
   }
 
   return mutation.attributeName !== 'style'
 })
 
+const shouldObserveModuleMutations = () => (
+  !isMobilePerformance && currentPage.value !== 'home'
+)
+
+const stopModuleMutationObserver = () => {
+  mutationObserver?.disconnect()
+  mutationObserver = null
+  if (mutationDebounceTimer) {
+    window.clearTimeout(mutationDebounceTimer)
+    mutationDebounceTimer = 0
+  }
+}
+
 const bindModuleMutationObserver = () => {
-  if (isMobilePerformance) return
+  if (!shouldObserveModuleMutations()) return
 
   const root = document.querySelector('.app-main')
   if (!root || mutationObserver) return
@@ -654,6 +679,8 @@ watch(
   currentPage,
   (newPage) => {
     syncPageClass(newPage)
+    if (shouldObserveModuleMutations()) bindModuleMutationObserver()
+    else stopModuleMutationObserver()
     scheduleModuleEntrance()
   },
   { immediate: true, flush: 'sync' }
@@ -704,14 +731,17 @@ onMounted(() => {
   window.addEventListener('touchend', handleEdgeTouchEnd, { passive: true })
   window.addEventListener('touchcancel', resetEdgeSwipe, { passive: true })
   if (!isMobilePerformance) {
-    bindModuleMutationObserver()
+    if (shouldObserveModuleMutations()) bindModuleMutationObserver()
     scheduleModuleEntrance()
   }
 
   const warmMusicPages = () => {
     musicPreloadIdleHandle = 0
     musicPreloadTimer = 0
-    preloadMusicRoutes()
+    // Music is the only route bundle worth warming as a group once someone is
+    // already inside that space. Keeping it off the home-page idle queue lets
+    // the hero, videos and avatar receive the available bandwidth first.
+    if (isMusicPage.value || isNativeApp) preloadMusicRoutes()
   }
 
   if ('requestIdleCallback' in window) {
@@ -740,9 +770,7 @@ onUnmounted(() => {
   if (moduleObserver) {
     moduleObserver.disconnect()
   }
-  if (mutationObserver) {
-    mutationObserver.disconnect()
-  }
+  stopModuleMutationObserver()
   if (entranceFrame) {
     cancelAnimationFrame(entranceFrame)
   }

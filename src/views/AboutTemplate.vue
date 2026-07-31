@@ -22,7 +22,7 @@
         <h1 class="profile-name typing-text">Hello</h1>
         <p class="tagline">热爱技术，分享知识，创造价值</p>
         <div class="social-links">
-          <a href="mailto:3541798955@qq.com" class="social-link" aria-label="邮箱">📧</a>
+          <a href="mailto:mesting042@gmail.com" class="social-link" aria-label="邮箱">📧</a>
           <a href="tel:18589064576" class="social-link" aria-label="电话">📱</a>
           <a href="https://github.com" class="social-link" target="_blank" rel="noreferrer" aria-label="GitHub">💬</a>
         </div>

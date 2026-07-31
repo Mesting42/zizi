@@ -143,18 +143,18 @@
                 <div class="search-rank-board">
                   <div class="search-rank-board-head">
                     <div class="suggestion-title">
-                      <span>热搜榜</span>
-                      <small>实时热度</small>
+                      <span>{{ copy.hotSearches }}</span>
+                      <small>{{ copy.livePopularity }}</small>
                     </div>
                     <div class="search-rank-board-actions">
                       <button
                         type="button"
                         class="search-rank-board-play"
-                        aria-label="播放热搜榜"
+                        :aria-label="copy.playHotSearches"
                         @click.stop="playRankBoard(hotRankSongs)"
                       >
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                        <span>播放</span>
+                        <span>{{ copy.play }}</span>
                       </button>
                     </div>
                   </div>
@@ -166,27 +166,27 @@
                     >
                       <span class="rank-index" :class="{ top: index < 3 }">{{ index + 1 }}</span>
                       <span class="rank-text">{{ keyword }}</span>
-                      <span v-if="index === 0" class="rank-badge hot">爆</span>
+                      <span v-if="index === 0" class="rank-badge hot">{{ copy.hot }}</span>
                     </li>
                   </ol>
                 </div>
                 <div class="search-rank-board">
                   <div class="search-rank-board-head">
                     <div class="suggestion-title">
-                      <span>本地音乐</span>
-                      <small>{{ localHotSongs.length }} 首</small>
+                      <span>{{ copy.localMusic }}</span>
+                      <small>{{ copy.rankSongCount(localHotSongs.length) }}</small>
                     </div>
                     <div class="search-rank-board-actions">
                       <button
                         type="button"
                         class="search-rank-board-play"
-                        aria-label="播放本地音乐榜"
+                        :aria-label="copy.playLocalMusic"
                         @click.stop="playRankBoard(localHotSongs)"
                       >
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                        <span>播放</span>
+                        <span>{{ copy.play }}</span>
                       </button>
-                      <span class="search-rank-board-more">全部</span>
+                      <span class="search-rank-board-more">{{ copy.all }}</span>
                     </div>
                   </div>
                   <ol class="search-rank-list">
@@ -205,7 +205,7 @@
             </div>
             <div class="search-results-list" v-else-if="searchResults.length > 0">
               <div class="search-result-group" v-if="localSearchResults.length">
-                <span>本地曲库</span>
+                <span>{{ copy.localLibrary }}</span>
               </div>
               <div
                 class="search-result-item"
@@ -219,7 +219,7 @@
                   <p>{{ song.artist }}</p>
                 </div>
                 <div class="result-meta">
-                  <span class="result-source local">完整</span>
+                  <span class="result-source local">{{ copy.fullTrack }}</span>
                   <span class="result-duration">{{ formatSearchDuration(song) }}</span>
                 </div>
                 <div class="result-actions">
@@ -227,8 +227,8 @@
                     class="result-add-btn"
                     :class="{ 'is-added': isSearchResultInQueue(song) }"
                     @click.stop="addSearchResultToQueue(song)"
-                    :title="isSearchResultInQueue(song) ? '已添加' : '加入播放列表'"
-                    :aria-label="isSearchResultInQueue(song) ? '已添加到播放列表' : '加入播放列表'"
+                    :title="isSearchResultInQueue(song) ? copy.added : copy.addToQueue"
+                    :aria-label="isSearchResultInQueue(song) ? copy.addedToQueue : copy.addToQueue"
                   >
                     <svg v-if="isSearchResultInQueue(song)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <path d="m5 12 4.2 4.2L19 6.7"/>
@@ -240,7 +240,7 @@
                 </div>
               </div>
               <div class="search-result-group" v-if="onlineSearchResults.length">
-                <span>在线音乐 · 完整歌曲优先，含 iTunes 试听</span>
+                <span>{{ copy.onlineSearchLibrary }}</span>
               </div>
               <div
                 class="search-result-item online"
@@ -256,7 +256,7 @@
                 </div>
                 <div class="result-meta">
                   <span class="result-source" :class="song.isOnlineFull ? 'full' : 'preview'">
-                    {{ song.provider || '在线' }} · {{ song.isOnlineFull ? '完整' : '试听' }}
+                    {{ song.provider || copy.online }} · {{ song.isOnlineFull ? copy.fullTrack : copy.preview }}
                   </span>
                   <span class="result-duration">{{ formatSearchDuration(song) }}</span>
                 </div>
@@ -265,8 +265,8 @@
                     class="result-add-btn"
                     :class="{ 'is-added': isSearchResultInQueue(song) }"
                     @click.stop="addSearchResultToQueue(song)"
-                    :title="isSearchResultInQueue(song) ? '已添加' : '加入播放列表'"
-                    :aria-label="isSearchResultInQueue(song) ? '已添加到播放列表' : '加入播放列表'"
+                    :title="isSearchResultInQueue(song) ? copy.added : copy.addToQueue"
+                    :aria-label="isSearchResultInQueue(song) ? copy.addedToQueue : copy.addToQueue"
                   >
                     <svg v-if="isSearchResultInQueue(song)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <path d="m5 12 4.2 4.2L19 6.7"/>
@@ -279,8 +279,8 @@
                     v-if="song.externalUrl"
                     class="result-open-link"
                     @click.stop="openExternalSong(song)"
-                    :title="`在 ${song.provider || 'Apple Music'} 打开`"
-                    :aria-label="`在 ${song.provider || 'Apple Music'} 打开`"
+                    :title="copy.openIn(song.provider || 'Apple Music')"
+                    :aria-label="copy.openIn(song.provider || 'Apple Music')"
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M14 3h7v7"/>
@@ -1198,6 +1198,24 @@ const copy = computed(() => isChinese.value
       searchHistory: '搜索历史',
       clear: '清空',
       youMayLike: '猜你喜欢',
+      hotSearches: '热搜榜',
+      livePopularity: '实时热度',
+      playHotSearches: '播放热搜榜',
+      hot: '热',
+      localMusic: '本地音乐',
+      rankSongCount: (count) => `${count} 首`,
+      playLocalMusic: '播放本地音乐榜',
+      all: '全部',
+      localLibrary: '本地曲库',
+      fullTrack: '完整',
+      onlineSearchLibrary: '在线音乐 · 完整歌曲优先，含 iTunes 试听',
+      online: '在线',
+      preview: '试听',
+      added: '已添加',
+      addedToQueue: '已添加到播放列表',
+      alreadyInQueue: '播放列表中已有这首歌',
+      currentTrackPlaying: '当前歌曲正在播放',
+      openIn: (provider) => `在 ${provider} 打开`,
       connecting: '正在连接在线试听库...',
       localStillWorks: '本地搜索仍然可用，稍后可以再试在线结果',
       noResults: (query) => `未找到与「${query}」相关的音乐`,
@@ -1283,6 +1301,24 @@ const copy = computed(() => isChinese.value
       searchHistory: 'Recent Searches',
       clear: 'Clear',
       youMayLike: 'You May Like',
+      hotSearches: 'Trending Searches',
+      livePopularity: 'Live popularity',
+      playHotSearches: 'Play trending searches',
+      hot: 'Hot',
+      localMusic: 'Local Music',
+      rankSongCount: (count) => `${count} tracks`,
+      playLocalMusic: 'Play local music chart',
+      all: 'All',
+      localLibrary: 'Local Library',
+      fullTrack: 'Full track',
+      onlineSearchLibrary: 'Online music · full tracks first, with iTunes previews',
+      online: 'Online',
+      preview: 'Preview',
+      added: 'Added',
+      addedToQueue: 'Added to play queue',
+      alreadyInQueue: 'This track is already in the play queue',
+      currentTrackPlaying: 'This track is already playing',
+      openIn: (provider) => `Open in ${provider}`,
       connecting: 'Connecting to the online preview library...',
       localStillWorks: 'Local search still works. Try online results again later.',
       noResults: (query) => `No music found for “${query}”`,
@@ -1628,13 +1664,17 @@ const dismissSearchPanel = () => {
 
 const RECENT_SEARCH_KEY = 'music_recent_searches'
 const MAX_RECENT_SEARCHES = 8
-const guessYouLike = ['周杰伦', '林俊杰', '邓紫棋', '薛之谦', '陈粒', '五月天', '陈奕迅', '李荣浩', '海洋Bo', '虚拟']
-const hotSearchList = ['晴天', '七里香', '稻香', '青花瓷', '夜曲', '告白气球', '演员', '像我这样的人', '成都']
+const guessYouLike = computed(() => isChinese.value
+  ? ['周杰伦', '林俊杰', '邓紫棋', '薛之谦', '陈粒', '五月天', '陈奕迅', '李荣浩', '海洋Bo', '虚拟']
+  : ['Taylor Swift', 'The Weeknd', 'Billie Eilish', 'Coldplay', 'SZA', 'Bruno Mars', 'Kendrick Lamar', 'Arctic Monkeys', 'Lofi Beats', 'Synthwave'])
+const hotSearchList = computed(() => isChinese.value
+  ? ['晴天', '七里香', '稻香', '青花瓷', '夜曲', '告白气球', '演员', '像我这样的人', '成都']
+  : ['Blinding Lights', 'Die With A Smile', 'Birds of a Feather', 'Espresso', 'Not Like Us', 'Beautiful Things', 'Fortnight', 'Too Sweet', 'Lose Control'])
 
 const localHotSongs = computed(() => allSongs.slice(0, 9))
 const hotRankSongs = computed(() => {
   const remainingSongs = [...allSongs]
-  const rankedSongs = hotSearchList
+  const rankedSongs = hotSearchList.value
     .map((keyword) => {
       const songIndex = remainingSongs.findIndex(song => song.title === keyword)
       return songIndex >= 0 ? remainingSongs.splice(songIndex, 1)[0] : null
@@ -1644,9 +1684,12 @@ const hotRankSongs = computed(() => {
   return [...rankedSongs, ...remainingSongs]
 })
 
+const getRecentSearchKey = () => `${RECENT_SEARCH_KEY}_${isChinese.value ? 'zh' : 'en'}`
+
 const loadRecentSearches = () => {
   try {
-    const raw = localStorage.getItem(RECENT_SEARCH_KEY)
+    const raw = localStorage.getItem(getRecentSearchKey())
+      || (isChinese.value ? localStorage.getItem(RECENT_SEARCH_KEY) : null)
     return raw ? JSON.parse(raw) : []
   } catch {
     return []
@@ -1657,7 +1700,7 @@ const recentSearches = ref(loadRecentSearches())
 
 const persistRecentSearches = () => {
   try {
-    localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(recentSearches.value))
+    localStorage.setItem(getRecentSearchKey(), JSON.stringify(recentSearches.value))
   } catch {
     /* ignore quota errors */
   }
@@ -1702,11 +1745,16 @@ const applySearchKeyword = (keyword) => {
 const clearRecentSearches = () => {
   recentSearches.value = []
   try {
-    localStorage.removeItem(RECENT_SEARCH_KEY)
+    localStorage.removeItem(getRecentSearchKey())
+    if (isChinese.value) localStorage.removeItem(RECENT_SEARCH_KEY)
   } catch {
     /* ignore */
   }
 }
+
+watch(isChinese, () => {
+  recentSearches.value = loadRecentSearches()
+})
 
 const isSearchResultInQueue = (song) => {
   const playableSong = ensureMusicId(song)
@@ -1719,16 +1767,16 @@ const addSearchResultToQueue = (song) => {
   const playableSong = ensureMusicId(song)
 
   if (isSearchResultInQueue(playableSong)) {
-    showQueueToast('已添加')
+    showQueueToast(copy.value.added)
     return
   }
 
   if (addToPlaylist(playableSong)) {
-    showQueueToast('已添加')
+    showQueueToast(copy.value.added)
     return
   }
 
-  showQueueToast('播放列表中已有这首歌')
+  showQueueToast(copy.value.alreadyInQueue)
 }
 
 watch(onlineSearchResults, (results) => {
@@ -1786,7 +1834,7 @@ const decorateSearchSong = (song, source = 'local') => {
     ...normalized,
     source,
     searchKey: `${source}-${getSongKey(normalized)}`,
-    duration: normalized.duration || (source === 'online' ? '试听' : '--:--')
+    duration: normalized.duration || (source === 'online' ? copy.value.preview : '--:--')
   }
 }
 
@@ -2257,16 +2305,16 @@ const addRecommendedToQueue = (song) => {
   const songKey = getSongKey(playableSong)
 
   if (songKey && songKey === currentKey) {
-    showQueueToast('当前歌曲正在播放')
+    showQueueToast(copy.value.currentTrackPlaying)
     return
   }
 
   if (addToPlaylist(playableSong)) {
-    showQueueToast('已添加')
+    showQueueToast(copy.value.added)
     return
   }
 
-  showQueueToast('播放列表中已有这首歌')
+  showQueueToast(copy.value.alreadyInQueue)
 }
 
 const removeFavorite = (index) => removeFromFavorites(index)

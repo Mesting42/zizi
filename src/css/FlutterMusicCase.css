@@ -42,15 +42,14 @@ body.page-case::before { display: none; }
 .fm-signal-field {
   position: absolute;
   inset-block: 0;
-  width: clamp(330px, 27vw, 520px);
+  width: clamp(260px, 20vw, 400px);
   overflow: hidden;
   isolation: isolate;
-  opacity: .98;
+  opacity: .72;
   will-change: transform, opacity;
   background:
-    radial-gradient(circle at 48% 21%, rgba(123, 232, 210, .27), transparent 23%),
-    radial-gradient(circle at 26% 75%, rgba(95, 192, 174, .13), transparent 30%),
-    linear-gradient(90deg, rgba(211, 236, 229, .5), rgba(236, 246, 242, .16) 58%, transparent 100%);
+    radial-gradient(circle at 45% 26%, rgba(123, 232, 210, .12), transparent 23%),
+    linear-gradient(90deg, rgba(211, 236, 229, .2), transparent 72%);
 }
 
 .fm-signal-field--left { left: 0; }
@@ -58,9 +57,8 @@ body.page-case::before { display: none; }
   right: 0;
   transform: scaleX(-1);
   background:
-    radial-gradient(circle at 48% 21%, rgba(244, 109, 98, .28), transparent 23%),
-    radial-gradient(circle at 26% 75%, rgba(235, 136, 118, .13), transparent 30%),
-    linear-gradient(90deg, rgba(249, 228, 226, .53), rgba(253, 241, 239, .15) 58%, transparent 100%);
+    radial-gradient(circle at 45% 26%, rgba(244, 109, 98, .12), transparent 23%),
+    linear-gradient(90deg, rgba(249, 228, 226, .2), transparent 72%);
 }
 
 .fm-signal-field::before,
@@ -72,108 +70,52 @@ body.page-case::before { display: none; }
 .fm-signal-field::before {
   top: 0;
   bottom: 0;
-  left: calc(100% - 52px);
-  width: 2px;
-  background: linear-gradient(180deg, transparent 2%, rgba(82, 174, 155, .03) 10%, rgba(82, 174, 155, .47) 42%, rgba(82, 174, 155, .18) 74%, transparent 98%);
-  box-shadow: 0 0 26px rgba(100, 223, 200, .34);
+  left: calc(100% - 38px);
+  width: 1px;
+  background: linear-gradient(180deg, transparent 3%, rgba(82, 174, 155, .08) 14%, rgba(82, 174, 155, .25) 47%, rgba(82, 174, 155, .08) 84%, transparent 97%);
 }
 
 .fm-signal-field::after {
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(255,255,255,.18), transparent 14%, transparent 82%, rgba(255,255,255,.24));
-}
-
-.fm-signal-aurora {
-  position: absolute;
-  z-index: -1;
-  inset: -15% -65% -10% -24%;
-  opacity: .92;
-  background:
-    radial-gradient(ellipse at 42% 24%, rgba(80, 235, 206, .46), transparent 19%),
-    radial-gradient(ellipse at 70% 52%, rgba(122, 217, 195, .22), transparent 26%),
-    linear-gradient(118deg, transparent 22%, rgba(182, 249, 234, .27) 43%, transparent 69%);
-  transform: rotate(-8deg);
-  will-change: transform, opacity;
-}
-
-.fm-signal-field--right .fm-signal-aurora {
-  background:
-    radial-gradient(ellipse at 42% 24%, rgba(255, 116, 103, .44), transparent 19%),
-    radial-gradient(ellipse at 70% 52%, rgba(246, 166, 150, .23), transparent 26%),
-    linear-gradient(118deg, transparent 22%, rgba(255, 216, 210, .31) 43%, transparent 69%);
+  background: linear-gradient(180deg, rgba(255,255,255,.12), transparent 14%, transparent 86%, rgba(255,255,255,.15));
 }
 
 .fm-signal-grid {
   position: absolute;
   inset: 0;
-  opacity: .48;
+  opacity: .2;
   background-image:
     linear-gradient(rgba(6, 26, 36, .11) 1px, transparent 1px),
     linear-gradient(90deg, rgba(6, 26, 36, .11) 1px, transparent 1px);
-  background-size: 34px 34px;
+  background-size: 42px 42px;
   mask-image: linear-gradient(90deg, #000, rgba(0, 0, 0, .78) 68%, transparent 100%);
 }
-
-.fm-signal-vector-map {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.fm-signal-vector-map path { fill: none; vector-effect: non-scaling-stroke; }
-
-.fm-vector-trace {
-  stroke: rgba(20, 144, 124, .72);
-  stroke-width: 1.25;
-  stroke-dasharray: 26 300;
-  stroke-dashoffset: 0;
-  filter: drop-shadow(0 0 4px rgba(76, 222, 195, .46));
-}
-
-.fm-vector-trace--minor { stroke: rgba(35, 103, 94, .36); stroke-width: 1; stroke-dasharray: 12 220; }
-.fm-vector-pulse {
-  stroke: rgba(83, 242, 215, .95);
-  stroke-width: 2;
-  stroke-dasharray: 96 720;
-  stroke-dashoffset: 0;
-  filter: drop-shadow(0 0 5px rgba(74, 226, 200, .7));
-}
-.fm-vector-pulse--secondary { stroke-width: 1.5; stroke-dasharray: 68 612; opacity: .64; }
-
-.fm-signal-field--right .fm-vector-trace { stroke: rgba(220, 80, 71, .73); filter: drop-shadow(0 0 4px rgba(238, 104, 91, .45)); }
-.fm-signal-field--right .fm-vector-trace--minor { stroke: rgba(172, 81, 73, .36); }
-.fm-signal-field--right .fm-vector-pulse { stroke: rgba(251, 101, 88, .94); filter: drop-shadow(0 0 5px rgba(239, 91, 78, .64)); }
 
 .fm-signal-orbit,
 .fm-signal-path,
 .fm-signal-node,
 .fm-signal-rail,
-.fm-signal-halo,
-.fm-signal-sweep { position: absolute; display: block; }
+.fm-signal-halo { position: absolute; display: block; }
 
 .fm-signal-halo {
   z-index: 1;
-  top: clamp(122px, 15vh, 278px);
+  top: clamp(154px, 19vh, 318px);
   left: 50%;
-  width: clamp(320px, 30vw, 540px);
+  width: clamp(280px, 22vw, 400px);
   aspect-ratio: 1;
-  margin-left: calc(-1 * clamp(160px, 15vw, 270px));
+  margin-left: calc(-1 * clamp(140px, 11vw, 200px));
   border-radius: 50%;
-  opacity: .85;
+  opacity: .38;
   background:
-    radial-gradient(circle, rgba(121, 229, 211, .44) 0 1%, rgba(121, 229, 211, .17) 16%, rgba(121, 229, 211, .035) 43%, transparent 68%),
-    repeating-radial-gradient(circle, transparent 0 44px, rgba(52, 139, 121, .27) 45px 46px, transparent 47px 75px);
+    radial-gradient(circle, rgba(121, 229, 211, .2) 0 1%, rgba(121, 229, 211, .06) 16%, transparent 58%),
+    repeating-radial-gradient(circle, transparent 0 52px, rgba(52, 139, 121, .18) 53px 54px, transparent 55px 82px);
 }
 
 .fm-signal-field--right .fm-signal-halo {
   background:
-    radial-gradient(circle, rgba(235, 107, 97, .45) 0 1%, rgba(235, 107, 97, .17) 16%, rgba(235, 107, 97, .035) 43%, transparent 68%),
-    repeating-radial-gradient(circle, transparent 0 44px, rgba(220, 81, 73, .26) 45px 46px, transparent 47px 75px);
+    radial-gradient(circle, rgba(235, 107, 97, .2) 0 1%, rgba(235, 107, 97, .06) 16%, transparent 58%),
+    repeating-radial-gradient(circle, transparent 0 52px, rgba(220, 81, 73, .17) 53px 54px, transparent 55px 82px);
 }
 
 .fm-signal-orbit {
@@ -183,8 +125,8 @@ body.page-case::before { display: none; }
   border-radius: 50%;
 }
 
-.fm-signal-orbit--outer { top: clamp(176px, 22vh, 350px); width: 310px; height: 310px; margin-left: -155px; border-color: rgba(81,135,118,.38); }
-.fm-signal-orbit--inner { top: clamp(238px, calc(22vh + 62px), 412px); width: 184px; height: 184px; margin-left: -92px; border-color: rgba(220,81,73,.38); }
+.fm-signal-orbit--outer { top: clamp(205px, 26vh, 390px); width: 250px; height: 250px; margin-left: -125px; border-color: rgba(81,135,118,.26); }
+.fm-signal-orbit--inner { top: clamp(254px, calc(26vh + 49px), 439px); width: 152px; height: 152px; margin-left: -76px; border-color: rgba(220,81,73,.24); }
 
 .fm-signal-orbit::before,
 .fm-signal-orbit::after {
@@ -203,68 +145,38 @@ body.page-case::before { display: none; }
   left: 13%;
   width: 86%;
   height: 24%;
-  border: 1px solid rgba(81,135,118,.36);
+  border: 1px solid rgba(81,135,118,.18);
   border-right: 0;
   border-bottom: 0;
   border-radius: 75% 0 0;
 }
 
 .fm-signal-path--a { top: 42%; transform: rotate(-18deg); }
-.fm-signal-path--b { top: 69%; width: 72%; height: 19%; border-color: rgba(220,81,73,.34); transform: rotate(24deg); }
+.fm-signal-path--b { top: 69%; width: 72%; height: 19%; border-color: rgba(220,81,73,.18); transform: rotate(24deg); }
 
 .fm-signal-rail {
   z-index: 3;
   left: 9%;
   width: 86%;
-  height: 2px;
-  opacity: .78;
-  background: linear-gradient(90deg, transparent, rgba(116, 239, 217, .95) 34%, rgba(255,255,255,.88) 50%, rgba(116, 239, 217, .78) 66%, transparent);
-  box-shadow: 0 0 20px rgba(91, 219, 199, .46);
+  height: 1px;
+  opacity: .34;
+  background: linear-gradient(90deg, transparent, rgba(116, 206, 190, .78) 40%, rgba(116, 206, 190, .48) 62%, transparent);
 }
 
 .fm-signal-field--right .fm-signal-rail {
-  background: linear-gradient(90deg, transparent, rgba(244, 105, 91, .88) 34%, rgba(255,255,255,.84) 50%, rgba(244, 105, 91, .72) 66%, transparent);
-  box-shadow: 0 0 20px rgba(228, 96, 83, .38);
+  background: linear-gradient(90deg, transparent, rgba(226, 111, 101, .7) 40%, rgba(226, 111, 101, .42) 62%, transparent);
 }
 
 .fm-signal-rail--a { top: 39%; transform: rotate(-16deg); }
-.fm-signal-rail--b { top: 59%; transform: rotate(10deg); opacity: .68; }
-.fm-signal-rail--c { top: 80%; width: 72%; transform: rotate(-7deg); opacity: .56; }
-
-.fm-signal-sweep {
-  z-index: 4;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 18%;
-  opacity: .88;
-  background: linear-gradient(180deg, transparent 0%, rgba(95, 246, 219, 0) 28%, rgba(95, 246, 219, .16) 46%, rgba(255, 255, 255, .88) 50%, rgba(95, 246, 219, .16) 54%, transparent 72%);
-  mix-blend-mode: screen;
-  will-change: transform;
-}
-
-.fm-signal-field--right .fm-signal-sweep {
-  background: linear-gradient(180deg, transparent 0%, rgba(255, 112, 98, 0) 28%, rgba(255, 112, 98, .16) 46%, rgba(255, 255, 255, .88) 50%, rgba(255, 112, 98, .16) 54%, transparent 72%);
-}
-
-.fm-signal-index {
-  position: absolute;
-  z-index: 4;
-  top: 7.2%;
-  right: 11%;
-  color: rgba(6, 26, 36, .17);
-  font-size: clamp(3.8rem, 7.4vw, 7.6rem);
-  font-weight: 300;
-  letter-spacing: -.09em;
-  line-height: .78;
-}
+.fm-signal-rail--b { top: 59%; transform: rotate(10deg); opacity: .24; }
+.fm-signal-rail--c { top: 80%; width: 72%; transform: rotate(-7deg); opacity: .2; }
 
 .fm-signal-label {
   position: absolute;
   z-index: 4;
   right: 11%;
   bottom: 7%;
-  color: rgba(6,26,36,.62);
+  color: rgba(6,26,36,.42);
   font-size: 8px;
   font-weight: 600;
   letter-spacing: .23em;
@@ -275,14 +187,14 @@ body.page-case::before { display: none; }
 
 .fm-signal-node {
   z-index: 5;
-  width: 9px;
-  height: 9px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #76dcca;
-  box-shadow: 0 0 0 7px rgba(94,156,139,.12), 0 0 26px rgba(94,156,139,.48);
+  box-shadow: 0 0 0 5px rgba(94,156,139,.08), 0 0 14px rgba(94,156,139,.28);
 }
 
-.fm-signal-field--right .fm-signal-node { background: #f26a60; box-shadow: 0 0 0 7px rgba(220,81,73,.12), 0 0 26px rgba(220,81,73,.43); }
+.fm-signal-field--right .fm-signal-node { background: #f26a60; box-shadow: 0 0 0 5px rgba(220,81,73,.08), 0 0 14px rgba(220,81,73,.25); }
 .fm-signal-node:nth-of-type(1) { top: 15%; left: 23%; }
 .fm-signal-node:nth-of-type(2) { top: 33%; right: 14%; }
 .fm-signal-node:nth-of-type(3) { top: 51%; left: 42%; }

@@ -42,7 +42,14 @@
         <span :class="{ active: !isChinese }">EN</span>
       </button>
 
-      <router-link class="portfolio-system-pill" to="/music" :aria-label="labels.musicAria" @click="closeMenu">
+      <router-link
+        class="portfolio-system-pill"
+        to="/music"
+        :aria-label="labels.musicAria"
+        @pointerenter="preloadMusic"
+        @focus="preloadMusic"
+        @click="closeMenu"
+      >
         <span class="portfolio-system-icon" aria-hidden="true">
           <svg viewBox="0 0 16 16">
             <circle cx="5" cy="5" r="1.25" />
@@ -61,9 +68,9 @@
         <router-link :to="homeTarget" @click="closeMenu"><span>01</span>{{ labels.home }}</router-link>
         <router-link :to="projectsTarget" @click="closeMenu"><span>02</span>{{ labels.work }}</router-link>
         <router-link :to="notesTarget" @click="closeMenu"><span>03</span>{{ labels.thinking }}</router-link>
-        <router-link to="/music" @click="closeMenu"><span>04</span>{{ labels.music }}</router-link>
+        <router-link to="/music" @pointerenter="preloadMusic" @focus="preloadMusic" @click="closeMenu"><span>04</span>{{ labels.music }}</router-link>
         <router-link :to="aboutTarget" @click="closeMenu"><span>05</span>{{ labels.about }}</router-link>
-        <a href="mailto:3541798955@qq.com" @click="closeMenu"><span>06</span>{{ labels.contact }}</a>
+        <a href="mailto:mesting042@gmail.com" @click="closeMenu"><span>06</span>{{ labels.contact }}</a>
       </div>
     </Transition>
   </div>
@@ -72,6 +79,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { preloadMusicLanding } from '../router'
 import { useLocale } from '../composables/useLocale'
 
 const route = useRoute()
@@ -128,6 +136,10 @@ const closeMenu = () => {
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
+}
+
+const preloadMusic = () => {
+  preloadMusicLanding()
 }
 
 const handleKeydown = (event) => {
@@ -290,6 +302,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 .portfolio-system-label { display: none; }
 
 .portfolio-project-menu {
+  --portfolio-menu-x: 0px;
   position: fixed;
   z-index: 1199;
   top: 68px;
@@ -302,6 +315,11 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
   border-radius: 24px;
   background: rgba(255, 255, 255, .985);
   box-shadow: 0 24px 70px rgba(0, 0, 0, .14);
+  clip-path: inset(0 0 0 0 round 24px);
+  filter: blur(0);
+  opacity: 1;
+  transform: translateX(var(--portfolio-menu-x));
+  transform-origin: 50% 0;
 }
 
 .portfolio-project-menu > p {
@@ -310,6 +328,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
   font-size: 10px;
   font-weight: 500;
   letter-spacing: .12em;
+  will-change: transform, opacity, filter;
 }
 
 .portfolio-project-menu a {
@@ -322,14 +341,80 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
   font-size: 14px;
   text-decoration: none;
   transition: background .2s ease, transform .2s ease;
+  will-change: transform, opacity, filter;
 }
 .portfolio-project-menu a span { color: rgba(0, 0, 0, .36); font-size: 10px; }
 .portfolio-project-menu a:hover { background: #f4f4f6; transform: translateX(3px); }
 
 .portfolio-menu-panel-enter-active,
-.portfolio-menu-panel-leave-active { transition: opacity .28s ease, transform .35s cubic-bezier(.16, 1, .3, 1); }
-.portfolio-menu-panel-enter-from,
-.portfolio-menu-panel-leave-to { opacity: 0; transform: translateY(-10px) scale(.98); }
+.portfolio-menu-panel-leave-active {
+  overflow: hidden;
+  will-change: clip-path, transform, opacity, filter;
+  transition:
+    clip-path .48s cubic-bezier(.16, 1, .3, 1),
+    transform .48s cubic-bezier(.16, 1, .3, 1),
+    opacity .2s ease,
+    filter .3s ease;
+}
+
+.portfolio-menu-panel-enter-active > p,
+.portfolio-menu-panel-enter-active > a,
+.portfolio-menu-panel-leave-active > p,
+.portfolio-menu-panel-leave-active > a {
+  transition: opacity .26s ease, transform .38s cubic-bezier(.16, 1, .3, 1), filter .28s ease;
+}
+
+.portfolio-menu-panel-leave-active {
+  transition:
+    clip-path .38s cubic-bezier(.4, 0, 1, 1) .1s,
+    transform .38s cubic-bezier(.4, 0, 1, 1) .1s,
+    opacity .18s ease .16s,
+    filter .26s ease .1s;
+}
+
+.portfolio-menu-panel-enter-active > p { transition-delay: .1s; }
+.portfolio-menu-panel-enter-active > a:nth-of-type(1) { transition-delay: .13s; }
+.portfolio-menu-panel-enter-active > a:nth-of-type(2) { transition-delay: .16s; }
+.portfolio-menu-panel-enter-active > a:nth-of-type(3) { transition-delay: .19s; }
+.portfolio-menu-panel-enter-active > a:nth-of-type(4) { transition-delay: .22s; }
+.portfolio-menu-panel-enter-active > a:nth-of-type(5) { transition-delay: .25s; }
+.portfolio-menu-panel-enter-active > a:nth-of-type(6) { transition-delay: .28s; }
+
+/* Close in reverse order, then fold the panel back into the navigation. */
+.portfolio-menu-panel-leave-active > p { transition-delay: .1s; }
+.portfolio-menu-panel-leave-active > a:nth-of-type(1) { transition-delay: .1s; }
+.portfolio-menu-panel-leave-active > a:nth-of-type(2) { transition-delay: .08s; }
+.portfolio-menu-panel-leave-active > a:nth-of-type(3) { transition-delay: .06s; }
+.portfolio-menu-panel-leave-active > a:nth-of-type(4) { transition-delay: .04s; }
+.portfolio-menu-panel-leave-active > a:nth-of-type(5) { transition-delay: .02s; }
+
+.portfolio-menu-panel-enter-from {
+  opacity: 0;
+  clip-path: inset(0 0 100% 0 round 24px);
+  filter: blur(5px);
+  transform: translateX(var(--portfolio-menu-x)) translateY(-8px) scaleY(.72);
+}
+
+.portfolio-menu-panel-enter-from > p,
+.portfolio-menu-panel-enter-from > a {
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(-12px);
+}
+
+.portfolio-menu-panel-leave-to {
+  opacity: 0;
+  clip-path: inset(0 0 100% 0 round 24px);
+  filter: blur(3px);
+  transform: translateX(var(--portfolio-menu-x)) translateY(-5px) scaleY(.82);
+}
+
+.portfolio-menu-panel-leave-to > p,
+.portfolio-menu-panel-leave-to > a {
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateY(-6px);
+}
 
 @media (max-width: 767px) {
   /* Leave a guaranteed clear band below a Dynamic Island, including browsers
@@ -380,11 +465,17 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
   .portfolio-menu-icon,
   .portfolio-system-icon { width: 28px; height: 28px; }
   .portfolio-system-pill { padding-right: 13px; }
-  .portfolio-project-menu { top: 74px; right: auto; left: 50%; width: 260px; transform: translateX(-50%); }
+  .portfolio-project-menu { --portfolio-menu-x: -50%; top: 74px; right: auto; left: 50%; width: 260px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .portfolio-navbar { animation: none; }
+  .portfolio-menu-panel-enter-active,
+  .portfolio-menu-panel-leave-active,
+  .portfolio-menu-panel-enter-active > p,
+  .portfolio-menu-panel-enter-active > a,
+  .portfolio-menu-panel-leave-active > p,
+  .portfolio-menu-panel-leave-active > a { transition: none; }
 }
 
 @keyframes portfolio-nav-enter {
