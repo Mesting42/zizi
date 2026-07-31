@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <base href="/zizi/">
+    <meta charset="UTF-8">
+    <!-- Establish the light site canvas before any remote font or module can
+         delay first paint. Page styles can take over once Vue is mounted. -->
+    <style>
+      :root {
+        color-scheme: light;
+        background: #f7f8f6;
+      }
+
+      html,
+      body,
+      #app {
+        min-height: 100%;
+        margin: 0;
+        background: #f7f8f6;
+        background-color: #f7f8f6;
+      }
+    </style>
+    <script>
+      (() => {
+        const path = window.location.pathname
+        let page = 'home'
+
+        if (path === '/about') page = 'about'
+        else if (path === '/articles') page = 'article-archive'
+        else if (path.startsWith('/category')) page = 'articles'
+        else if (path.startsWith('/article')) page = 'article'
+        else if (path.startsWith('/music') || path === '/music-player') page = 'music'
+        else if (
+          path.startsWith('/vivo-case') ||
+          path.startsWith('/foreign-case') ||
+          path.startsWith('/flutter-music-case')
+        ) page = 'case'
+
+        document.documentElement.classList.add(`page-${page}`)
+      })()
+    </script>
+    <!-- Keep the browser-tab mark self-contained and first in the document.
+         This prevents Chrome from briefly reusing a previously cached legacy
+         favicon while the application bundle is still starting. -->
+    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='18' fill='%23101110'/%3E%3Cpath d='M14 45V22.5c0-3.2 4.1-4.7 6.2-2.2L32 35.8l11.8-15.5c2.1-2.5 6.2-1 6.2 2.2V45' fill='none' stroke='%23F7F8F6' stroke-width='5.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="shortcut icon" type="image/svg+xml" href="/zizi/mesting-mark.svg?v=20260730-logo-unified">
+    <link rel="apple-touch-icon" href="/zizi/mesting-mark.svg?v=20260730-logo-unified">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Instrument+Serif:ital@1&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link href="https://db.onlinewebfonts.com/c/2bf40ab72ea4897a3fd9b6e48b233a19?family=Garamond" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+      <link href="https://db.onlinewebfonts.com/c/2bf40ab72ea4897a3fd9b6e48b233a19?family=Garamond" rel="stylesheet">
+    </noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="theme-color" content="#f7f8f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Mesting is a personal digital space for evolving projects, interfaces, sound, and ideas.">
+    <!-- Warm media origins before the first video asks for a byte range. This
+         only performs DNS/TLS setup; it does not download media early. -->
+    <link rel="dns-prefetch" href="//d8j0ntlcm91z4.cloudfront.net">
+    <link rel="preconnect" href="https://d8j0ntlcm91z4.cloudfront.net" crossorigin>
+    <link rel="dns-prefetch" href="//videos.pexels.com">
+    <link rel="preconnect" href="https://videos.pexels.com" crossorigin>
+    <title>Mesting — Personal Digital Space</title>
+    <style>
+      html:is(.page-home, .page-case, .page-article, .page-article-archive),
+      html:is(.page-home, .page-case, .page-article, .page-article-archive) body,
+      html:is(.page-home, .page-case, .page-article, .page-article-archive) #app {
+        background: #f7f8f6 !important;
+        background-color: #f7f8f6 !important;
+      }
+
+      html:is(.page-home, .page-case, .page-article, .page-article-archive) body::before {
+        display: none !important;
+      }
+
+    </style>
+    <script type="module" crossorigin src="/zizi/assets/index-Bgwl7i08.js"></script>
+    <link rel="modulepreload" crossorigin href="/zizi/assets/vue-vendor-CoJ052tP.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/dist-sMZ95YXF.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/gsap-Ck89sgnr.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/articleTranslations-DbpfaGAl.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/useLocale-BWS1xITD.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/_plugin-vue_export-helper-DgLP3hnZ.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/router-C8clXOzB.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/nativeLyricsOverlay-BGKR5cox.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/devicePerformance-lxQ61xkU.js">
+    <link rel="stylesheet" crossorigin href="/zizi/assets/router-D_qbP6PH.css">
+    <link rel="stylesheet" crossorigin href="/zizi/assets/index-BRCxe9jT.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
