@@ -417,10 +417,10 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 }
 
 @media (max-width: 767px) {
-  /* Leave a guaranteed clear band below a Dynamic Island, including browsers
-     that do not expose a non-zero safe-area inset in device emulation. */
+  /* Keep the navigation close to the viewport edge while still respecting a
+     real device safe area when the browser exposes one. */
   .portfolio-navbar {
-    top: max(56px, calc(env(safe-area-inset-top, 0px) + 12px));
+    top: max(16px, calc(env(safe-area-inset-top, 0px) + 8px));
     gap: 5px;
     padding-right: 5px;
   }
@@ -449,7 +449,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
   .portfolio-language-pill { padding-inline: 7px; }
 
   .portfolio-project-menu {
-    top: max(112px, calc(env(safe-area-inset-top, 0px) + 64px));
+    top: max(72px, calc(env(safe-area-inset-top, 0px) + 64px));
   }
 }
 

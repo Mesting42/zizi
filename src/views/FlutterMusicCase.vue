@@ -98,7 +98,6 @@
 
         <div class="fm-phone-wrap">
           <div class="fm-phone" aria-label="Flutter recommendation screen">
-            <div class="fm-phone-speaker" aria-hidden="true"></div>
             <img
               src="/generated/flutter-music/recommendation.webp"
               alt="Mesting Music recommendation screen with personal mixes, daily picks, and mood-based listening"
