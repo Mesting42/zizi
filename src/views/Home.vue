@@ -15,6 +15,16 @@
           >
             <source
               :src="heroVideoSrc"
+              media="(min-width: 2560px), (min-width: 1280px) and (min-resolution: 2dppx), (min-width: 1707px) and (min-resolution: 1.5dppx)"
+              type="video/mp4"
+            >
+            <source
+              :src="heroVideoSrcDesktop"
+              media="(min-width: 1281px), (min-width: 641px) and (min-resolution: 2dppx), (min-width: 854px) and (min-resolution: 1.5dppx)"
+              type="video/mp4"
+            >
+            <source
+              :src="heroVideoSrcMobile"
               type="video/mp4"
             >
           </video>
@@ -78,12 +88,12 @@
                   class="oddy-marquee-media"
                   :src="asset.src"
                   :poster="asset.poster"
+                  :data-card-key="`${repeat}-${assetIndex}`"
                   :aria-label="asset.alt"
-                  autoplay
                   loop
                   muted
                   playsinline
-                  :preload="repeat === 1 ? 'auto' : 'metadata'"
+                  preload="metadata"
                   disablepictureinpicture
                 ></video>
                 <span class="oddy-marquee-glint" aria-hidden="true"></span>
@@ -362,6 +372,8 @@ import AmbientSideFields from '../components/AmbientSideFields.vue'
 
 const assetUrl = path => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
 const avatarModelUrl = assetUrl('models/avatar/mesting-rodin-rebuild-optimized.glb')
+const heroVideoSrcMobile = assetUrl('media/home/hero-loop-720p.mp4')
+const heroVideoSrcDesktop = assetUrl('media/home/hero-loop-1080p.mp4')
 const heroVideoSrc = assetUrl('media/home/hero-loop.mp4')
 let avatarComponentPreload = null
 
@@ -385,7 +397,10 @@ const marqueeStaticPreviews = ref(
   typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
 )
 const marqueeActiveVideoKeys = ref(new Set())
-const avatarVisible = ref(true)
+// Keep the crisp fallback visible while Three.js is scheduled during idle
+// time. This removes the large shader/GLB parse from the first scroll frame,
+// without changing the finished avatar composition.
+const avatarVisible = ref(false)
 const avatarReady = ref(false)
 const avatarFailed = ref(false)
 const activeNote = ref(0)
@@ -683,6 +698,9 @@ let marqueeCardMotionCleanup = null
 let resetMarqueeCardMotion = null
 let marqueeHovering = false
 let avatarModelPrefetched = false
+let avatarWarmupIdleHandle = 0
+let avatarWarmupTimer = 0
+let avatarWarmupObserver = null
 const trailTimers = new Set()
 
 const prefetchAvatarModel = () => {
@@ -693,8 +711,31 @@ const prefetchAvatarModel = () => {
   hint.as = 'fetch'
   hint.href = avatarModelUrl
   hint.crossOrigin = 'anonymous'
+  hint.fetchPriority = 'low'
+  hint.dataset.avatarPreload = 'true'
   document.head.append(hint)
   avatarModelPrefetched = true
+}
+
+const warmAvatar = () => {
+  if (avatarWarmupIdleHandle && 'cancelIdleCallback' in window) {
+    window.cancelIdleCallback(avatarWarmupIdleHandle)
+  }
+  if (avatarWarmupTimer) window.clearTimeout(avatarWarmupTimer)
+  avatarWarmupIdleHandle = 0
+  avatarWarmupTimer = 0
+  preloadAvatarComponent()
+  prefetchAvatarModel()
+  avatarVisible.value = true
+}
+
+const scheduleAvatarWarmup = () => {
+  if (avatarVisible.value || avatarWarmupIdleHandle || avatarWarmupTimer) return
+  if ('requestIdleCallback' in window) {
+    avatarWarmupIdleHandle = window.requestIdleCallback(warmAvatar, { timeout: 1200 })
+  } else {
+    avatarWarmupTimer = window.setTimeout(warmAvatar, 520)
+  }
 }
 
 const wrapMarqueeOffset = (value) => {
@@ -797,8 +838,13 @@ const stopMarqueeAnimation = () => {
 
 const syncMarqueeVideoPlayback = shouldPlay => {
   marqueeTrack.value?.querySelectorAll('video').forEach(video => {
-    if (shouldPlay && !document.hidden) video.play().catch(() => {})
-    else video.pause()
+    const key = video.dataset.cardKey
+    const isActive = key && marqueeActiveVideoKeys.value.has(key)
+    if (shouldPlay && isActive && !document.hidden && !pageIsScrolling) {
+      if (video.paused) video.play().catch(() => {})
+    } else if (!video.paused) {
+      video.pause()
+    }
   })
 }
 
@@ -821,10 +867,14 @@ const handleScrollState = (event) => {
   if (pageIsScrolling) {
     stopMarqueeAnimation()
     heroVideo.value?.pause()
+    syncMarqueeVideoPlayback(false)
     return
   }
 
   startMarqueeAnimation()
+  if (marqueeIsVisible && !document.hidden) {
+    syncMarqueeVideoPlayback(true)
+  }
   if (heroVideoIsVisible && !document.hidden) {
     heroVideo.value?.play().catch(() => {})
   }
@@ -947,16 +997,18 @@ const destroyMarqueeVideos = () => {
 const setupMarqueeVideos = () => {
   destroyMarqueeVideos()
 
-  // The first group owns one eager instance of every unique local video so all
-  // cards are ready on the initial visit. Only the duplicate desktop loop is
-  // attached near the viewport, avoiding sixteen simultaneous decoders.
-  if (!marqueeTrack.value || usesNativeMarqueeScroll()) return
+  // Keep the poster visible immediately, but only let cards that intersect the
+  // reel decode frames. This is especially important in Edge when hardware
+  // video decoding is unavailable: eight background decoders can otherwise
+  // compete with scrolling and the avatar canvas.
+  if (!marqueeTrack.value) return
 
-  const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card[data-repeat="2"]')]
+  const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card')]
   if (!('IntersectionObserver' in window)) {
     marqueeActiveVideoKeys.value = new Set(
       cards.map(card => card.dataset.cardKey).filter(Boolean)
     )
+    nextTick(() => syncMarqueeVideoPlayback(true))
     return
   }
 
@@ -971,12 +1023,13 @@ const setupMarqueeVideos = () => {
     })
 
     marqueeActiveVideoKeys.value = nextActiveKeys
+    nextTick(() => syncMarqueeVideoPlayback(marqueeIsVisible && !document.hidden && !pageIsScrolling))
   }, {
     root: marqueeSection.value,
-    // Keep one neighbouring card warm on each side. The former 560px margin
-    // could start most of the eight remote 4K loops at once, competing with
-    // the hero video even though those cards were still outside the reel.
-    rootMargin: '0px 160px',
+    // Keep a single neighbouring card warm on each side. Posters remain
+    // visible outside this window, so the reel never flashes blank while a
+    // new card is entering.
+    rootMargin: '0px 110px',
     threshold: 0.01
   })
 
@@ -1325,8 +1378,7 @@ const setupProjectMotion = () => {
 }
 
 onMounted(() => {
-  preloadAvatarComponent()
-  prefetchAvatarModel()
+  scheduleAvatarWarmup()
   const revealTargets = prepareRevealTargets()
 
   if ('IntersectionObserver' in window) {
@@ -1363,7 +1415,7 @@ onMounted(() => {
         destroyMarqueeVideos()
         syncMarqueeVideoPlayback(false)
       }
-    }, { rootMargin: '420px 0px' })
+    }, { rootMargin: '160px 0px' })
     if (marqueeSection.value) marqueeObserver.observe(marqueeSection.value)
 
     heroVideoObserver = new IntersectionObserver(([entry]) => {
@@ -1398,7 +1450,7 @@ onMounted(() => {
       .forEach(element => projectImageObserver.observe(element))
   } else {
     revealTargets.forEach(element => element.classList.add('is-visible'))
-    avatarVisible.value = true
+    scheduleAvatarWarmup()
     marqueeMounted.value = true
     marqueeIsVisible = true
     activeProjectImages.value = new Set(
@@ -1421,6 +1473,18 @@ onMounted(() => {
   document.addEventListener('visibilitychange', handlePageVisibility)
   document.addEventListener('mesting:scroll-state', handleScrollState)
   nextTick(setupProjectMotion)
+  // A quick reader who jumps straight to the avatar still gets the same
+  // first-visit model; the fallback remains painted until the canvas is ready.
+  if ('IntersectionObserver' in window && avatarMount.value) {
+    avatarWarmupObserver = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        warmAvatar()
+        avatarWarmupObserver.disconnect()
+        avatarWarmupObserver = null
+      }
+    }, { rootMargin: '420px 0px' })
+    avatarWarmupObserver.observe(avatarMount.value)
+  }
   startMarqueeAnimation()
 })
 
@@ -1444,6 +1508,12 @@ onUnmounted(() => {
   projectMotionCleanups = []
   trailTimers.forEach(timer => window.clearTimeout(timer))
   trailTimers.clear()
+  if (avatarWarmupIdleHandle && 'cancelIdleCallback' in window) {
+    window.cancelIdleCallback(avatarWarmupIdleHandle)
+  }
+  if (avatarWarmupTimer) window.clearTimeout(avatarWarmupTimer)
+  avatarWarmupObserver?.disconnect()
+  avatarWarmupObserver = null
 })
 </script>
 

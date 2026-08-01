@@ -1,7 +1,30 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
-import { rm } from 'node:fs/promises'
+import { rm, writeFile } from 'node:fs/promises'
+
+const cloudflareHeaders = `
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/media/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/models/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/generated/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/images/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/css/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/js/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/draco/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+/*.svg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+`.trimStart()
 
 const excludePrivateMusicFromPublicBuild = () => ({
   name: 'exclude-private-music-from-public-build',
@@ -11,8 +34,9 @@ const excludePrivateMusicFromPublicBuild = () => ({
     await Promise.all([
       rm(fileURLToPath(new URL('./dist/music', import.meta.url)), { recursive: true, force: true }),
       rm(fileURLToPath(new URL('./dist/lyrics', import.meta.url)), { recursive: true, force: true }),
-      // Keep the handoff-only Cloudflare header source out of deploy output.
-      rm(fileURLToPath(new URL('./dist/_headers', import.meta.url)), { force: true })
+      // Generate deployment headers from version-controlled build logic. The
+      // handoff-only public/_headers file remains untouched and unstaged.
+      writeFile(fileURLToPath(new URL('./dist/_headers', import.meta.url)), cloudflareHeaders, 'utf8')
     ])
   }
 })

@@ -45,11 +45,18 @@
             hint.as = as
             if (type) hint.type = type
             if (as === 'fetch') hint.crossOrigin = 'anonymous'
+            hint.fetchPriority = as === 'fetch' ? 'low' : 'high'
             document.head.append(hint)
           }
 
+          const heroPixels = Math.max(window.innerWidth || 0, 1) * Math.max(window.devicePixelRatio || 1, 1)
+          const heroPath = heroPixels >= 2560
+            ? 'media/home/hero-loop.mp4'
+            : heroPixels <= 1280
+              ? 'media/home/hero-loop-720p.mp4'
+              : 'media/home/hero-loop-1080p.mp4'
           preload('models/avatar/mesting-rodin-rebuild-optimized.glb', 'fetch', 'model/gltf-binary')
-          preload('media/home/hero-loop.mp4', 'video', 'video/mp4')
+          preload(heroPath, 'video', 'video/mp4')
         }
       })()
     </script>
