@@ -6,7 +6,7 @@ const models = {
     title: 'Xiaomi 17 <span>Ultra</span>',
     tag: '在售 · 旗舰影像',
     lead: '把拍摄当作第一入口：更大的传感器、长焦与影像套装服务于同一件事——在远近光线都复杂的真实场景里，留下可用的画面。',
-    image: '/zizi/vivo/img/xiaomi-17-ultra-hero.webp',
+    image: '/vivo/img/xiaomi-17-ultra-hero.webp',
     art: 'photo',
     artLabel: '200MP',
     artSub: 'LEICA TELEPHOTO',
@@ -24,7 +24,7 @@ const models = {
     title: 'Xiaomi <span>17</span>',
     tag: '在售 · 数字旗舰',
     lead: '把旗舰能力压缩回更适合单手使用的尺寸。小米 17 的价值不在于缩小，而在于让影像、性能与跨端协作无需因体积而妥协。',
-    image: '/zizi/vivo/img/xiaomi-17-product.png',
+    image: '/vivo/img/xiaomi-17-product.png',
     art: 'product',
     artLabel: '6.3″',
     artSub: 'COMPACT FORM',
@@ -59,7 +59,7 @@ const models = {
     title: 'Redmi <span>K / Note</span>',
     tag: '在售 · 性能普及',
     lead: '性能不应只属于最高价位。Redmi 的意义是把续航、屏幕、影像或游戏性能中的某一个关键体验，交给更大的用户群。',
-    image: '/zizi/vivo/img/redmi-note-15-pro.png',
+    image: '/vivo/img/redmi-note-15-pro.png',
     art: 'product',
     artLabel: '200MP',
     artSub: 'NOTE 15 PRO+ 5G',
@@ -102,8 +102,8 @@ document.title = `${model.title.replace(/<[^>]+>/g, '')} / Xiaomi Ecosystem Stud
 document.getElementById('model-app').innerHTML = `
   <div class="detail-shell" style="--art-bg:${model.artBg};--art-label:${model.artInk}">
     <header class="detail-nav">
-      <a class="detail-brand" href="/zizi/vivo/index.html#phones" aria-label="返回小米全生态首页">${logo()}<span>XIAOMI / PHONE SPECTRUM</span></a>
-      <a class="detail-back" href="/zizi/vivo/index.html#phones"><span>←</span> 返回机型矩阵</a>
+      <a class="detail-brand" href="/vivo/index.html#phones" aria-label="返回小米全生态首页">${logo()}<span>XIAOMI / PHONE SPECTRUM</span></a>
+      <a class="detail-back" href="/vivo/index.html#phones"><span>←</span> 返回机型矩阵</a>
     </header>
     <main>
       <section class="detail-hero" data-loop-reveal>
@@ -121,7 +121,7 @@ document.getElementById('model-app').innerHTML = `
         ${model.source ? `<p class="source-note">产品与系统信息参照 <a href="${model.source}" target="_blank" rel="noreferrer">${model.sourceText} ↗</a>。实际配置、地区可用性与软件功能以官方页面为准。</p>` : '<p class="source-note source-note--future">本页为概念观察，不代表小米官方发布、路线图或规格说明。</p>'}
       </section>
     </main>
-    <footer class="detail-footer"><div>${logo()}<span>小米全生态体验项目 / 2026</span></div><a class="detail-back" href="/zizi/vivo/index.html#phones">回到机型矩阵 <span>↑</span></a></footer>
+    <footer class="detail-footer"><div>${logo()}<span>小米全生态体验项目 / 2026</span></div><a class="detail-back" href="/vivo/index.html#phones">回到机型矩阵 <span>↑</span></a></footer>
   </div>`
 
 const targets = document.querySelectorAll('[data-loop-reveal]')

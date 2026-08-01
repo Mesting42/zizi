@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <base href="/zizi/">
     <meta charset="UTF-8">
     <!-- Establish the light site canvas before any remote font or module can
          delay first paint. Page styles can take over once Vue is mounted. -->
@@ -37,6 +36,28 @@
         ) page = 'case'
 
         document.documentElement.classList.add(`page-${page}`)
+
+        if (page === 'home') {
+          const preload = (path, as, type) => {
+            const hint = document.createElement('link')
+            hint.rel = 'preload'
+            hint.href = new URL(path, document.baseURI).href
+            hint.as = as
+            if (type) hint.type = type
+            if (as === 'fetch') hint.crossOrigin = 'anonymous'
+            hint.fetchPriority = as === 'fetch' ? 'low' : 'high'
+            document.head.append(hint)
+          }
+
+          const heroPixels = Math.max(window.innerWidth || 0, 1) * Math.max(window.devicePixelRatio || 1, 1)
+          const heroPath = heroPixels >= 2560
+            ? 'media/home/hero-loop.mp4'
+            : heroPixels <= 1280
+              ? 'media/home/hero-loop-720p.mp4'
+              : 'media/home/hero-loop-1080p.mp4'
+          preload('models/avatar/mesting-rodin-rebuild-optimized.glb', 'fetch', 'model/gltf-binary')
+          preload(heroPath, 'video', 'video/mp4')
+        }
       })()
     </script>
     <!-- Keep the browser-tab mark self-contained and first in the document.
@@ -61,12 +82,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Mesting is a personal digital space for evolving projects, interfaces, sound, and ideas.">
-    <!-- Warm media origins before the first video asks for a byte range. This
-         only performs DNS/TLS setup; it does not download media early. -->
-    <link rel="dns-prefetch" href="//d8j0ntlcm91z4.cloudfront.net">
-    <link rel="preconnect" href="https://d8j0ntlcm91z4.cloudfront.net" crossorigin>
-    <link rel="dns-prefetch" href="//videos.pexels.com">
-    <link rel="preconnect" href="https://videos.pexels.com" crossorigin>
     <title>Mesting — Personal Digital Space</title>
     <style>
       html:is(.page-home, .page-case, .page-article, .page-article-archive),
@@ -81,18 +96,18 @@
       }
 
     </style>
-    <script type="module" crossorigin src="/zizi/assets/index-Bgwl7i08.js"></script>
+    <script type="module" crossorigin src="/zizi/assets/index-SM-8xMWz.js"></script>
     <link rel="modulepreload" crossorigin href="/zizi/assets/vue-vendor-CoJ052tP.js">
     <link rel="modulepreload" crossorigin href="/zizi/assets/dist-sMZ95YXF.js">
     <link rel="modulepreload" crossorigin href="/zizi/assets/gsap-Ck89sgnr.js">
-    <link rel="modulepreload" crossorigin href="/zizi/assets/articleTranslations-DbpfaGAl.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/articleTranslations-DtYwYrL5.js">
     <link rel="modulepreload" crossorigin href="/zizi/assets/useLocale-BWS1xITD.js">
     <link rel="modulepreload" crossorigin href="/zizi/assets/_plugin-vue_export-helper-DgLP3hnZ.js">
-    <link rel="modulepreload" crossorigin href="/zizi/assets/router-C8clXOzB.js">
-    <link rel="modulepreload" crossorigin href="/zizi/assets/nativeLyricsOverlay-BGKR5cox.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/router-D-J5vNmr.js">
+    <link rel="modulepreload" crossorigin href="/zizi/assets/nativeLyricsOverlay-QStzbqH7.js">
     <link rel="modulepreload" crossorigin href="/zizi/assets/devicePerformance-lxQ61xkU.js">
-    <link rel="stylesheet" crossorigin href="/zizi/assets/router-D_qbP6PH.css">
-    <link rel="stylesheet" crossorigin href="/zizi/assets/index-BRCxe9jT.css">
+    <link rel="stylesheet" crossorigin href="/zizi/assets/router-BcvKttqy.css">
+    <link rel="stylesheet" crossorigin href="/zizi/assets/index-BD7hAOUF.css">
   </head>
   <body>
     <div id="app"></div>

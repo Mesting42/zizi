@@ -1,0 +1,1 @@
+import{t as a}from"./AvatarMouseFollow-BX0iu5ix.js";export{a as default};
