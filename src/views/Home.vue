@@ -596,8 +596,8 @@ const projects = computed(() => [
     index: isChinese.value ? '01 / 原生音乐产品' : '01 / NATIVE MUSIC PRODUCT',
     title: 'Mesting Music',
     description: isChinese.value
-      ? '使用 Flutter 打造的原生 Android 音乐产品，连接发现、播放、主题装扮、云端同步与一起听。'
-      : 'A native Android music product built with Flutter, connecting discovery, playback, themes, cloud sync, and shared listening.',
+      ? 'Flutter 原生 Android 音乐产品，以 Java 21、Spring Boot 与 MySQL 承载账号、同步和社交服务，并保留本地优先的连续播放体验。'
+      : 'A native Flutter music product with local-first playback and Java 21, Spring Boot, and MySQL services for accounts, synchronization, and social features.',
     kind: 'flutter',
     anchor: 'project-mesting-music',
     to: '/flutter-music-case'

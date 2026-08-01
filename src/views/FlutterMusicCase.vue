@@ -67,8 +67,8 @@
           <dl>
             <div><dt>Flutter</dt><dd>{{ caseCopy.nativeAndroid }}</dd></div>
             <div><dt>25</dt><dd>{{ caseCopy.visualThemes }}</dd></div>
-            <div><dt>40</dt><dd>{{ caseCopy.curatedPlaylists }}</dd></div>
             <div><dt>1.0.37</dt><dd>{{ caseCopy.currentRelease }}</dd></div>
+            <div><dt>1.0.38</dt><dd>{{ caseCopy.javaBackendTest }}</dd></div>
           </dl>
         </div>
       </header>
@@ -248,25 +248,25 @@ let sideSignalMedia = null
 const caseCopy = computed(() => isChinese.value
   ? {
       heroEyebrow: '01 / 原生音乐产品',
-      heroLead: '一款从网页体验持续生长为 Flutter 原生应用的音乐产品。播放、视觉装扮、云端资料与社交关系，被放进同一个会呼吸的声音空间。',
+      heroLead: '一款从网页体验持续生长为 Flutter 原生应用、再迁移到 Java 21、Spring Boot 与 MySQL 服务端的音乐产品。播放、视觉装扮、跨设备资料与社交关系，被放进同一个会呼吸的声音空间。',
       download: '下载 Android 版',
-      sourceCode: '查看 Flutter 源码',
+      sourceCode: '查看客户端源码',
       exploreFeatures: '查看完整功能',
       snapshot: '产品概览',
       nativeAndroid: '原生 Android',
       visualThemes: '套视觉主题',
-      curatedPlaylists: '张策划歌单',
-      currentRelease: '当前正式版',
+      javaBackendTest: 'Java 后端测试版 · build 39',
+      currentRelease: '公开稳定版 · build 38',
       applicationInterface: 'Mesting Music 应用界面',
       makeListeningPersonal: '让聆听更私人',
       stageTitle: ['不止播放一首歌，', '也记录每一种', '听歌状态。'],
       coreCapabilities: '核心能力',
-      stageTags: ['个性推荐', '同步歌词', '一起听', '视觉主题'],
+      stageTags: ['个性推荐', '同步歌词', 'Java 服务', '一起听'],
       nativeDiscovery: '原生推荐流',
       capsulePlayer: '胶囊播放器',
       ideaEyebrow: '产品想法 / 从聆听到连接',
       ideaTitle: ['让音乐先理解此刻，', '再连接此刻的人。'],
-      ideaText: '项目最初只是网页里的音乐模块，后来逐步重构成独立的 Flutter Android 应用。功能设计没有停留在“能播放”，而是继续回答三个问题：现在想听什么、如何让播放更像自己，以及音乐能不能成为人与人之间自然发生的联系。',
+      ideaText: '项目最初只是网页里的音乐模块，后来逐步重构成独立的 Flutter Android 应用；账号、同步与社交服务又从 CloudBase 主后端迁移到 Java 21、Spring Boot 4.1 和 MySQL 8。产品没有停留在“能播放”，工程也没有停留在“能调用接口”，而是持续建立可恢复、可校验的完整体验。',
       realScreens: '真实产品界面',
       functions: '项功能',
       capabilitiesTitle: ['每一项能力，', '都由真实界面说明。'],
@@ -285,25 +285,25 @@ const caseCopy = computed(() => isChinese.value
     }
   : {
       heroEyebrow: '01 / NATIVE MUSIC PRODUCT',
-      heroLead: 'A music product that grew from a web experience into a native Flutter application. Playback, visual identity, cloud data, and social connection now live in one breathing sound space.',
+      heroLead: 'A music product that grew from the web into a native Flutter application, then moved its service backend to Java 21, Spring Boot, and MySQL. Playback, visual identity, cross-device data, and social connection now live in one coherent sound space.',
       download: 'Download for Android',
-      sourceCode: 'View Flutter Source',
+      sourceCode: 'View Client Source',
       exploreFeatures: 'Explore All Features',
       snapshot: 'PRODUCT SNAPSHOT',
       nativeAndroid: 'Native Android',
       visualThemes: 'Visual themes',
-      curatedPlaylists: 'Curated playlists',
-      currentRelease: 'Current release',
+      javaBackendTest: 'Java backend test · build 39',
+      currentRelease: 'Public stable · build 38',
       applicationInterface: 'Mesting Music application interface',
       makeListeningPersonal: 'MAKE LISTENING PERSONAL',
       stageTitle: ['More than playing', 'a song. Every', 'listening mood', 'becomes part of', 'the story.'],
       coreCapabilities: 'Core capabilities',
-      stageTags: ['Personal Discovery', 'Synced Lyrics', 'Listen Together', 'Visual Themes'],
+      stageTags: ['Personal Discovery', 'Synced Lyrics', 'Java Services', 'Listen Together'],
       nativeDiscovery: 'Native discovery',
       capsulePlayer: 'Capsule player',
       ideaEyebrow: 'PRODUCT IDEA / FROM LISTENING TO CONNECTION',
       ideaTitle: ['Let music understand the moment,', 'then connect the people inside it.'],
-      ideaText: 'The project began as a music module on the web and gradually became an independent Flutter Android application. Its design moved beyond basic playback to answer three questions: what do I want to hear now, how can listening feel more personal, and can music create a natural connection between people?',
+      ideaText: 'The project began as a web music module and became an independent Flutter Android application. Accounts, synchronization, and social data then moved from a CloudBase-primary backend to Java 21, Spring Boot 4.1, and MySQL 8. The product goes beyond playback, while the engineering work goes beyond merely making an endpoint respond.',
       realScreens: 'REAL PRODUCT SCREENS',
       functions: 'FUNCTIONS',
       capabilitiesTitle: ['Every capability,', 'explained through a real interface.'],
@@ -433,7 +433,7 @@ const featureTitleLinesEn = {
   COLLECT: ['Favorites &', 'Archive'],
   DRESS: ['Themes &', 'Player Styles'],
   CONNECT: ['Accounts &', 'Friends Together'],
-  SYSTEM: ['Cloud & Native', 'Android']
+  SYSTEM: ['Java Services &', 'Native Android']
 }
 
 const featureGroupsEn = [
@@ -469,9 +469,9 @@ const featureGroupsEn = [
   },
   {
     eyebrow: 'SYSTEM',
-    title: 'Cloud & Native Android',
-    summary: 'From data recovery to app updates, the experience continues beyond the moment the app is opened.',
-    items: ['CloudBase sync for accounts, favorites, and playlists', 'Profile recovery across devices and cloned-app sessions', 'Desktop floating lyrics with lock and notification toggles', 'Android system sharing and gesture-based back navigation', 'In-app updates with pause, resume, and process recovery', 'Responsive layouts for phones and tablets', 'Foreground and background lifecycle optimization']
+    title: 'Java Services & Native Android',
+    summary: 'A local-first Flutter client now connects to an independently versioned service platform without surrendering playback continuity.',
+    items: ['Java 21 and Spring Boot 4.1 compatibility API', 'Spring Security, JWT, email and phone account recovery', 'MySQL 8 relational data with versioned Flyway migrations', 'Verified migration of accounts, playlists, messages, and playback history', 'Nginx and systemd deployment on a Tencent Cloud CVM test environment', 'Android sharing, notifications, gestures, and lifecycle recovery', 'CloudBase retained only for transitional update-manifest and APK hosting']
   }
 ]
 
@@ -481,7 +481,7 @@ const featureTitleLinesZh = {
   COLLECT: ['收藏与', '音乐档案'],
   DRESS: ['主题与', '播放器装扮'],
   CONNECT: ['账号、好友', '与一起听'],
-  SYSTEM: ['云端与', 'Android 原生能力']
+  SYSTEM: ['Java 服务平台', '与 Android 原生']
 }
 
 const featureGroupsZh = [
@@ -517,9 +517,9 @@ const featureGroupsZh = [
   },
   {
     eyebrow: 'SYSTEM',
-    title: '云端与 Android 原生能力',
-    summary: '从数据恢复到版本更新，体验不只存在于打开应用的那一刻。',
-    items: ['CloudBase 账号、收藏和歌单同步', '换设备与应用分身登录后的资料恢复', '桌面悬浮歌词、锁定与通知栏开关', 'Android 系统分享和侧滑返回', '应用内更新、暂停续传与进程恢复', '手机与平板响应式布局', '前后台生命周期与性能优化']
+    title: 'Java 服务平台与 Android 原生能力',
+    summary: '本地优先的 Flutter 客户端连接可独立演进的服务平台，同时保留连续播放与原生系统体验。',
+    items: ['Java 21 与 Spring Boot 4.1 兼容 API', 'Spring Security、JWT 与邮箱/手机号账号恢复', 'MySQL 8 关系数据与 Flyway 版本化迁移', '账号、歌单、私信与播放历史迁移核验', 'Nginx、systemd 与腾讯云 CVM 测试部署', 'Android 分享、通知、手势与生命周期恢复', 'CloudBase 仅保留过渡期更新清单和 APK 托管']
   }
 ]
 

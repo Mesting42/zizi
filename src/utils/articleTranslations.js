@@ -8,8 +8,8 @@ export const articleCategoryTranslations = {
 
 export const articleTranslations = {
   1001: {
-    title: 'Mesting Music: A Native Flutter Rebuild Retrospective',
-    excerpt: 'This was not a mechanical translation of a web interface into Flutter widgets. It was a complete product rebuild spanning the playback core, information architecture, visual themes, cloud data, social listening, performance decisions, and the lessons behind them.',
+    title: 'Mesting Music: From a Native Flutter Rebuild to a Java Service Backend',
+    excerpt: 'From Vue and Capacitor to a native Flutter client, then from a CloudBase-primary backend to Java 21, Spring Boot 4.1, and MySQL 8: this retrospective covers playback architecture, data migration, authentication boundaries, staged rollout, and cloud deployment.',
     content: `
       <blockquote>
         <p>A rebuild is not the act of rewriting old screens in a new language. It preserves validated product memory while deciding what should become the new system’s foundation.</p>
@@ -21,7 +21,7 @@ export const articleTranslations = {
       <p>I therefore rebuilt the Android application independently in Flutter. <mark>The old interface was not embedded and its WebView runtime was not reused. It became a behavioral specification and a source of product lessons.</mark></p>
 
       <h2>2. Rebuild the Product Before Rebuilding the Code</h2>
-      <p>Before implementation, I reorganized the product into six capability layers: discovery, playback, collection, visual identity, social connection, and cloud/native systems. The main navigation became four stable destinations: For You, Discover Music, Favorites, and Me.</p>
+      <p>Before implementation, I reorganized the product into six capability layers: discovery, playback, collection, visual identity, social connection, and service/native systems. The main navigation became four stable destinations: For You, Discover Music, Favorites, and Me.</p>
       <p>Every destination shares one persistent mini player. Moving from a playlist to the full player, lyrics, queue, or a friend’s profile never interrupts the sound or replaces the current track because a widget was rebuilt. This appears to be a layout choice, but it actually defines the state boundary for the entire application.</p>
 
       <h3>Six Principles Behind the Rebuild</h3>
@@ -58,7 +58,7 @@ export const articleTranslations = {
         <li><strong>Collection:</strong> favorites, personal playlists, recent plays, listening rankings, and account-based recovery.</li>
         <li><strong>Visual identity:</strong> 25 static and animated themes, three player styles, character progress indicators, and custom image or muted-video backgrounds.</li>
         <li><strong>Accounts and shared listening:</strong> profiles, follows, private messages, voice notes, statuses, and synchronized sessions.</li>
-        <li><strong>Cloud and native systems:</strong> data sync, in-app updates, system sharing, back gestures, notifications, and lifecycle recovery.</li>
+        <li><strong>Services and native systems:</strong> account sync, relational data, in-app updates, system sharing, back gestures, notifications, and lifecycle recovery.</li>
       </ul>
       <p>Every feature must answer one question: is the listener trying to find music, control it, save it, express an identity, or connect with someone? If a feature cannot answer that question, it should not occupy a first-level destination.</p>
 
@@ -67,12 +67,41 @@ export const articleTranslations = {
       <p>The full player can also switch between Classic Vinyl, Luminous Vinyl, and Orbital Pulse without interrupting playback because visual rendering and audio state are completely separate. Characters may travel along the progress bar and scenes may move subtly, but decoration avoids the primary control area and can be downgraded on slower devices.</p>
       <p>Mobile is not a scaled-down desktop. Phones emphasize one-handed interaction, bottom navigation, the capsule player, and sheets. Wider screens can place lyrics, queue, and richer controls together. <mark>Responsive design is the redistribution of attention, not simple scaling.</mark></p>
 
-      <h2>6. Data: Reliable Locally, Recoverable from the Cloud</h2>
-      <p>Structured local data is stored with Drift. Tracks, favorites, playlists, playlist-track relationships, and online-track snapshots are modeled separately and accessed through repositories. Screens never write directly to the database. When an online track is added to a personal playlist, enough metadata is saved locally so it does not disappear on the next launch when an API is unavailable.</p>
-      <p>Theme selection, brightness mode, and lightweight preferences use SharedPreferences. Account profiles, favorites, playlists, social relationships, and messages synchronize through the CloudBase service layer. The goal is not to make every tap depend on the network. Actions complete locally first and synchronize when connectivity returns; signing in on another device or app clone can restore account-owned data.</p>
-      <p><code>go_router</code> organizes navigation while keeping the player shell persistent. <code>flutter_riverpod</code> divides state by domain, and each screen observes only the smallest state fragment it needs. A position update should refresh the progress control, not rebuild an entire discovery page.</p>
+      <h2>6. Client Data: Local First, with Explicit Service Boundaries</h2>
+      <p>Structured local data is stored with Drift. Tracks, favorites, playlists, playlist-track relationships, and online-track snapshots are modeled separately and accessed through repositories. Screens never write directly to the database. When an online track enters a personal playlist, enough metadata is stored locally to keep it useful during a temporary API outage.</p>
+      <p>Theme selection, brightness mode, and lightweight preferences use SharedPreferences. Accounts, cross-device profiles, social relationships, messages, favorites, and playback history belong to the service domain. Flutter still responds locally first and reconciles authoritative state when connectivity returns instead of blocking a favorite action on network latency.</p>
+      <p><code>go_router</code> organizes navigation while keeping the player shell persistent. <code>flutter_riverpod</code> divides state by domain, and each screen observes only the smallest state fragment it needs. The backend migration did not change that rule: the server is authoritative for cross-device data, but it does not own the real-time playback lifecycle.</p>
 
-      <h2>7. Performance Is Part of the Theme System</h2>
+      <h2>7. Why Move the Primary Backend from CloudBase to Java and MySQL?</h2>
+      <p>CloudBase helped the early product validate accounts, synchronization, and social features quickly. Long-term maintenance, however, required clearer domain models, relational constraints, versioned schema migrations, and a deployment chain that could be diagnosed independently. The point was not to adopt a heavier stack for its own sake. It was to make data ownership, authentication rules, service boundaries, and failure locations explicit.</p>
+      <p>The new compatibility API preserves the previous action protocol, so Flutter did not need an all-at-once rewrite. <code>AUTH_API_BASE_URL</code> switches the client between the previous service and the Java API while login, profiles, favorites, playlists, follows, messages, history, and Listen Together compatibility actions are verified one by one.</p>
+
+      <pre><code>Flutter Android Client
+  → Nginx /v1/
+  → Java 21 / Spring Boot 4.1
+  → Spring Security / JWT
+  → MySQL 8 / Flyway
+
+Side services
+  → QQ SMTP verification
+  → CVM media storage (test environment)</code></pre>
+
+      <p>The Spring Boot service implements registration, login, access and refresh tokens, verification-code password recovery, user profiles, follows, blocks, private messages, favorites, playlists, playback history, Listen Together compatibility actions, and media uploads. Flyway puts schema changes under version control instead of relying on one-off manual database edits.</p>
+
+      <h2>8. Data Migration: From 19 Collections to a Verifiable Relational Model</h2>
+      <p>The migration exported 19 CloudBase collections containing 676 raw records. After normalization, deduplication, and relational mapping, 669 rows were imported into MySQL. The verified result included 9 users, 255 messages, and 335 playback-history entries, alongside follows, playlists, favorites, and Listen Together data.</p>
+      <p>A successful import is not the end of a migration. Foreign keys, orphaned follows, ownerless messages, and count differences were checked; no orphan follow or message records remained. CloudBase Auth password hashes could not be transferred safely, so no fake compatibility password was created. Existing users must reset their passwords through email or phone verification. Three email bindings and seven phone bindings were synchronized afterward.</p>
+      <p>The central lesson is that <mark>a migration report must state both what moved successfully and what security boundaries made impossible to move</mark>. Otherwise “the data was migrated” becomes a misleading promise.</p>
+
+      <h2>9. Authentication, Synchronization, and Failure Boundaries</h2>
+      <p>Spring Security and JWT now own authentication, with separate access and refresh tokens. Registration, password reset, and account recovery use verification codes delivered through QQ SMTP over SSL. Both email and phone account paths remain supported so the migration does not privilege only new users.</p>
+      <p>Favorites, playlists, playback history, and social relationships have explicit server records, while Flutter retains local state and actionable failure feedback. Requests distinguish unauthenticated, validation, connectivity, and server failures instead of collapsing them into a generic loading error. Diagnosis can now follow the chain through Nginx, Spring Boot, SQL, and SMTP rather than guessing between client code and cloud functions.</p>
+
+      <h2>10. Deployment and Release Status: A Test Environment Is Not Production</h2>
+      <p>The Java service runs on a Tencent Cloud Ubuntu 22.04 CVM under systemd. Nginx forwards only <code>/v1/</code> to <code>127.0.0.1:8080</code>; MySQL remains internal, and ports 3306 and 8080 are not publicly exposed. Test uploads are written to <code>/opt/mesting-api/data/media</code>, with their metadata URLs stored in MySQL.</p>
+      <p>The public stable release remains <strong>1.0.37 (build 38)</strong>. The Java and MySQL connected <strong>1.0.38+39</strong> build is a migration test release whose login, registration, password reset, and email-verification paths have been verified. It still uses a public IP over HTTP; a domain and HTTPS are pending, so it must not be described as a final production deployment. During this transition, CloudBase remains only for the update manifest and APK hosting, not as the new primary user-data backend.</p>
+
+      <h2>11. Performance Is Part of the Theme System</h2>
       <p>The earlier version taught me that motion cannot be judged only by how it looks. It also needs a clear rule for when it stops. Performance decisions are therefore part of Flutter theme configuration:</p>
       <ul>
         <li>Animations, video backgrounds, and frequent painting pause when they leave the viewport.</li>
@@ -84,18 +113,20 @@ export const articleTranslations = {
       </ul>
       <p>This is another reason the player and interface must remain separate: visuals can pause, degrade, or rebuild; the sound must continue.</p>
 
-      <h2>8. The Migration Sequence: Build the Spine Before the Expression</h2>
+      <h2>12. The Migration Sequence: Build the Spine, Then Move Authoritative Data</h2>
       <ol>
-        <li><strong>Inventory behavior:</strong> document what every old screen actually accomplished instead of copying screenshots.</li>
+        <li><strong>Inventory client behavior:</strong> document what every old screen actually accomplished instead of copying screenshots.</li>
         <li><strong>Define domain models:</strong> establish Track, Playlist, Favorite, PlaybackSnapshot, LyricsDocument, and ThemePreset first.</li>
         <li><strong>Rebuild the playback spine:</strong> local playback, queue rules, three modes, background media sessions, and recovery.</li>
         <li><strong>Restore the music archive:</strong> Drift, favorites, playlists, lyrics, and listening history.</li>
         <li><strong>Rebuild the visual language:</strong> translate CSS effects into Flutter animation and a degradable theme renderer.</li>
-        <li><strong>Add cloud and relationships:</strong> accounts, friends, messaging, shared listening, and updates come after playback is dependable.</li>
-        <li><strong>Verify on real devices:</strong> test backgrounding, lock screen, headsets, offline states, restarts, long lists, and battery-saving mode.</li>
+        <li><strong>Establish the Java compatibility API:</strong> retain the action protocol while replacing account, sync, social, and media endpoints.</li>
+        <li><strong>Migrate and reconcile data:</strong> export CloudBase, normalize MySQL tables, run Flyway, and verify foreign keys and counts.</li>
+        <li><strong>Switch the client in stages:</strong> connect a test build through configuration and keep stable and Java-backend releases clearly separated.</li>
+        <li><strong>Verify on real devices:</strong> test playback lifecycle, offline states, token expiry, password recovery, sync conflicts, and reduced-performance mode.</li>
       </ol>
 
-      <h2>9. Core Technology Choices</h2>
+      <h2>13. Core Technology Choices</h2>
       <ul>
         <li><strong>Flutter and Dart:</strong> the Android interface, motion system, and domain models.</li>
         <li><strong>Riverpod:</strong> cross-screen playback, lyrics, playlists, themes, and account state.</li>
@@ -105,15 +136,19 @@ export const articleTranslations = {
         <li><strong>audio_session:</strong> focus, call interruption, headset behavior, and audio coexistence.</li>
         <li><strong>Drift and SQLite:</strong> favorites, playlists, relational track data, snapshots, and migrations.</li>
         <li><strong>SharedPreferences:</strong> themes and lightweight preferences.</li>
-        <li><strong>CloudBase service layer:</strong> accounts, profiles, collections, social data, messages, and cross-device recovery.</li>
+        <li><strong>Java 21 and Spring Boot 4.1:</strong> service boundaries for accounts, sync, social data, media, and compatibility endpoints.</li>
+        <li><strong>Spring Security and JWT:</strong> login, access tokens, refresh tokens, and endpoint authorization.</li>
+        <li><strong>MySQL 8 and Flyway:</strong> relational data, constraints, indexes, and versioned schema changes.</li>
+        <li><strong>Nginx, systemd, and Tencent Cloud CVM:</strong> reverse proxying, process supervision, and test deployment.</li>
+        <li><strong>QQ SMTP:</strong> verification codes for registration, password recovery, and account restoration.</li>
         <li><strong>Android platform capabilities:</strong> notifications, system sharing, back gestures, lifecycle handling, and in-app updates.</li>
       </ul>
 
-      <h2>10. What the Rebuild Actually Changed</h2>
-      <p>The largest change was not the framework. The old application began with pages and then tried to carry state through them. The Flutter application begins with persistent playback and data systems, then allows multiple interfaces to observe them. Themes were previously a decoration layer; they now control scenes, player forms, characters, and performance as a product capability.</p>
+      <h2>14. What These Two Migrations Actually Changed</h2>
+      <p>The first migration changed the client’s foundation. The old application began with pages and tried to carry state through them; Flutter begins with persistent playback and local data systems, then lets interfaces observe them. The second migration changed the authority boundary: accounts, relationships, and cross-device state moved from a cloud-function arrangement into a Java service that can be versioned, constrained, and deployed independently.</p>
       <p>The direction of Mesting Music is now clearer as well. It is not trying to be the player with the longest feature list. It is a personal soundspace that remembers listening behavior, allows visual identity, and makes sharing one song with a friend feel natural.</p>
       <blockquote>
-        <p>The rebuild is complete not when every old screen reappears, but when the listener stops noticing the boundaries between screens, networks, and the operating system.</p>
+        <p>A migration is complete not when every technology label has changed, but when every piece of state has an explicit owner, a verifiable path, and an honest failure boundary.</p>
       </blockquote>
     `
   },
