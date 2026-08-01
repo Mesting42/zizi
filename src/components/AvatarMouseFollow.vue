@@ -110,7 +110,6 @@ let lastFrameTime = 0
 let disposed = false
 let isStageVisible = false
 let isUserScrolling = document.body.classList.contains('is-user-scrolling')
-let rendererWarmupIdleHandle = 0
 let rendererWarmupTimer = 0
 let pointer = { x: 0, y: 0 }
 let pointerTarget = { x: 0, y: 0 }
@@ -227,8 +226,8 @@ const warmRendererBeforeReveal = () => {
     return
   }
 
-  // Compile shaders and upload textures while idle. Otherwise this first
-  // render occurs exactly as the reader scrolls back to the card.
+  // Compile shaders and upload textures before revealing the canvas so the
+  // first visit shows the actual model instead of waiting for an idle window.
   renderer.compile(scene, camera)
   renderer.render(scene, camera)
   isReady.value = true
@@ -239,17 +238,7 @@ const warmRendererBeforeReveal = () => {
 
 const scheduleRendererWarmup = () => {
   if (disposed) return
-
-  const beginWarmup = () => {
-    rendererWarmupIdleHandle = 0
-    warmRendererBeforeReveal()
-  }
-
-  if ('requestIdleCallback' in window) {
-    rendererWarmupIdleHandle = window.requestIdleCallback(beginWarmup, { timeout: 900 })
-  } else {
-    rendererWarmupTimer = window.setTimeout(beginWarmup, 0)
-  }
+  warmRendererBeforeReveal()
 }
 
 const findHeadControl = (model) => {
@@ -476,9 +465,6 @@ onBeforeUnmount(() => {
   document.removeEventListener('visibilitychange', handleDocumentVisibility)
   document.removeEventListener('mesting:scroll-state', handleScrollState)
   cancelAnimationFrame(animationFrame)
-  if (rendererWarmupIdleHandle && 'cancelIdleCallback' in window) {
-    window.cancelIdleCallback(rendererWarmupIdleHandle)
-  }
   if (rendererWarmupTimer) window.clearTimeout(rendererWarmupTimer)
   resizeObserver?.disconnect()
   visibilityObserver?.disconnect()

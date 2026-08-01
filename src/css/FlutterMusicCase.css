@@ -1117,7 +1117,7 @@ body.page-case::before { display: none; }
 @media (max-width: 767px) {
   .flutter-music-case main { width: min(calc(100% - 24px), 1440px); padding-top: 112px; }
   .fm-hero { gap: 45px; padding-bottom: 48px; }
-  .fm-hero h1 { margin-top: 20px; font-size: clamp(4.3rem, 25vw, 6.2rem); }
+  .fm-hero h1 { margin-top: 20px; font-size: clamp(4.3rem, 25vw, 6.2rem); letter-spacing: -.06em; line-height: 1; overflow-wrap: break-word; }
   .fm-hero h1 span { margin-left: .15em; }
   .fm-hero-actions { display: grid; grid-template-columns: 1fr; }
   .fm-button { width: 100%; }
@@ -1224,7 +1224,7 @@ body.page-case::before { display: none; }
   .fm-native-grid article { grid-template-columns: 30px 1fr; gap: 14px; }
   .fm-native-grid p { grid-column: 2; }
   .fm-next { gap: 30px; margin-bottom: 24px; padding: 30px 22px 22px; border-radius: 24px; }
-  .fm-next h2 { margin-top: 25px; font-size: clamp(2.75rem, 12.5vw, 3.65rem); }
+  .fm-next h2 { margin-top: 25px; font-size: clamp(2.75rem, 12.5vw, 3.65rem); line-height: 1.02; }
   .fm-next-description { margin-top: 22px; font-size: .84rem; line-height: 1.72; }
   .fm-next-actions { align-items: flex-start; flex-direction: column; gap: 15px; margin-top: 27px; }
   .fm-next-actions > a { width: 100%; justify-content: space-between; }

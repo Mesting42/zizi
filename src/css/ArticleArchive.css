@@ -117,7 +117,8 @@ body.page-article-archive::before { display: none; }
 .thinking-library-row:hover { padding-right: 14px; padding-left: 14px; background: #f7f9f7; }
 .thinking-library-index { padding-top: 6px; color: rgba(5, 26, 36, .38); font-size: 10px; }
 .thinking-library-copy p { margin: 0 0 8px; color: rgba(5, 26, 36, .48); font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
-.thinking-library-copy h3 { margin: 0; color: var(--archive-ink); font-size: clamp(1.35rem, 2.5vw, 2.25rem); font-weight: 400; letter-spacing: -.045em; line-height: 1.1; }
+.thinking-library-copy { min-width: 0; }
+.thinking-library-copy h3 { max-width: 100%; margin: 0; color: var(--archive-ink); font-size: clamp(1.35rem, 2.5vw, 2.25rem); font-weight: 400; letter-spacing: -.045em; line-height: 1.12; overflow-wrap: break-word; text-wrap: pretty; }
 .thinking-library-copy > span {
   display: -webkit-box;
   max-width: 700px;
@@ -167,13 +168,13 @@ body.page-article-archive::before { display: none; }
 @media (max-width: 767px) {
   .thinking-library main { width: min(calc(100% - 24px), 1280px); padding-top: 118px; }
   .thinking-library-hero { gap: 30px; padding-bottom: 74px; }
-  .thinking-library-hero h1 { font-size: clamp(2.9rem, 14vw, 4.5rem); }
+  .thinking-library-hero h1 { font-size: clamp(2.9rem, 14vw, 4.5rem); line-height: 1.02; overflow-wrap: break-word; }
   .thinking-library-content { padding: 34px 18px; border-radius: 26px; }
   .thinking-library-toolbar { align-items: flex-start; flex-direction: column; }
   .thinking-library-filters { justify-content: flex-start; }
   .thinking-library-row { grid-template-columns: 32px minmax(0, 1fr); gap: 12px; padding: 24px 0 26px; }
   .thinking-library-row:hover { padding-right: 0; padding-left: 0; background: transparent; }
-  .thinking-library-copy h3 { font-size: clamp(1.25rem, 6vw, 1.65rem); }
+  .thinking-library-copy h3 { font-size: clamp(1.25rem, 6vw, 1.65rem); letter-spacing: -.035em; line-height: 1.16; }
   .thinking-library-copy > span { -webkit-line-clamp: 3; }
   .thinking-library-meta { grid-column: 2; justify-content: space-between; margin-top: 3px; }
   .thinking-library-footer { align-items: flex-start; flex-direction: column; width: min(calc(100% - 24px), 1280px); }

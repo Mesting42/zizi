@@ -10,7 +10,9 @@ const excludePrivateMusicFromPublicBuild = () => ({
     // never package raw audio or lyric files into the public website.
     await Promise.all([
       rm(fileURLToPath(new URL('./dist/music', import.meta.url)), { recursive: true, force: true }),
-      rm(fileURLToPath(new URL('./dist/lyrics', import.meta.url)), { recursive: true, force: true })
+      rm(fileURLToPath(new URL('./dist/lyrics', import.meta.url)), { recursive: true, force: true }),
+      // Keep the handoff-only Cloudflare header source out of deploy output.
+      rm(fileURLToPath(new URL('./dist/_headers', import.meta.url)), { force: true })
     ])
   }
 })

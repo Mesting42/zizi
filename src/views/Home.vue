@@ -10,12 +10,11 @@
             muted
             loop
             playsinline
-            preload="metadata"
+            preload="auto"
             poster="/generated/home-hero-poster.webp"
           >
             <source
-              v-if="!marqueeStaticPreviews"
-              src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4"
+              :src="heroVideoSrc"
               type="video/mp4"
             >
           </video>
@@ -70,19 +69,21 @@
               :key="`${repeat}-${asset.src}`"
               class="oddy-marquee-card"
               :data-card-key="`${repeat}-${assetIndex}`"
+              :data-repeat="repeat"
             >
               <div class="oddy-marquee-card-inner">
                 <span class="oddy-marquee-poster" aria-hidden="true"></span>
                 <video
-                  v-if="marqueeActiveVideoKeys.has(`${repeat}-${assetIndex}`)"
+                  v-if="repeat === 1 || marqueeActiveVideoKeys.has(`${repeat}-${assetIndex}`)"
                   class="oddy-marquee-media"
                   :src="asset.src"
+                  :poster="asset.poster"
                   :aria-label="asset.alt"
                   autoplay
                   loop
                   muted
                   playsinline
-                  preload="none"
+                  :preload="repeat === 1 ? 'auto' : 'metadata'"
                   disablepictureinpicture
                 ></video>
                 <span class="oddy-marquee-glint" aria-hidden="true"></span>
@@ -122,9 +123,9 @@
                 :alt="isChinese ? 'Mesting 的数字分身预览' : 'Mesting digital avatar preview'"
                 width="1016"
                 height="940"
-                loading="lazy"
+                loading="eager"
                 decoding="async"
-                fetchpriority="low"
+                fetchpriority="high"
               >
               <AvatarMouseFollow
                 v-if="avatarVisible && !avatarFailed"
@@ -307,7 +308,7 @@
             class="oddy-trail-image"
             :style="{ left: `${trail.x}px`, top: `${trail.y}px`, '--trail-rotation': `${trail.rotation}deg` }"
             aria-hidden="true"
-          ><img :src="trail.src" alt=""></span>
+          ><video :src="trail.src" autoplay muted playsinline preload="metadata"></video></span>
           <div class="oddy-partner-content">
             <p class="oddy-kicker">{{ copy.conversationKicker }}</p>
             <h2>{{ copy.partnerTitle[0] }}<br><span>{{ copy.partnerTitle[1] }}</span></h2>
@@ -359,7 +360,9 @@ import { useLocale } from '../composables/useLocale'
 import PortfolioHeader from '../components/PortfolioHeader.vue'
 import AmbientSideFields from '../components/AmbientSideFields.vue'
 
-const avatarModelUrl = '/models/avatar/mesting-rodin-rebuild-optimized.glb'
+const assetUrl = path => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+const avatarModelUrl = assetUrl('models/avatar/mesting-rodin-rebuild-optimized.glb')
+const heroVideoSrc = assetUrl('media/home/hero-loop.mp4')
 let avatarComponentPreload = null
 
 const preloadAvatarComponent = () => {
@@ -377,12 +380,12 @@ const avatarMount = ref(null)
 const marqueeSection = ref(null)
 const marqueeTrack = ref(null)
 const marqueeDragging = ref(false)
-const marqueeMounted = ref(false)
+const marqueeMounted = ref(true)
 const marqueeStaticPreviews = ref(
   typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
 )
 const marqueeActiveVideoKeys = ref(new Set())
-const avatarVisible = ref(false)
+const avatarVisible = ref(true)
 const avatarReady = ref(false)
 const avatarFailed = ref(false)
 const activeNote = ref(0)
@@ -528,43 +531,51 @@ const handleAvatarError = () => {
 
 const marqueeAssets = [
   {
-    src: 'https://videos.pexels.com/video-files/37013442/15681498_3840_2160_30fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-space-voyage-preview-eECLH3Yc.gif',
+    src: assetUrl('media/home/signal-current.mp4'),
+    poster: assetUrl('media/home/signal-current-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-space-voyage.mp4'),
     alt: 'glowing circuit current'
   },
   {
-    src: 'https://videos.pexels.com/video-files/10288594/10288594-hd_1920_1080_25fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-portfolio-cosmic-preview-BpvWJ3Nc.gif',
+    src: assetUrl('media/home/circuit-pathways.mp4'),
+    poster: assetUrl('media/home/circuit-pathways-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-portfolio-cosmic.mp4'),
     alt: 'scrolling circuit pathways'
   },
   {
-    src: 'https://videos.pexels.com/video-files/11041434/11041434-hd_1920_1080_30fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-velorah-preview-CJNTtbpd.gif',
+    src: assetUrl('media/home/data-matrix.mp4'),
+    poster: assetUrl('media/home/data-matrix-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-velorah.mp4'),
     alt: 'monochrome data matrix'
   },
   {
-    src: 'https://videos.pexels.com/video-files/6466100/6466100-uhd_3840_2160_30fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-asme-preview-B_nGDnTP.gif',
+    src: assetUrl('media/home/signal-interface.mp4'),
+    poster: assetUrl('media/home/signal-interface-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-asme.mp4'),
     alt: 'blue signal interface'
   },
   {
-    src: 'https://videos.pexels.com/video-files/36405803/15438012_1920_1080_30fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-transform-data-preview-Cx5OU29N.gif',
+    src: assetUrl('media/home/processor-core.mp4'),
+    poster: assetUrl('media/home/processor-core-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-transform-data.mp4'),
     alt: 'connected processor core'
   },
   {
-    src: 'https://videos.pexels.com/video-files/30308684/12992536_1920_1080_24fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-aethera-preview-DknSlcTa.gif',
+    src: assetUrl('media/home/network.mp4'),
+    poster: assetUrl('media/home/network-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-aethera.mp4'),
     alt: 'three dimensional network'
   },
   {
-    src: 'https://videos.pexels.com/video-files/29882131/12828950_1920_1080_25fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-orbit-web3-preview-BXt4OttD.gif',
+    src: assetUrl('media/home/neon-loop.mp4'),
+    poster: assetUrl('media/home/neon-loop-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-orbit-web3.mp4'),
     alt: 'neon circuit loop'
   },
   {
-    src: 'https://videos.pexels.com/video-files/34645078/14683767_3840_2160_30fps.mp4',
-    trailSrc: 'https://motionsites.ai/assets/hero-nexora-preview-cx5HmUgo.gif',
+    src: assetUrl('media/home/data-field.mp4'),
+    poster: assetUrl('media/home/data-field-poster.webp'),
+    trailSrc: assetUrl('media/home/trail-nexora.mp4'),
     alt: 'digital data field'
   }
 ]
@@ -628,7 +639,6 @@ let revealObserver = null
 let heroVideoObserver = null
 let marqueeObserver = null
 let marqueeMediaObserver = null
-let avatarObserver = null
 let noteCarouselObserver = null
 let projectImageObserver = null
 let marqueeFrame = 0
@@ -678,11 +688,8 @@ const trailTimers = new Set()
 const prefetchAvatarModel = () => {
   if (avatarModelPrefetched || document.hidden) return
 
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
-  if (connection?.saveData || /(^|-)2g/.test(connection?.effectiveType || '')) return
-
   const hint = document.createElement('link')
-  hint.rel = 'prefetch'
+  hint.rel = 'preload'
   hint.as = 'fetch'
   hint.href = avatarModelUrl
   hint.crossOrigin = 'anonymous'
@@ -788,12 +795,21 @@ const stopMarqueeAnimation = () => {
   marqueeLastFrame = 0
 }
 
+const syncMarqueeVideoPlayback = shouldPlay => {
+  marqueeTrack.value?.querySelectorAll('video').forEach(video => {
+    if (shouldPlay && !document.hidden) video.play().catch(() => {})
+    else video.pause()
+  })
+}
+
 const handlePageVisibility = () => {
   if (document.hidden) {
     stopMarqueeAnimation()
     heroVideo.value?.pause()
+    syncMarqueeVideoPlayback(false)
   } else {
     startMarqueeAnimation()
+    if (marqueeIsVisible) syncMarqueeVideoPlayback(true)
     if (heroVideoIsVisible && !pageIsScrolling) {
       heroVideo.value?.play().catch(() => {})
     }
@@ -931,15 +947,12 @@ const destroyMarqueeVideos = () => {
 const setupMarqueeVideos = () => {
   destroyMarqueeVideos()
 
-  // A card receives its original video only near the visible reel. The
-  // generated poster keeps off-screen cards visually complete, while avoiding
-  // simultaneous network and decoder work for every 4K loop in the strip.
-  // The mobile reel uses native horizontal scrolling. Do not attach the
-  // remote 1080p/4K loops there: a cellular viewport should get the lightweight
-  // poster treatment and never compete with the page's first contentful paint.
+  // The first group owns one eager instance of every unique local video so all
+  // cards are ready on the initial visit. Only the duplicate desktop loop is
+  // attached near the viewport, avoiding sixteen simultaneous decoders.
   if (!marqueeTrack.value || usesNativeMarqueeScroll()) return
 
-  const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card')]
+  const cards = [...marqueeTrack.value.querySelectorAll('.oddy-marquee-card[data-repeat="2"]')]
   if (!('IntersectionObserver' in window)) {
     marqueeActiveVideoKeys.value = new Set(
       cards.map(card => card.dataset.cardKey).filter(Boolean)
@@ -1312,6 +1325,8 @@ const setupProjectMotion = () => {
 }
 
 onMounted(() => {
+  preloadAvatarComponent()
+  prefetchAvatarModel()
   const revealTargets = prepareRevealTargets()
 
   if ('IntersectionObserver' in window) {
@@ -1339,13 +1354,14 @@ onMounted(() => {
           measureMarquee()
           setupMarqueeCardMotion()
           setupMarqueeVideos()
+          syncMarqueeVideoPlayback(true)
           startMarqueeAnimation()
         })
       } else {
         stopMarqueeAnimation()
         destroyMarqueeCardMotion()
         destroyMarqueeVideos()
-        marqueeMounted.value = false
+        syncMarqueeVideoPlayback(false)
       }
     }, { rootMargin: '420px 0px' })
     if (marqueeSection.value) marqueeObserver.observe(marqueeSection.value)
@@ -1359,19 +1375,6 @@ onMounted(() => {
       }
     }, { rootMargin: '80px 0px' })
     if (heroVideo.value) heroVideoObserver.observe(heroVideo.value)
-
-    avatarObserver = new IntersectionObserver(([entry]) => {
-      if (!entry?.isIntersecting || avatarVisible.value || avatarFailed.value) return
-
-      // Keep the fallback visible until the real canvas is ready, but avoid
-      // parsing Three.js and fetching the 3D asset when this card is still
-      // outside the reading path.
-      preloadAvatarComponent()
-      prefetchAvatarModel()
-      avatarVisible.value = true
-      avatarObserver?.disconnect()
-    }, { rootMargin: '180px 0px', threshold: 0.01 })
-    if (avatarMount.value) avatarObserver.observe(avatarMount.value)
 
     noteCarouselObserver = new IntersectionObserver(([entry]) => {
       if (entry?.isIntersecting) resumeCarousel()
@@ -1425,7 +1428,6 @@ onUnmounted(() => {
   revealObserver?.disconnect()
   heroVideoObserver?.disconnect()
   marqueeObserver?.disconnect()
-  avatarObserver?.disconnect()
   destroyMarqueeVideos()
   noteCarouselObserver?.disconnect()
   projectImageObserver?.disconnect()

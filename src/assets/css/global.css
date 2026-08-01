@@ -1144,3 +1144,13 @@ body.dark-mode:not(.page-music) .btn-outline:hover {
 }
 
 /* 明暗模式只切换颜色变量，不创建或接管浏览器页面快照。 */
+
+/* Content headings may mix long English tokens with CJK. Keep them inside
+   narrow mobile grids without changing deliberate single-line controls. */
+@media (max-width: 767px) {
+  :where(h1, h2, h3) {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+}
