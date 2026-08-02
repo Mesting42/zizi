@@ -36,7 +36,7 @@
             <span>{{ previewLabel }}</span>
           </div>
           <div class="case-study-preview-actions">
-            <a :href="iframeSrc" target="_blank" rel="noopener">{{ copy.openProject }} <span>↗</span></a>
+            <a :href="standaloneProjectHref" target="_blank" rel="noopener">{{ copy.openProject }} <span>↗</span></a>
             <button type="button" :title="isFullscreen ? copy.exitFullscreen : copy.viewFullscreen" @click="toggleFullscreen">
               <span>{{ isFullscreen ? copy.exitFullscreen : copy.viewFullscreen }}</span>
               <svg v-if="!isFullscreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -187,9 +187,20 @@ const nextProjectTarget = computed(() => projectAnchor.value === 'projects'
   ? props.nextTo
   : { path: props.nextTo, query: { fromProject: projectAnchor.value } })
 const restorePreview = computed(() => props.variant === 'xiaomi' && route.query.restorePreview === '1')
-const iframePreviewSrc = computed(() => restorePreview.value
-  ? `${props.iframeSrc}#phones`
-  : props.iframeSrc)
+const resolvePublicPath = (source) => {
+  if (!source || /^(?:[a-z]+:)?\/\//i.test(source) || source.startsWith('data:') || source.startsWith('blob:')) {
+    return source
+  }
+
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '')
+  const normalizedSource = source.replace(/^\/+/, '')
+  return `${base}/${normalizedSource}`
+}
+const standaloneProjectHref = computed(() => resolvePublicPath(props.iframeSrc))
+const iframePreviewSrc = computed(() => {
+  const source = resolvePublicPath(props.iframeSrc)
+  return restorePreview.value ? `${source}#phones` : source
+})
 const copy = computed(() => isChinese.value
   ? {
       technologies: '项目技术',

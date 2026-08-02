@@ -26,8 +26,8 @@ const caseData = computed(() => isChinese.value
         { title: '适用场景', text: '适合在线教育、课程展示与学习资源平台，也为后续扩展为完整内容产品保留空间。' }
       ],
       nextEyebrow: '返回 / 02',
-      nextTitle: 'Vivo 概念重构',
-      nextTo: '/vivo-case'
+      nextTitle: '小米全生态体验',
+      nextTo: '/xiaomi-case'
     }
   : {
       variant: 'foreign',
@@ -46,8 +46,8 @@ const caseData = computed(() => isChinese.value
         { title: 'Use Cases', text: 'Designed for online education, course showcases, and learning-resource platforms, with room to grow into a complete content product.' }
       ],
       nextEyebrow: 'BACK TO / 02',
-      nextTitle: 'Vivo Concept Rebuild',
-      nextTo: '/vivo-case'
+      nextTitle: 'Xiaomi Ecosystem Study',
+      nextTo: '/xiaomi-case'
     })
 
 const caseEnhancements = computed(() => isChinese.value

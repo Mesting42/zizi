@@ -11,7 +11,7 @@ const loadMusicPlayer = () => import('../views/MusicPlayer.vue')
 const loadArticleDetail = () => import('../views/ArticleDetail.vue')
 const loadCategory = () => import('../views/Category.vue')
 const loadAbout = () => import('../views/About.vue')
-const loadXiaomiCase = () => import('../views/VivoCase.vue')
+const loadXiaomiCase = () => import('../views/XiaomiCase.vue')
 const loadXiaomiPhoneDetail = () => import('../views/XiaomiPhoneDetail.vue')
 const loadForeignCase = () => import('../views/ForeignCase.vue')
 const loadFlutterMusicCase = () => import('../views/FlutterMusicCase.vue')
@@ -113,7 +113,7 @@ const routes = [
   },
   {
     path: '/vivo-case',
-    name: 'VivoCaseLegacy',
+    name: 'XiaomiCaseLegacy',
     redirect: '/xiaomi-case'
   },
   {
@@ -199,7 +199,11 @@ const getAnchorOffset = (selector) => {
 }
 
 const router = createRouter({
-  history: createWebHistory(),
+  // Keep client-side navigation inside the configured deployment base. This
+  // matters on GitHub Pages, where the app is served from /<repo>/ instead of
+  // the domain root; root-relative history would otherwise send case links to
+  // the wrong origin path (including the overseas project).
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   async scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition

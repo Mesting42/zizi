@@ -19,7 +19,7 @@ const caseData = computed(() => isChinese.value
       previewLabel: 'XIAOMI / 全生态交互预览',
       // Keep a versioned URL so an old cached static preview cannot keep the
       // previous portfolio page after the Xiaomi project is refreshed.
-      iframeSrc: '/vivo/index.html?xiaomi=1',
+      iframeSrc: '/xiaomi/index.html?xiaomi=1',
       iframeTitle: '小米手机、HyperOS、汽车与全生态响应式体验页',
       statement: '手机是入口，生态才是完整的体验。',
       details: [
@@ -39,7 +39,7 @@ const caseData = computed(() => isChinese.value
       description: 'A product-led study of Xiaomi 17 Ultra, HyperOS, Xiaomi EV, and the devices around them—designed as one continuous ecosystem experience.',
       tags: ['XIAOMI', 'HYPEROS 3', 'HUMAN × CAR × HOME', 'RESPONSIVE'],
       previewLabel: 'XIAOMI / ECOSYSTEM INTERACTIVE PREVIEW',
-      iframeSrc: '/vivo/index.html?xiaomi=1',
+      iframeSrc: '/xiaomi/index.html?xiaomi=1',
       iframeTitle: 'Xiaomi phone, HyperOS, EV, and ecosystem responsive experience',
       statement: 'The phone is the entry. The ecosystem is the experience.',
       details: [

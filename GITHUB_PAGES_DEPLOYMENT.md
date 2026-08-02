@@ -1,6 +1,6 @@
 # GitHub Pages 部署指南
 
-本指南说明如何将个人数字空间项目部署到 GitHub Pages，并确保所有功能（包括 vivo 案例和音乐功能）能够正常访问。
+本指南说明如何将个人数字空间项目部署到 GitHub Pages，并确保所有功能（包括小米案例和音乐功能）能够正常访问。
 
 ## 项目结构说明
 
@@ -14,7 +14,7 @@
 │   ├── images/                # 图片资源
 │   ├── music/                 # 音乐文件
 │   ├── lyrics/                # 歌词文件
-│   └── vivo/                  # vivo 案例文件
+│   └── xiaomi/                # 小米案例文件
 ├── src/                       # 源代码
 ├── dist/                      # 构建输出目录
 ├── index.html
@@ -172,10 +172,10 @@ jobs:
 2. **文章列表**：`https://username.github.io/articles` 或 `https://username.github.io/my-blog/articles`
 3. **关于我**：`https://username.github.io/about` 或 `https://username.github.io/my-blog/about`
 
-### Vivo 案例
+### 小米案例
 
-1. **Vivo 案例页面**：`https://username.github.io/vivo-case` 或 `https://username.github.io/my-blog/vivo-case`
-2. **直接访问 vivo 网站**：`https://username.github.io/vivo/index.html` 或 `https://username.github.io/my-blog/vivo/index.html`
+1. **小米案例页面**：`https://username.github.io/xiaomi-case` 或 `https://username.github.io/my-blog/xiaomi-case`
+2. **直接访问小米网站**：`https://username.github.io/xiaomi/index.html` 或 `https://username.github.io/my-blog/xiaomi/index.html`
 
 ### 音乐功能
 
@@ -207,14 +207,14 @@ jobs:
 - 歌词文件（.lrc 格式）
 - 文件名与音乐文件对应
 
-#### Vivo 案例 (`public/vivo/`)
+#### 小米案例 (`public/xiaomi/`)
 
-- vivo 响应式网站的所有文件
+- 小米生态响应式网站的所有文件
 - 包含 index.html、CSS、图片等资源
 
 ## 常见问题
 
-### 1. vivo 案例无法访问
+### 1. 小米案例无法访问
 
 **原因**：`base` 路径配置不正确
 
@@ -276,7 +276,7 @@ jobs:
 2. 确保所有资源文件已放入 `public` 目录
 3. 本地测试：`npm run build && npm run preview`
 4. 推送到 GitHub 并触发部署
-5. 验证所有功能正常（博客、音乐、vivo 案例）
+5. 验证所有功能正常（博客、音乐、小米案例）
 
 ### 后续更新
 
@@ -303,4 +303,4 @@ jobs:
 
 ---
 
-**部署完成后，请确保测试所有功能（博客、音乐、vivo 案例）是否正常工作。**
+**部署完成后，请确保测试所有功能（博客、音乐、小米案例）是否正常工作。**

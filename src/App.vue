@@ -91,7 +91,7 @@ const currentPage = computed(() => {
   if (path.startsWith('/category')) return 'articles'
   if (path.startsWith('/article')) return 'article'
   if (path.startsWith('/music') || path === '/music-player') return 'music'
-  if (path.startsWith('/vivo-case') || path.startsWith('/xiaomi-case') || path.startsWith('/foreign-case') || path.startsWith('/flutter-music-case')) return 'case'
+  if (path.startsWith('/xiaomi-case') || path.startsWith('/foreign-case') || path.startsWith('/flutter-music-case')) return 'case'
   return 'home'
 })
 

@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --ink: #0b0e12;
+  --xiaomi-canvas: #0b0e12;
+  --ink: var(--xiaomi-canvas);
   --muted: #87909b;
   --line: rgba(255, 255, 255, .13);
-  --paper: #0b0e12;
+  --paper: var(--xiaomi-canvas);
   --paper-soft: #11161c;
   --orange: #ff6900;
   --blue: #6b8cff;
@@ -17,7 +18,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scrollbar-width: none; background: var(--paper); }
 html::-webkit-scrollbar { display: none; }
-body { margin: 0; color: var(--white); background: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body { margin: 0; color: var(--white); background: var(--paper); font-family: var(--sans); -webkit-font-smoothing: auto; font-synthesis: none; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
 button { color: inherit; font: inherit; }
 img { display: block; max-width: 100%; }
@@ -25,6 +26,9 @@ img { display: block; max-width: 100%; }
 .site-shell { position: relative; max-width: 1600px; margin: 0 auto; padding: 0 42px; overflow: clip; }
 .xiaomi-logo-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 .site-nav { position: sticky; z-index: 10; top: 0; display: flex; align-items: center; justify-content: space-between; min-height: 76px; border-bottom: 1px solid var(--line); background: rgba(11, 14, 18, .86); backdrop-filter: blur(18px); }
+/* The portfolio's fixed navigation sits above embedded previews. Reserve this
+   space only for the iframe version so the Xiaomi brand is never covered. */
+html.is-embedded-preview .site-nav { min-height: 130px; padding-top: 54px; }
 .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--white); font: 500 11px/1 var(--mono); letter-spacing: .08em; }
 .brand-mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 9px; color: #fff; background: var(--orange); font: 800 13px/1 var(--sans); letter-spacing: -.12em; }
 .xiaomi-logo { display: block; width: 26px; height: 26px; flex: 0 0 auto; }
@@ -55,7 +59,7 @@ img { display: block; max-width: 100%; }
 .hero-media { position: relative; min-height: min(61vw, 665px); border-radius: 28px; overflow: hidden; background: #e7ece8; box-shadow: 0 35px 95px rgba(0,0,0,.25); }
 .hero-media img { width: 100%; height: 100%; min-height: min(61vw, 665px); object-fit: cover; object-position: 51% center; mix-blend-mode: multiply; }
 .hero-media::after { position: absolute; inset: 0; content: ''; background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(9,12,15,.15)); pointer-events: none; }
-.media-tag { position: absolute; z-index: 1; top: 25px; left: 27px; color: #1b352a; font: 500 10px/1 var(--mono); letter-spacing: .1em; }
+.media-tag { position: absolute; z-index: 1; top: 25px; left: 27px; color: #1b352a; font: 500 11px/1 var(--mono); letter-spacing: .1em; }
 .media-tag span { margin-left: 11px; color: #73857b; }
 .hero-spec { position: absolute; z-index: 1; right: 25px; bottom: 25px; display: grid; grid-template-columns: auto 1fr; column-gap: 11px; align-items: baseline; color: #173b2d; }
 .hero-spec span { grid-row: span 2; font: 11px var(--mono); }
@@ -88,23 +92,57 @@ img { display: block; max-width: 100%; }
 .phone-card--warm { grid-column: span 4; background: #d1bba8; color: #2c211c; }
 .phone-card--lime { grid-column: span 4; background: var(--lime); color: #172012; }
 .phone-card--future { grid-column: span 4; background: #171a1d; }
-.phone-card--warm .phone-card-media--mix { inset: auto -7% 7% auto; width: 70%; height: 76%; background: #eee9e3; border-radius: 24px 0 0 24px; }
-.phone-card--warm .phone-card-media--mix img { object-fit: cover; object-position: center 18%; mix-blend-mode: multiply; opacity: .88; }
-.phone-card--lime .phone-card-media--redmi { inset: auto -11% 2% auto; width: 68%; height: 82%; background: transparent; }
+.phone-card--warm .phone-card-media--mix { inset: 23% -6% 5% 48%; width: auto; height: auto; background: transparent; border-radius: 24px 0 0 24px; }
+.phone-card--warm .phone-card-media--mix img { object-fit: contain; object-position: center; mix-blend-mode: normal; opacity: 1; transform: translateY(0) scale(1.02); }
+.phone-card--warm:hover .phone-card-media--mix img { transform: translateY(0) scale(1.05); }
+.phone-card--lime .phone-card-media--redmi { inset: 18% -8% 4% 53%; width: auto; height: auto; background: transparent; }
 .phone-card--lime .phone-card-media--redmi img { object-fit: contain; object-position: center bottom; mix-blend-mode: screen; opacity: .92; }
-.phone-card--warm h3, .phone-card--warm p { max-width: 58%; }
-.phone-card--lime h3, .phone-card--lime p { max-width: 58%; }
+.phone-card--warm h3, .phone-card--warm p { max-width: 42%; text-wrap: pretty; }
+.phone-card--lime h3, .phone-card--lime p { max-width: 46%; text-wrap: pretty; }
+/* Keep the compact-card copy inside a dedicated left column. The product
+   art begins to the right of this safe area, so paragraphs and the detail
+   action never paint over the photos. */
+.phone-card--warm .card-open { max-width: 42%; }
+.phone-card--lime .card-open { max-width: 46%; }
 .phone-card--warm .phone-card-media, .phone-card--lime .phone-card-media { z-index: 0; }
-.phone-card .card-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; color: inherit; font-size: 9px; letter-spacing: .12em; opacity: .75; }
+.phone-card .card-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; color: inherit; font-size: 11px; letter-spacing: .1em; opacity: .82; }
 .phone-card h3 { position: relative; z-index: 1; margin: 22px 0 13px; font-size: clamp(26px, 3.3vw, 47px); font-weight: 600; letter-spacing: -.07em; line-height: .96; }
-.phone-card p { position: relative; z-index: 1; max-width: 430px; margin: 0; color: inherit; opacity: .73; font-size: 13px; line-height: 1.7; }
-.status { border: 1px solid currentColor; border-radius: 999px; padding: 5px 7px; font-size: 8px; letter-spacing: 0; white-space: nowrap; }
+.phone-card p { position: relative; z-index: 1; max-width: 430px; margin: 0; color: inherit; opacity: .78; font-size: 14px; line-height: 1.65; }
+.status { border: 1px solid currentColor; border-radius: 999px; padding: 6px 9px; font-size: 10px; letter-spacing: 0; white-space: nowrap; }
 .status--warm { color: #714f35; }.status--lime { color: #40552e; }.status--future { color: #ca8e67; }
-.card-open { display: inline-flex; align-items: center; gap: 8px; position: relative; z-index: 1; margin-top: 18px; color: inherit; font: 500 10px/1 var(--mono); letter-spacing: .04em; opacity: .74; transition: gap .22s ease, opacity .22s ease; }
-.card-open b { color: var(--orange); font-size: 13px; font-weight: 400; }
+.card-open { display: inline-flex; align-items: center; gap: 9px; position: relative; z-index: 1; margin-top: 18px; color: inherit; font: 500 11px/1 var(--mono); letter-spacing: .04em; opacity: .8; transition: gap .22s ease, opacity .22s ease; }
+.card-open b { color: var(--orange); font-size: 14px; font-weight: 400; }
 .phone-card--link:hover .card-open { gap: 13px; opacity: 1; }
-.spec-line { position: absolute; z-index: 1; right: 23px; bottom: 22px; left: 23px; display: flex; justify-content: space-between; gap: 10px; color: inherit; opacity: .52; font-size: 8px; letter-spacing: .1em; }
-.phone-index { position: absolute; right: 24px; top: 24px; color: #606d7c; font: 11px var(--mono); }
+
+/* Above phone widths, compact product cards use a deliberate copy / product
+   split. These rules follow the generic card type so the left-column widths
+   cannot be overridden by the shared paragraph style. */
+@media (min-width: 641px) {
+  .phone-card--warm .phone-card-media--mix {
+    inset: 23% 0 5% 55%;
+    border-radius: 22px 0 0 22px;
+  }
+
+  .phone-card--lime .phone-card-media--redmi {
+    inset: 18% 2% 4% 58%;
+  }
+
+  .phone-card--warm h3,
+  .phone-card--warm > p,
+  .phone-card--warm .card-open {
+    width: calc(55% - 36px);
+    max-width: none;
+  }
+
+  .phone-card--lime h3,
+  .phone-card--lime > p,
+  .phone-card--lime .card-open {
+    width: calc(58% - 36px);
+    max-width: none;
+  }
+}
+.spec-line { position: absolute; z-index: 1; right: 23px; bottom: 22px; left: 23px; display: flex; justify-content: space-between; gap: 10px; color: inherit; opacity: .68; font-size: 10px; letter-spacing: .08em; }
+.phone-index { position: absolute; right: 24px; top: 24px; color: #606d7c; font: 12px var(--mono); }
 .phone-card--warm .phone-index, .phone-card--lime .phone-index { color: rgba(50,35,25,.42); }
 .phone-card--future .phone-index { color: #d98a58; }
 .phone-orb { position: absolute; width: 220px; height: 220px; border-radius: 50%; right: -42px; top: 72px; filter: blur(1px); opacity: .75; }
@@ -118,9 +156,10 @@ img { display: block; max-width: 100%; }
 .os-section { position: relative; background: #0b1020; overflow: hidden; }
 .os-section::before { position: absolute; width: 620px; height: 620px; top: -250px; right: -220px; content: ''; border-radius: 50%; background: radial-gradient(circle, rgba(95,127,255,.16), transparent 68%); pointer-events: none; }
 .os-intro { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(190px, .55fr) minmax(320px, 1.25fr) minmax(250px, .7fr); align-items: end; gap: clamp(28px, 5vw, 80px); margin-bottom: 48px; padding-bottom: 29px; border-bottom: 1px solid rgba(157,177,255,.18); }
-.os-lockup { display: flex; align-items: baseline; color: #f4f6ff; letter-spacing: -.07em; line-height: .8; }.os-lockup span, .os-lockup strong { font-size: clamp(38px, 4.2vw, 64px); font-weight: 600; }.os-lockup strong { color: #9cb0ff; }.os-lockup b { margin-left: 10px; color: #ff7a28; font: 500 14px var(--mono); letter-spacing: 0; }
-.os-intro-copy .eyebrow { margin-bottom: 12px; color: #8fa7ff; }.os-intro-copy h2 { max-width: 620px; margin: 0; color: #edf1ff; font-size: clamp(24px, 2.7vw, 39px); font-weight: 550; letter-spacing: -.055em; line-height: 1.13; text-wrap: balance; }
-.os-intro-note { max-width: 330px; margin: 0; color: #8390a6; font-size: 12px; line-height: 1.75; }
+.os-lockup { display: flex; align-items: baseline; color: #f4f6ff; letter-spacing: -.07em; line-height: .8; }.os-lockup span, .os-lockup strong { font-size: clamp(38px, 4.2vw, 64px); font-weight: 600; }.os-lockup strong { color: #9cb0ff; }.os-lockup b { display: inline-flex; align-items: center; margin-left: .18em; color: #ff7a28; font: 600 clamp(26px, 2.7vw, 42px)/.9 var(--mono); letter-spacing: -.05em; }
+.os-section { -webkit-font-smoothing: subpixel-antialiased; text-rendering: optimizeLegibility; }
+.os-intro-copy .eyebrow { margin-bottom: 12px; color: #a9bbff; }.os-intro-copy h2 { max-width: 620px; margin: 0; color: #f2f5ff; font-size: clamp(24px, 2.7vw, 39px); font-weight: 600; letter-spacing: -.055em; line-height: 1.13; text-wrap: balance; }
+.os-intro-note { max-width: 330px; margin: 0; color: #aebbd0; font-size: 12px; font-weight: 500; line-height: 1.75; }
 .os-console { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr); min-height: 570px; border: 1px solid rgba(142,165,255,.22); border-radius: 27px; overflow: hidden; background: #090e1b; box-shadow: 0 35px 90px rgba(0,0,0,.2); }
 .os-signal { position: relative; min-height: 570px; overflow: hidden; border-right: 1px solid rgba(142,165,255,.18); background: #071039; }.os-signal img { width: 100%; height: 100%; min-height: 570px; object-fit: cover; opacity: .72; transform: scale(1.025); }.os-signal::after { position: absolute; inset: 0; content: ''; background: linear-gradient(180deg, rgba(3,7,24,.03) 30%, rgba(3,7,24,.82) 100%); pointer-events: none; }
 .os-signal-top { position: absolute; z-index: 2; top: 23px; right: 23px; left: 23px; display: flex; justify-content: space-between; gap: 20px; color: #aebcff; font: 9px var(--mono); letter-spacing: .12em; }.os-signal-top b { display: inline-flex; align-items: center; gap: 7px; color: #d9e1ff; font-weight: 500; }.os-signal-top b::before { width: 6px; height: 6px; content: ''; border-radius: 50%; background: #8effc1; box-shadow: 0 0 13px #8effc1; }
@@ -132,9 +171,9 @@ img { display: block; max-width: 100%; }
 .os-tabs button.is-active { color: #101a3b; background: #b4c4ff; }
 .os-tabs small { margin-left: 5px; opacity: .63; font-size: 8px; }
 .os-panel { flex: 1; padding-top: 35px; }.os-panel[hidden] { display: none; }
-.panel-lede { max-width: 390px; margin: 0 0 32px; color: #ecf0ff; font-size: clamp(21px, 2vw, 30px); letter-spacing: -.045em; line-height: 1.16; }
-.os-list { display: grid; gap: 20px; }.os-list div { display: grid; gap: 5px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 13px; }.os-list b { color: #91a6ff; font: 10px var(--mono); letter-spacing: .12em; }.os-list span { color: #8f9bb4; font-size: 12px; line-height: 1.65; }
-.source-note { margin: 27px 0 0; color: #606d84; font-size: 9px; line-height: 1.6; }.source-note--future { color: #bb7455; }
+.panel-lede { max-width: 390px; margin: 0 0 32px; color: #f1f4ff; font-size: clamp(21px, 2vw, 30px); font-weight: 600; letter-spacing: -.045em; line-height: 1.16; }
+.os-list { display: grid; gap: 20px; }.os-list div { display: grid; gap: 5px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 13px; }.os-list b { color: #aebeff; font: 10px var(--mono); letter-spacing: .12em; }.os-list span { color: #b0bad0; font-size: 12px; font-weight: 500; line-height: 1.65; }
+.source-note { margin: 27px 0 0; color: #8996ae; font-size: 9px; line-height: 1.6; }.source-note--future { color: #bb7455; }
 .future-board { display: grid; gap: 16px; }.future-board div { display: grid; grid-template-columns: 32px 1fr; column-gap: 9px; border-top: 1px solid rgba(255,255,255,.1); padding-top: 14px; }.future-board span { grid-row: span 2; color: #ff8a48; font: 10px var(--mono); }.future-board b { color: #f0f2fa; font-size: 13px; font-weight: 600; }.future-board p { margin: 5px 0 0; color: #929bb0; font-size: 11px; line-height: 1.55; }
 @keyframes route-signal { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 
@@ -148,6 +187,42 @@ img { display: block; max-width: 100%; }
 .car-spec-strip { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 17px; border-top: 1px solid rgba(13,23,24,.2); border-bottom: 1px solid rgba(13,23,24,.2); }.car-spec-strip div { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 17px; padding: 19px 0; }.car-spec-strip div + div { padding-left: 23px; border-left: 1px solid rgba(13,23,24,.2); }.car-spec-strip b { font: 500 12px var(--mono); }.car-spec-strip span { color: #69736e; font-size: 12px; }
 
 .ecosystem-section { background: #151918; }.ecosystem-map { position: relative; min-height: 640px; border: 1px solid var(--line); border-radius: 24px; overflow: hidden; background: radial-gradient(circle at 50% 50%, rgba(255,105,0,.2), transparent 25%), radial-gradient(circle at 50% 50%, #222b26, #131817 55%); }.ecosystem-map::before { position: absolute; inset: 0; content: ''; opacity: .25; background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(circle at center, #000, transparent 72%); }.map-lines { position: absolute; inset: 50% 19%; height: 1px; background: rgba(255,255,255,.16); transform: rotate(-35deg); transform-origin: center; }.map-lines i { position: absolute; top: 0; right: 0; width: 100%; height: 1px; background: inherit; transform: rotate(70deg); }.map-lines i:nth-child(2) { transform: rotate(-70deg); }.map-lines i:nth-child(3) { transform: rotate(140deg); }.map-lines i:nth-child(4) { transform: rotate(-140deg); }.map-center, .map-node { position: absolute; display: grid; place-items: center; text-align: center; border-radius: 50%; }.map-center { top: 50%; left: 50%; width: 230px; height: 230px; gap: 9px; padding: 35px; border: 1px solid rgba(255,105,0,.45); background: radial-gradient(circle, #273329, #121817 72%); transform: translate(-50%, -50%); box-shadow: 0 0 0 18px rgba(255,105,0,.05), 0 0 90px rgba(255,105,0,.18); }.map-center .xiaomi-logo { width: 37px; height: 37px; }.map-center b { color: #fff; font-size: 18px; letter-spacing: -.04em; line-height: .95; }.map-center small { color: #8b968f; font: 9px var(--mono); }.map-node { width: 168px; height: 168px; align-content: center; gap: 10px; padding: 25px; border: 1px solid rgba(255,255,255,.17); background: rgba(18,24,23,.9); transition: transform .25s ease, border-color .25s ease; }.map-node:hover { transform: scale(1.05); border-color: var(--orange); }.map-node b { color: var(--orange); font: 500 11px var(--mono); letter-spacing: .16em; }.map-node span { color: #a1aaa5; font-size: 12px; line-height: 1.55; }.node-phone { top: 45px; left: 11%; }.node-os { top: 53px; right: 11%; }.node-car { right: 15%; bottom: 42px; }.node-home { bottom: 42px; left: 15%; }.ecosystem-footer { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin-top: 23px; color: #88938d; font-size: 13px; }.ecosystem-footer p { margin: 0; }.ecosystem-footer a { color: var(--orange); font: 10px var(--mono); }
+
+/* The three system chapters use one deliberate nesting rule: the section is
+   the large-radius stage, while the interactive content sits well inside it
+   with a visibly smaller radius. */
+.os-section,
+.cars-section,
+.ecosystem-section {
+  margin-block: clamp(30px, 4vw, 62px);
+  padding: clamp(76px, 8vw, 126px) clamp(24px, 3.5vw, 54px);
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: clamp(30px, 3vw, 46px);
+  background-clip: padding-box;
+}
+
+.os-section {
+  border-color: rgba(137, 158, 255, .16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 28px 70px rgba(0, 0, 0, .16);
+}
+
+.cars-section {
+  border-color: rgba(13, 23, 24, .12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75), 0 28px 70px rgba(0, 0, 0, .14);
+}
+
+.ecosystem-section {
+  border-color: rgba(255, 255, 255, .1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 28px 70px rgba(0, 0, 0, .18);
+}
+
+.os-console,
+.ev-hero,
+.ev-detail,
+.ecosystem-map {
+  border-radius: clamp(19px, 1.7vw, 25px);
+}
 
 .site-footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; padding: 52px 0 70px; color: #828c95; }.site-footer > div:first-child { display: flex; align-items: flex-start; gap: 14px; }.site-footer p { margin: 0; font-size: 12px; line-height: 1.6; }.site-footer small { color: #58626d; font: 9px var(--mono); }.footer-source { text-align: right; font-size: 9px; line-height: 1.7; }.footer-source a { color: var(--orange); }
 
@@ -163,7 +238,7 @@ img { display: block; max-width: 100%; }
   .site-shell { padding: 0 23px; }.nav-links { gap: 14px; }.hero { grid-template-columns: 1fr; min-height: auto; padding-top: 84px; }.hero-copy { max-width: 750px; }.hero-media { min-height: 64vw; max-height: 620px; }.hero-media img { min-height: 64vw; max-height: 620px; }.phone-card--feature { grid-column: span 12; }.phone-card--dark, .phone-card--warm, .phone-card--lime, .phone-card--future { grid-column: span 6; }.os-intro, .ev-intro { grid-template-columns: minmax(180px, .55fr) minmax(0, 1.45fr); }.os-intro-note, .ev-intro > p { grid-column: 2; max-width: 540px; }.os-console { grid-template-columns: 1fr; }.os-signal { min-height: 470px; border-right: 0; border-bottom: 1px solid rgba(142,165,255,.18); }.os-signal img { min-height: 470px; }.ev-hero { height: 400px; }.map-node { width: 145px; height: 145px; }.node-phone { left: 3%; }.node-os { right: 3%; }.node-car { right: 7%; }.node-home { left: 7%; }
 }
 @media (max-width: 640px) {
-  .site-shell { padding: 0 16px; }.site-nav { min-height: 64px; }.brand { font-size: 9px; }.brand-mark, .xiaomi-logo { width: 23px; height: 23px; }.nav-links { display: none; }.nav-pill { padding: 8px 10px; font-size: 9px; }.hero { gap: 35px; padding: 60px 0 76px; }.hero h1 { max-width: 100%; font-size: clamp(43px, 13vw, 69px); }.hero-lede { font-size: 13px; line-height: 1.75; }.hero-actions { align-items: stretch; flex-direction: column; gap: 10px; max-width: 220px; }.button { justify-content: space-between; }.hero-index { flex-wrap: wrap; gap: 13px 21px; margin-top: 44px; }.hero-media { min-height: 82vw; max-height: none; border-radius: 19px; }.hero-media img { min-height: 82vw; max-height: none; object-position: 47% center; }.media-tag { top: 17px; left: 17px; font-size: 8px; }.hero-note { top: 17px; right: 17px; font-size: 8px; }.hero-spec { right: 17px; bottom: 17px; }.hero-spec strong { font-size: 28px; }.signal-bar { gap: 11px; font-size: 8px; }.section { padding: 86px 0; }.section-heading { display: block; margin-bottom: 39px; }.section-heading h2 { font-size: clamp(39px, 12vw, 62px); }.section-intro { margin-top: 25px; font-size: 13px; }.phone-card--feature { min-height: 420px; }.phone-card--dark, .phone-card--warm, .phone-card--lime, .phone-card--future { grid-column: span 12; min-height: 300px; }.phone-card h3 { font-size: 37px; }.phone-orb { width: 190px; height: 190px; }.fold-shape { right: 35px; top: 65px; }.fold-shape span { width: 58px; height: 113px; }.future-mark { top: 62px; right: 37px; font-size: 100px; }.os-intro, .ev-intro { display: block; margin-bottom: 31px; padding-bottom: 24px; }.os-lockup, .ev-models { margin-bottom: 30px; }.os-intro-copy h2, .ev-intro h2 { font-size: clamp(25px, 7vw, 31px); }.os-intro-note, .ev-intro > p { margin-top: 20px; }.os-console { min-height: 0; border-radius: 20px; }.os-signal, .os-signal img { min-height: 360px; }.os-signal-readout { bottom: 89px; }.os-signal-readout strong { font-size: 52px; }.device-route { right: 14px; bottom: 18px; left: 14px; gap: 7px; padding: 12px; font-size: 7px; }.os-content { padding: 18px; }.os-tabs { overflow-x: auto; }.os-tabs button { flex: 0 0 auto; }.panel-lede { font-size: 24px; }.ev-hero { height: 300px; }.ev-hero img { object-position: center top; transform: scale(1.4); transform-origin: center top; }.ev-hero:hover img { transform: scale(1.45); }.ev-hero figcaption { display: grid; }.ev-hero figcaption small { text-align: left; }.ev-detail-grid { grid-template-columns: 1fr; }.ev-detail { height: 300px; }.ev-detail img { transform: scale(1.42); transform-origin: center 82%; }.ev-detail:hover img { transform: scale(1.46); }.car-spec-strip { grid-template-columns: 1fr; }.car-spec-strip div { grid-template-columns: 72px 1fr; }.car-spec-strip div + div { border-top: 1px solid rgba(13,23,24,.2); border-left: 0; padding-left: 0; }.ecosystem-map { min-height: 560px; }.map-center { width: 160px; height: 160px; padding: 25px; }.map-center .xiaomi-logo { width: 32px; height: 32px; }.map-center b { font-size: 14px; }.map-node { width: 112px; height: 112px; padding: 15px; }.map-node span { font-size: 9px; }.node-phone { top: 29px; left: 2%; }.node-os { top: 29px; right: 2%; }.node-car { right: 4%; bottom: 28px; }.node-home { left: 4%; bottom: 28px; }.map-lines { inset-inline: 10%; }.ecosystem-footer { display: grid; gap: 15px; }.site-footer { display: grid; gap: 25px; padding-bottom: 45px; }.footer-source { text-align: left; }
+  .site-shell { padding: 0 16px; }.site-nav { min-height: 64px; }.is-embedded-preview .site-nav { min-height: 118px; padding-top: 54px; }.brand { font-size: 9px; }.brand-mark, .xiaomi-logo { width: 23px; height: 23px; }.nav-links { display: none; }.nav-pill { padding: 8px 10px; font-size: 9px; }.hero { gap: 35px; padding: 60px 0 76px; }.hero h1 { max-width: 100%; font-size: clamp(43px, 13vw, 69px); }.hero-lede { font-size: 13px; line-height: 1.75; }.hero-actions { align-items: stretch; flex-direction: column; gap: 10px; max-width: 220px; }.button { justify-content: space-between; }.hero-index { flex-wrap: wrap; gap: 13px 21px; margin-top: 44px; }.hero-media { min-height: 82vw; max-height: none; border-radius: 19px; }.hero-media img { min-height: 82vw; max-height: none; object-position: 47% center; }.media-tag { top: 17px; left: 17px; font-size: 8px; }.hero-note { top: 17px; right: 17px; font-size: 8px; }.hero-spec { right: 17px; bottom: 17px; }.hero-spec strong { font-size: 28px; }.signal-bar { gap: 11px; font-size: 8px; }.section { padding: 86px 0; }.section-heading { display: block; margin-bottom: 39px; }.section-heading h2 { font-size: clamp(39px, 12vw, 62px); }.section-intro { margin-top: 25px; font-size: 13px; }.phone-card--feature { min-height: 420px; }.phone-card--dark, .phone-card--warm, .phone-card--lime, .phone-card--future { grid-column: span 12; min-height: 300px; }.phone-card h3 { font-size: 37px; }.phone-orb { width: 190px; height: 190px; }.fold-shape { right: 35px; top: 65px; }.fold-shape span { width: 58px; height: 113px; }.future-mark { top: 62px; right: 37px; font-size: 100px; }.os-intro, .ev-intro { display: block; margin-bottom: 31px; padding-bottom: 24px; }.os-lockup, .ev-models { margin-bottom: 30px; }.os-intro-copy h2, .ev-intro h2 { font-size: clamp(25px, 7vw, 31px); }.os-intro-note, .ev-intro > p { margin-top: 20px; }.os-console { min-height: 0; border-radius: 20px; }.os-signal, .os-signal img { min-height: 360px; }.os-signal-readout { bottom: 89px; }.os-signal-readout strong { font-size: 52px; }.device-route { right: 14px; bottom: 18px; left: 14px; gap: 7px; padding: 12px; font-size: 7px; }.os-content { padding: 18px; }.os-tabs { overflow-x: auto; }.os-tabs button { flex: 0 0 auto; }.panel-lede { font-size: 24px; }.ev-hero { height: 300px; }.ev-hero img { object-position: center top; transform: scale(1.4); transform-origin: center top; }.ev-hero:hover img { transform: scale(1.45); }.ev-hero figcaption { display: grid; }.ev-hero figcaption small { text-align: left; }.ev-detail-grid { grid-template-columns: 1fr; }.ev-detail { height: 300px; }.ev-detail img { transform: scale(1.42); transform-origin: center 82%; }.ev-detail:hover img { transform: scale(1.46); }.car-spec-strip { grid-template-columns: 1fr; }.car-spec-strip div { grid-template-columns: 72px 1fr; }.car-spec-strip div + div { border-top: 1px solid rgba(13,23,24,.2); border-left: 0; padding-left: 0; }.ecosystem-map { min-height: 560px; }.map-center { width: 160px; height: 160px; padding: 25px; }.map-center .xiaomi-logo { width: 32px; height: 32px; }.map-center b { font-size: 14px; }.map-node { width: 112px; height: 112px; padding: 15px; }.map-node span { font-size: 9px; }.node-phone { top: 29px; left: 2%; }.node-os { top: 29px; right: 2%; }.node-car { right: 4%; bottom: 28px; }.node-home { left: 4%; bottom: 28px; }.map-lines { inset-inline: 10%; }.ecosystem-footer { display: grid; gap: 15px; }.site-footer { display: grid; gap: 25px; padding-bottom: 45px; }.footer-source { text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -192,6 +267,11 @@ img { display: block; max-width: 100%; }
     max-width: 100%;
   }
 
+  html.is-embedded-preview .site-nav {
+    min-height: 118px;
+    padding-top: 54px;
+  }
+
   .hero h1 {
     font-size: clamp(40px, 12vw, 58px);
     overflow-wrap: anywhere;
@@ -214,5 +294,138 @@ img { display: block; max-width: 100%; }
   .ecosystem-footer p {
     max-width: 100%;
     overflow-wrap: anywhere;
+  }
+}
+
+/* Narrow-screen product cards and EV storytelling: keep copy clear of the
+   photography, then give each image a centered, complete frame. */
+@media (max-width: 640px) {
+  .phone-card--warm,
+  .phone-card--lime {
+    min-height: 455px;
+    padding: 22px;
+  }
+
+  .phone-card--warm h3,
+  .phone-card--warm p,
+  .phone-card--lime h3,
+  .phone-card--lime p {
+    max-width: 100%;
+  }
+
+  .phone-card--warm .phone-card-media--mix {
+    inset: 205px 9% 42px;
+    width: auto;
+    height: auto;
+    border-radius: 22px;
+  }
+
+  .phone-card--warm .phone-card-media--mix img {
+    object-fit: contain;
+    object-position: center;
+    transform: translateY(4%) scale(1.02);
+  }
+
+  .phone-card--warm:hover .phone-card-media--mix img {
+    transform: translateY(4%) scale(1.05);
+  }
+
+  .phone-card--lime .phone-card-media--redmi {
+    inset: 210px 8% 38px;
+    width: auto;
+    height: auto;
+  }
+
+  .phone-card--lime .phone-card-media--redmi img {
+    object-fit: contain;
+    object-position: center;
+    mix-blend-mode: normal;
+    opacity: 1;
+  }
+
+  .phone-card--warm .card-open,
+  .phone-card--lime .card-open {
+    width: max-content;
+    margin-top: 14px;
+  }
+
+  .cars-section .ev-intro {
+    margin-inline: 0;
+    padding-inline: 2px;
+  }
+
+  .cars-section .ev-models,
+  .cars-section .ev-intro h2,
+  .cars-section .ev-intro > p {
+    margin-left: 0;
+  }
+
+  .cars-section .ev-hero {
+    height: 360px;
+  }
+
+  .cars-section .ev-hero img {
+    object-fit: contain;
+    object-position: center;
+    transform: scale(.9);
+    transform-origin: center;
+  }
+
+  .cars-section .ev-hero:hover img {
+    transform: scale(.94);
+  }
+
+  .cars-section .ev-hero figcaption,
+  .cars-section .ev-detail figcaption {
+    right: 18px;
+    bottom: 18px;
+    left: 18px;
+    gap: 8px;
+  }
+
+  .cars-section .ev-hero figcaption {
+    grid-template-columns: 1fr;
+  }
+
+  .cars-section .ev-hero figcaption small {
+    text-align: left;
+  }
+
+  .cars-section .ev-detail img {
+    transform: scale(1.04);
+    transform-origin: center 78%;
+  }
+
+  .cars-section .ev-detail:hover img {
+    transform: scale(1.07);
+  }
+
+  .cars-section .car-spec-strip {
+    margin-inline: 2px;
+  }
+
+  .cars-section .car-spec-strip div {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .cars-section .car-spec-strip span {
+    line-height: 1.5;
+  }
+
+  .os-section,
+  .cars-section,
+  .ecosystem-section {
+    margin-block: 18px;
+    padding: 62px 14px;
+    border-radius: 26px;
+  }
+
+  .os-console,
+  .cars-section .ev-hero,
+  .cars-section .ev-detail,
+  .ecosystem-map {
+    border-radius: 19px;
   }
 }

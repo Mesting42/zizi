@@ -1,5 +1,5 @@
 /* Section 1 - scoped */
-.vivo-case {
+.xiaomi-case {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
@@ -208,7 +208,7 @@
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .vivo-case {
+  .xiaomi-case {
     padding: 1rem;
   }
 

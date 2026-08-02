@@ -84,7 +84,7 @@
   - MusicPlayer.css
   - PlaylistDetail.css
   - VinylPlayer.css
-  - VivoCase.css
+  - XiaomiCase.css
 
 #### HTML文件CSS/JS拆分
 - ✅ 拆分 `clear-data.html` 的CSS到 `public/css/clear-data.css`

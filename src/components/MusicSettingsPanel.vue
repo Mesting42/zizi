@@ -35,9 +35,9 @@
               <strong>{{ copy.themeBackground }}</strong>
               <span>{{ copy.themeBackgroundHint }}</span>
             </div>
-            <nav class="music-ip-tabs" aria-label="音乐主题 IP 分类">
+            <nav class="music-ip-tabs" :aria-label="copy.ipCategoryAria">
               <button
-                v-for="ip in MUSIC_IPS"
+                v-for="ip in localizedMusicIps"
                 :key="ip.id"
                 type="button"
                 :class="[`is-${ip.id}`, { active: activeIp === ip.id }]"
@@ -45,7 +45,7 @@
                 @click="selectThemeIp(ip.id)"
               >
                 <span class="music-ip-tab-avatar" aria-hidden="true">
-                  <img :src="ip.avatar" :alt="`${ip.name}角色`" loading="lazy" decoding="async" />
+                  <img :src="ip.avatar" alt="" loading="lazy" decoding="async" />
                 </span>
                 <span><strong>{{ ip.name }}</strong><small>{{ ip.eyebrow }}</small></span>
               </button>
@@ -57,7 +57,7 @@
                     <i :class="{ moving: group.id === 'motion' }"></i>
                     {{ group.name }}
                   </span>
-                  <small>{{ group.description }} · {{ group.presets.length }} 套</small>
+                  <small>{{ group.description }} · {{ copy.themeCount(group.presets.length) }}</small>
                 </header>
                 <div class="music-preset-grid">
                   <button
@@ -109,7 +109,7 @@
               <strong>{{ copy.progressStyle }}</strong>
               <span>{{ copy.progressStyleHint }}</span>
             </div>
-            <div class="music-theme-choice-grid" aria-label="进度条样式">
+            <div class="music-theme-choice-grid" :aria-label="copy.progressStyleAria">
               <button type="button" :class="{ active: settings.progressStyle === 'theme' }" @click="settings.progressStyle = 'theme'">
                 <i class="theme-choice-dot is-theme"></i><span>{{ copy.followTheme }}</span>
               </button>
@@ -131,7 +131,7 @@
               <strong>{{ copy.progressCharacter }}</strong>
               <span>{{ copy.progressCharacterHint }}</span>
             </div>
-            <div class="music-theme-choice-grid" aria-label="进度条角色">
+            <div class="music-theme-choice-grid" :aria-label="copy.progressCharacterAria">
               <button type="button" :class="{ active: settings.progressCharacter === 'theme' }" @click="settings.progressCharacter = 'theme'">
                 <i class="theme-choice-character is-theme">{{ copy.followMark }}</i><span>{{ copy.followTheme }}</span>
               </button>
@@ -155,7 +155,7 @@
               <strong>{{ copy.appearance }}</strong>
               <span>{{ copy.appearanceHint }}</span>
             </div>
-            <div v-if="isClassicTheme" class="music-theme-choice-grid music-appearance-choice-grid" aria-label="界面配色">
+            <div v-if="isClassicTheme" class="music-theme-choice-grid music-appearance-choice-grid" :aria-label="copy.appearanceAria">
               <button type="button" :class="{ active: settings.customAppearance === 'auto' }" @click="settings.customAppearance = 'auto'">
                 <i class="theme-choice-character is-theme">{{ copy.autoMark }}</i><span>{{ copy.auto }}</span>
               </button>
@@ -205,7 +205,12 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useMusicBackground } from '../composables/useMusicBackground'
-import { MUSIC_IPS, MUSIC_THEME_PRESETS, getMusicIp, getMusicThemeIp } from '../config/musicThemeCatalog'
+import {
+  getLocalizedMusicIp,
+  getLocalizedMusicIps,
+  getLocalizedMusicThemePresets,
+  getMusicThemeIp
+} from '../config/musicThemeCatalog'
 import { useLocale } from '../composables/useLocale'
 
 const props = defineProps({
@@ -213,7 +218,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
-const { isChinese } = useLocale()
+const { locale, isChinese } = useLocale()
 const copy = computed(() => isChinese.value
   ? {
       close: '关闭音乐设置',
@@ -222,6 +227,8 @@ const copy = computed(() => isChinese.value
       reuse: '重新使用',
       themeBackground: '主题背景',
       themeBackgroundHint: '先选 IP，再选择静态或动态场景',
+      ipCategoryAria: '音乐主题 IP 分类',
+      themeCount: count => `${count} 套`,
       animated: '动态',
       customTheme: '自定义主题',
       customThemeHint: '背景、进度条与角色可自由搭配；文件只保存在你的浏览器里',
@@ -230,16 +237,19 @@ const copy = computed(() => isChinese.value
       chooseVideo: '选择视频',
       progressStyle: '进度条样式',
       progressStyleHint: '不改变背景，单独选择进度条的配色与质感',
+      progressStyleAria: '进度条样式',
       followTheme: '跟随主题',
       classic: '经典',
       shinchanShort: '小新',
       progressCharacter: '跟随进度条的角色',
       progressCharacterHint: '可以与当前背景和进度条样式任意搭配',
+      progressCharacterAria: '进度条角色',
       followMark: '随',
       classicDot: '经典圆点',
       shinchan: '蜡笔小新',
       appearance: '界面配色',
       appearanceHint: '视频上传后会按画面明暗自动适配，也可手动切换',
+      appearanceAria: '界面配色',
       autoMark: '自',
       auto: '自动适配',
       sunny: '阳光模式',
@@ -272,6 +282,8 @@ const copy = computed(() => isChinese.value
       reuse: 'Use Again',
       themeBackground: 'Theme Background',
       themeBackgroundHint: 'Choose an IP, then select a static or animated scene',
+      ipCategoryAria: 'Music theme character collections',
+      themeCount: count => `${count} ${count === 1 ? 'theme' : 'themes'}`,
       animated: 'Motion',
       customTheme: 'Custom Theme',
       customThemeHint: 'Mix backgrounds, progress styles, and characters. Files stay in your browser.',
@@ -280,16 +292,19 @@ const copy = computed(() => isChinese.value
       chooseVideo: 'Choose Video',
       progressStyle: 'Progress Style',
       progressStyleHint: 'Change the progress texture without replacing the background',
+      progressStyleAria: 'Progress bar style',
       followTheme: 'Follow Theme',
       classic: 'Classic',
       shinchanShort: 'Shin-chan',
       progressCharacter: 'Progress Character',
       progressCharacterHint: 'Mix freely with the current background and progress style',
+      progressCharacterAria: 'Progress bar character',
       followMark: 'T',
       classicDot: 'Classic Dot',
       shinchan: 'Crayon Shin-chan',
       appearance: 'Interface Color',
       appearanceHint: 'Video backgrounds adapt automatically, with manual options available',
+      appearanceAria: 'Interface color mode',
       autoMark: 'A',
       auto: 'Auto',
       sunny: 'Light',
@@ -329,7 +344,8 @@ const {
 const statusMessage = ref('')
 const hasError = ref(false)
 
-const backgroundPresets = MUSIC_THEME_PRESETS
+const localizedMusicIps = computed(() => getLocalizedMusicIps(locale.value))
+const backgroundPresets = computed(() => getLocalizedMusicThemePresets(locale.value))
 const activeIp = ref(getMusicThemeIp(settings.preset))
 const isClassicTheme = computed(() => settings.mode === 'custom' || settings.preset === 'classic')
 
@@ -338,20 +354,20 @@ const presetGroups = computed(() => [
     id: 'static',
     name: copy.value.staticThemes,
     description: copy.value.staticHint,
-    presets: backgroundPresets.filter(preset => preset.ip === activeIp.value && preset.type === 'static')
+    presets: backgroundPresets.value.filter(preset => preset.ip === activeIp.value && preset.type === 'static')
   },
   {
     id: 'motion',
     name: copy.value.motionThemes,
     description: copy.value.motionHint,
-    presets: backgroundPresets.filter(preset => preset.ip === activeIp.value && preset.type === 'motion')
+    presets: backgroundPresets.value.filter(preset => preset.ip === activeIp.value && preset.type === 'motion')
   }
 ].filter(group => group.presets.length))
 
 const activePreset = computed(() => (
-  backgroundPresets.find(preset => preset.id === settings.preset) || backgroundPresets[0]
+  backgroundPresets.value.find(preset => preset.id === settings.preset) || backgroundPresets.value[0]
 ))
-const activeIpMeta = computed(() => getMusicIp(activePreset.value.ip))
+const activeIpMeta = computed(() => getLocalizedMusicIp(activePreset.value.ip, locale.value))
 
 const modeLabel = computed(() => {
   if (settings.mode !== 'custom') return activePreset.value.name
