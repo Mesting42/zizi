@@ -220,6 +220,118 @@ body::-webkit-scrollbar {
   }
 }
 
+/* A guided handoff gives the space below the hero a purpose before the
+   principle rail begins. The route cards stay compact on desktop and stack
+   into a readable checklist on narrow screens. */
+.hero {
+  min-height: auto;
+  padding-top: clamp(62px, 7vw, 108px);
+  padding-bottom: clamp(52px, 6vw, 92px);
+}
+
+.route-pulse {
+  display: grid;
+  grid-template-columns: minmax(240px, .78fr) minmax(0, 1.22fr);
+  gap: clamp(28px, 6vw, 92px);
+  margin: clamp(30px, 5vw, 72px) clamp(22px, 9vw, 150px) clamp(44px, 6vw, 84px);
+  padding: clamp(26px, 4vw, 54px) 0;
+  border-top: 2px solid #28145e;
+  border-bottom: 2px solid rgba(36, 18, 79, .2);
+}
+
+.route-pulse-header h2 {
+  max-width: 13ch;
+  margin: 0;
+  color: #28145e;
+  font-family: "Arial Black", "Avenir Next", sans-serif;
+  font-size: clamp(1.65rem, 2.8vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -.075em;
+  line-height: .94;
+}
+
+.route-pulse-header > p:not(.eyebrow) {
+  max-width: 340px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.7;
+}
+
+.route-pulse-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-self: end;
+  border: 2px solid #28145e;
+  background: #fffaf2;
+  box-shadow: 8px 8px 0 rgba(36, 18, 79, .12);
+}
+
+.route-pulse-grid article {
+  min-height: 180px;
+  padding: 20px;
+  border-right: 1px solid rgba(36, 18, 79, .18);
+}
+
+.route-pulse-grid article:last-child { border-right: 0; }
+.route-pulse-grid span { display: block; color: #e75243; font-size: 9px; font-weight: 800; letter-spacing: .12em; }
+.route-pulse-grid strong { display: block; margin: 22px 0 8px; color: #ff6853; font-size: 2rem; line-height: 1; }
+.route-pulse-grid b { display: block; color: #28145e; font-size: 1rem; }
+.route-pulse-grid p { margin: 8px 0 0; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+
+.route-note {
+  display: grid;
+  grid-template-columns: auto minmax(220px, .9fr) minmax(240px, 1.1fr) auto;
+  gap: clamp(18px, 3vw, 46px);
+  align-items: center;
+  margin: 0 clamp(22px, 9vw, 150px);
+  padding: clamp(24px, 3vw, 38px) 0;
+  border-bottom: 2px solid rgba(36, 18, 79, .2);
+}
+
+.route-note-mark { align-self: start; color: var(--northstar-coral); font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+.route-note .eyebrow { margin-bottom: 10px; }
+.route-note h2 { margin: 0; color: #28145e; font-family: "Arial Black", "Avenir Next", sans-serif; font-size: clamp(1.3rem, 2.2vw, 2.15rem); font-weight: 900; letter-spacing: -.07em; line-height: .98; }
+.route-note-copy { max-width: 400px; margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.65; }
+.route-note a { display: inline-flex; gap: 9px; align-items: center; color: #28145e; font-size: 11px; font-weight: 800; text-decoration: none; white-space: nowrap; }
+.route-note a span { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 50%; color: #fff; background: var(--northstar-purple); }
+
+.programs { padding-top: clamp(66px, 7vw, 116px); }
+
+@media (max-width: 800px) {
+  .route-pulse { grid-template-columns: 1fr; gap: 28px; margin: 44px 20px 50px; padding: 24px 0; }
+  .route-pulse-header h2 { max-width: 16ch; font-size: clamp(1.8rem, 8vw, 2.8rem); }
+  .route-pulse-grid { grid-template-columns: 1fr; }
+  .route-pulse-grid article { min-height: 0; border-right: 0; border-bottom: 1px solid rgba(36, 18, 79, .18); }
+  .route-pulse-grid article:last-child { border-bottom: 0; }
+  .route-note { grid-template-columns: 1fr; gap: 14px; margin: 0 20px; padding: 25px 0; }
+  .route-note-mark { order: 0; }
+  .route-note a { justify-self: start; }
+  .programs { padding-top: clamp(62px, 14vw, 95px); }
+}
+
+/* Paint the hero perimeter above the animated colour layers. The original
+   element border sat below its positioned children, so the rounded corner
+   could look interrupted after the page was scaled inside a project preview. */
+.hero-system {
+  border-color: transparent;
+  border-radius: 48px;
+}
+
+.hero-system::after {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  border-radius: inherit;
+  content: '';
+  box-shadow: inset 0 0 0 2px #28145e;
+  pointer-events: none;
+}
+
+@media (max-width: 800px) {
+  .hero-system { border-radius: 28px; }
+}
+
 /* Final narrow-screen guard: long editorial words must remain inside the
    viewport after the independent publication overrides above. */
 @media (max-width: 800px) {

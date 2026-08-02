@@ -644,7 +644,7 @@ const projects = computed(() => [
     description: isChinese.value
       ? '为不同文化语境下的用户，寻找更直接、更有辨识度的表达方式。'
       : 'A more direct and distinctive visual language designed for audiences across different cultural contexts.',
-    image: assetUrl('generated/project-previews-global-brand.webp'),
+    image: assetUrl('generated/project-previews-global-brand-v2.png'),
     anchor: 'project-global-brand-experiment',
     to: '/foreign-case'
   }
